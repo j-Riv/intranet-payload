@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
-import { anyone } from '../../access/anyone'
 import adminsAndUser from './access/adminsAndUser'
 import { checkRole } from './checkRole'
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
@@ -15,10 +14,10 @@ const Users: CollectionConfig = {
   },
   access: {
     read: adminsAndUser,
-    create: anyone,
+    create: admins,
     update: adminsAndUser,
     delete: admins,
-    admin: ({ req: { user } }) => checkRole(['admin'], user),
+    admin: ({ req: { user } }) => checkRole(['admin'], user) || checkRole(['editor'], user),
   },
   hooks: {
     afterChange: [loginAfterCreate],
@@ -38,6 +37,10 @@ const Users: CollectionConfig = {
         {
           label: 'admin',
           value: 'admin',
+        },
+        {
+          label: 'editor',
+          value: 'editor',
         },
         {
           label: 'user',
