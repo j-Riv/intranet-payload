@@ -30,6 +30,16 @@ type Query {
   docAccessComment(id: Int!): commentsDocAccess
   versionComment(id: Int): CommentVersion
   versionsComments(where: versionsComment_where, limit: Int, page: Int, sort: String): versionsComments
+  Event(id: Int!, draft: Boolean): Event
+  Events(draft: Boolean, where: Event_where, limit: Int, page: Int, sort: String): Events
+  docAccessEvent(id: Int!): eventsDocAccess
+  versionEvent(id: Int): EventVersion
+  versionsEvents(where: versionsEvent_where, limit: Int, page: Int, sort: String): versionsEvents
+  AbsenceRequest(id: Int!, draft: Boolean): AbsenceRequest
+  AbsenceRequests(draft: Boolean, where: AbsenceRequest_where, limit: Int, page: Int, sort: String): AbsenceRequests
+  docAccessAbsenceRequest(id: Int!): absence_requestsDocAccess
+  versionAbsenceRequest(id: Int): AbsenceRequestVersion
+  versionsAbsenceRequests(where: versionsAbsenceRequest_where, limit: Int, page: Int, sort: String): versionsAbsenceRequests
   Redirect(id: Int!, draft: Boolean): Redirect
   Redirects(draft: Boolean, where: Redirect_where, limit: Int, page: Int, sort: String): Redirects
   docAccessRedirect(id: Int!): redirectsDocAccess
@@ -274,6 +284,8 @@ input Page_Hero_Media_where_and {
   width: Page_Hero_Media_width_operator
   height: Page_Hero_Media_height_operator
   id: Page_Hero_Media_id_operator
+  AND: [Page_Hero_Media_where_and]
+  OR: [Page_Hero_Media_where_or]
 }
 
 input Page_Hero_Media_where_or {
@@ -288,6 +300,8 @@ input Page_Hero_Media_where_or {
   width: Page_Hero_Media_width_operator
   height: Page_Hero_Media_height_operator
   id: Page_Hero_Media_id_operator
+  AND: [Page_Hero_Media_where_and]
+  OR: [Page_Hero_Media_where_or]
 }
 
 union Page_Layout = Cta | Content | MediaBlock | Archive
@@ -546,6 +560,8 @@ input MediaBlock_Media_where_and {
   width: MediaBlock_Media_width_operator
   height: MediaBlock_Media_height_operator
   id: MediaBlock_Media_id_operator
+  AND: [MediaBlock_Media_where_and]
+  OR: [MediaBlock_Media_where_or]
 }
 
 input MediaBlock_Media_where_or {
@@ -560,6 +576,8 @@ input MediaBlock_Media_where_or {
   width: MediaBlock_Media_width_operator
   height: MediaBlock_Media_height_operator
   id: MediaBlock_Media_id_operator
+  AND: [MediaBlock_Media_where_and]
+  OR: [MediaBlock_Media_where_or]
 }
 
 type Archive {
@@ -584,6 +602,8 @@ enum Archive_populateBy {
 enum Archive_relationTo {
   posts
   projects
+  events
+  absence_requests
 }
 
 type Category {
@@ -610,9 +630,11 @@ type Archive_SelectedDocs_Relationship {
 enum Archive_SelectedDocs_RelationTo {
   posts
   projects
+  events
+  absence_requests
 }
 
-union Archive_SelectedDocs = Post | Project
+union Archive_SelectedDocs = Post | Project | Event | AbsenceRequest
 
 type Post {
   id: Int
@@ -651,6 +673,7 @@ type User {
 
 enum User_roles {
   admin
+  editor
   user
 }
 
@@ -856,6 +879,8 @@ input Post_Hero_Media_where_and {
   width: Post_Hero_Media_width_operator
   height: Post_Hero_Media_height_operator
   id: Post_Hero_Media_id_operator
+  AND: [Post_Hero_Media_where_and]
+  OR: [Post_Hero_Media_where_or]
 }
 
 input Post_Hero_Media_where_or {
@@ -870,6 +895,8 @@ input Post_Hero_Media_where_or {
   width: Post_Hero_Media_width_operator
   height: Post_Hero_Media_height_operator
   id: Post_Hero_Media_id_operator
+  AND: [Post_Hero_Media_where_and]
+  OR: [Post_Hero_Media_where_or]
 }
 
 union Post_Layout = Cta | Content | MediaBlock | Archive
@@ -1024,6 +1051,8 @@ input Post_Meta_Image_where_and {
   width: Post_Meta_Image_width_operator
   height: Post_Meta_Image_height_operator
   id: Post_Meta_Image_id_operator
+  AND: [Post_Meta_Image_where_and]
+  OR: [Post_Meta_Image_where_or]
 }
 
 input Post_Meta_Image_where_or {
@@ -1038,6 +1067,8 @@ input Post_Meta_Image_where_or {
   width: Post_Meta_Image_width_operator
   height: Post_Meta_Image_height_operator
   id: Post_Meta_Image_id_operator
+  AND: [Post_Meta_Image_where_and]
+  OR: [Post_Meta_Image_where_or]
 }
 
 enum Post__status {
@@ -1252,6 +1283,8 @@ input Project_Hero_Media_where_and {
   width: Project_Hero_Media_width_operator
   height: Project_Hero_Media_height_operator
   id: Project_Hero_Media_id_operator
+  AND: [Project_Hero_Media_where_and]
+  OR: [Project_Hero_Media_where_or]
 }
 
 input Project_Hero_Media_where_or {
@@ -1266,6 +1299,8 @@ input Project_Hero_Media_where_or {
   width: Project_Hero_Media_width_operator
   height: Project_Hero_Media_height_operator
   id: Project_Hero_Media_id_operator
+  AND: [Project_Hero_Media_where_and]
+  OR: [Project_Hero_Media_where_or]
 }
 
 union Project_Layout = Cta | Content | MediaBlock | Archive
@@ -1418,6 +1453,8 @@ input Project_Meta_Image_where_and {
   width: Project_Meta_Image_width_operator
   height: Project_Meta_Image_height_operator
   id: Project_Meta_Image_id_operator
+  AND: [Project_Meta_Image_where_and]
+  OR: [Project_Meta_Image_where_or]
 }
 
 input Project_Meta_Image_where_or {
@@ -1432,9 +1469,496 @@ input Project_Meta_Image_where_or {
   width: Project_Meta_Image_width_operator
   height: Project_Meta_Image_height_operator
   id: Project_Meta_Image_id_operator
+  AND: [Project_Meta_Image_where_and]
+  OR: [Project_Meta_Image_where_or]
 }
 
 enum Project__status {
+  draft
+  published
+}
+
+type Event {
+  id: Int
+  title: String
+  categories: [Category!]
+  publishedAt: DateTime
+  authors: [User!]
+  populatedAuthors: [Event_PopulatedAuthors!]
+  hero: Event_Hero
+  layout: [Event_Layout!]!
+  relatedEvents: [Event!]
+  dateFrom: DateTime
+  dateTo: DateTime
+  slug: String
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: Event__status
+}
+
+type Event_PopulatedAuthors {
+  id: String
+  name: String
+}
+
+type Event_Hero {
+  type: Event_Hero_type
+  richText(depth: Int): JSON
+  links: [Event_Hero_Links!]
+  media(where: Event_Hero_Media_where): Media
+}
+
+enum Event_Hero_type {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+type Event_Hero_Links {
+  link: Event_Hero_Links_Link
+  id: String
+}
+
+type Event_Hero_Links_Link {
+  type: Event_Hero_Links_Link_type
+  newTab: Boolean
+  reference: Event_Hero_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: Event_Hero_Links_Link_appearance
+}
+
+enum Event_Hero_Links_Link_type {
+  reference
+  custom
+}
+
+type Event_Hero_Links_Link_Reference_Relationship {
+  relationTo: Event_Hero_Links_Link_Reference_RelationTo
+  value: Event_Hero_Links_Link_Reference
+}
+
+enum Event_Hero_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union Event_Hero_Links_Link_Reference = Page
+
+enum Event_Hero_Links_Link_appearance {
+  default
+  primary
+  secondary
+}
+
+input Event_Hero_Media_where {
+  alt: Event_Hero_Media_alt_operator
+  caption: Event_Hero_Media_caption_operator
+  updatedAt: Event_Hero_Media_updatedAt_operator
+  createdAt: Event_Hero_Media_createdAt_operator
+  url: Event_Hero_Media_url_operator
+  filename: Event_Hero_Media_filename_operator
+  mimeType: Event_Hero_Media_mimeType_operator
+  filesize: Event_Hero_Media_filesize_operator
+  width: Event_Hero_Media_width_operator
+  height: Event_Hero_Media_height_operator
+  id: Event_Hero_Media_id_operator
+  AND: [Event_Hero_Media_where_and]
+  OR: [Event_Hero_Media_where_or]
+}
+
+input Event_Hero_Media_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Event_Hero_Media_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Event_Hero_Media_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event_Hero_Media_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event_Hero_Media_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_Hero_Media_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_Hero_Media_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_Hero_Media_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Event_Hero_Media_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Event_Hero_Media_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Event_Hero_Media_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_Hero_Media_where_and {
+  alt: Event_Hero_Media_alt_operator
+  caption: Event_Hero_Media_caption_operator
+  updatedAt: Event_Hero_Media_updatedAt_operator
+  createdAt: Event_Hero_Media_createdAt_operator
+  url: Event_Hero_Media_url_operator
+  filename: Event_Hero_Media_filename_operator
+  mimeType: Event_Hero_Media_mimeType_operator
+  filesize: Event_Hero_Media_filesize_operator
+  width: Event_Hero_Media_width_operator
+  height: Event_Hero_Media_height_operator
+  id: Event_Hero_Media_id_operator
+  AND: [Event_Hero_Media_where_and]
+  OR: [Event_Hero_Media_where_or]
+}
+
+input Event_Hero_Media_where_or {
+  alt: Event_Hero_Media_alt_operator
+  caption: Event_Hero_Media_caption_operator
+  updatedAt: Event_Hero_Media_updatedAt_operator
+  createdAt: Event_Hero_Media_createdAt_operator
+  url: Event_Hero_Media_url_operator
+  filename: Event_Hero_Media_filename_operator
+  mimeType: Event_Hero_Media_mimeType_operator
+  filesize: Event_Hero_Media_filesize_operator
+  width: Event_Hero_Media_width_operator
+  height: Event_Hero_Media_height_operator
+  id: Event_Hero_Media_id_operator
+  AND: [Event_Hero_Media_where_and]
+  OR: [Event_Hero_Media_where_or]
+}
+
+union Event_Layout = Cta | Content | MediaBlock | Archive
+
+enum Event__status {
+  draft
+  published
+}
+
+type AbsenceRequest {
+  id: Int
+  title: String
+  categories: [Category!]
+  publishedAt: DateTime
+  authors: [User!]
+  populatedAuthors: [AbsenceRequest_PopulatedAuthors!]
+  hero: AbsenceRequest_Hero
+  layout: [AbsenceRequest_Layout!]!
+  dateFrom: DateTime
+  dateTo: DateTime
+  userComments: String
+  adminComments: String
+  slug: String
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: AbsenceRequest__status
+}
+
+type AbsenceRequest_PopulatedAuthors {
+  id: String
+  name: String
+}
+
+type AbsenceRequest_Hero {
+  type: AbsenceRequest_Hero_type
+  richText(depth: Int): JSON
+  links: [AbsenceRequest_Hero_Links!]
+  media(where: AbsenceRequest_Hero_Media_where): Media
+}
+
+enum AbsenceRequest_Hero_type {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+type AbsenceRequest_Hero_Links {
+  link: AbsenceRequest_Hero_Links_Link
+  id: String
+}
+
+type AbsenceRequest_Hero_Links_Link {
+  type: AbsenceRequest_Hero_Links_Link_type
+  newTab: Boolean
+  reference: AbsenceRequest_Hero_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: AbsenceRequest_Hero_Links_Link_appearance
+}
+
+enum AbsenceRequest_Hero_Links_Link_type {
+  reference
+  custom
+}
+
+type AbsenceRequest_Hero_Links_Link_Reference_Relationship {
+  relationTo: AbsenceRequest_Hero_Links_Link_Reference_RelationTo
+  value: AbsenceRequest_Hero_Links_Link_Reference
+}
+
+enum AbsenceRequest_Hero_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union AbsenceRequest_Hero_Links_Link_Reference = Page
+
+enum AbsenceRequest_Hero_Links_Link_appearance {
+  default
+  primary
+  secondary
+}
+
+input AbsenceRequest_Hero_Media_where {
+  alt: AbsenceRequest_Hero_Media_alt_operator
+  caption: AbsenceRequest_Hero_Media_caption_operator
+  updatedAt: AbsenceRequest_Hero_Media_updatedAt_operator
+  createdAt: AbsenceRequest_Hero_Media_createdAt_operator
+  url: AbsenceRequest_Hero_Media_url_operator
+  filename: AbsenceRequest_Hero_Media_filename_operator
+  mimeType: AbsenceRequest_Hero_Media_mimeType_operator
+  filesize: AbsenceRequest_Hero_Media_filesize_operator
+  width: AbsenceRequest_Hero_Media_width_operator
+  height: AbsenceRequest_Hero_Media_height_operator
+  id: AbsenceRequest_Hero_Media_id_operator
+  AND: [AbsenceRequest_Hero_Media_where_and]
+  OR: [AbsenceRequest_Hero_Media_where_or]
+}
+
+input AbsenceRequest_Hero_Media_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input AbsenceRequest_Hero_Media_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_Hero_Media_where_and {
+  alt: AbsenceRequest_Hero_Media_alt_operator
+  caption: AbsenceRequest_Hero_Media_caption_operator
+  updatedAt: AbsenceRequest_Hero_Media_updatedAt_operator
+  createdAt: AbsenceRequest_Hero_Media_createdAt_operator
+  url: AbsenceRequest_Hero_Media_url_operator
+  filename: AbsenceRequest_Hero_Media_filename_operator
+  mimeType: AbsenceRequest_Hero_Media_mimeType_operator
+  filesize: AbsenceRequest_Hero_Media_filesize_operator
+  width: AbsenceRequest_Hero_Media_width_operator
+  height: AbsenceRequest_Hero_Media_height_operator
+  id: AbsenceRequest_Hero_Media_id_operator
+  AND: [AbsenceRequest_Hero_Media_where_and]
+  OR: [AbsenceRequest_Hero_Media_where_or]
+}
+
+input AbsenceRequest_Hero_Media_where_or {
+  alt: AbsenceRequest_Hero_Media_alt_operator
+  caption: AbsenceRequest_Hero_Media_caption_operator
+  updatedAt: AbsenceRequest_Hero_Media_updatedAt_operator
+  createdAt: AbsenceRequest_Hero_Media_createdAt_operator
+  url: AbsenceRequest_Hero_Media_url_operator
+  filename: AbsenceRequest_Hero_Media_filename_operator
+  mimeType: AbsenceRequest_Hero_Media_mimeType_operator
+  filesize: AbsenceRequest_Hero_Media_filesize_operator
+  width: AbsenceRequest_Hero_Media_width_operator
+  height: AbsenceRequest_Hero_Media_height_operator
+  id: AbsenceRequest_Hero_Media_id_operator
+  AND: [AbsenceRequest_Hero_Media_where_and]
+  OR: [AbsenceRequest_Hero_Media_where_or]
+}
+
+union AbsenceRequest_Layout = Cta | Content | MediaBlock | Archive
+
+enum AbsenceRequest__status {
   draft
   published
 }
@@ -1447,9 +1971,11 @@ type Archive_PopulatedDocs_Relationship {
 enum Archive_PopulatedDocs_RelationTo {
   posts
   projects
+  events
+  absence_requests
 }
 
-union Archive_PopulatedDocs = Post | Project
+union Archive_PopulatedDocs = Post | Project | Event | AbsenceRequest
 
 type Page_Meta {
   title: String
@@ -1599,6 +2125,8 @@ input Page_Meta_Image_where_and {
   width: Page_Meta_Image_width_operator
   height: Page_Meta_Image_height_operator
   id: Page_Meta_Image_id_operator
+  AND: [Page_Meta_Image_where_and]
+  OR: [Page_Meta_Image_where_or]
 }
 
 input Page_Meta_Image_where_or {
@@ -1613,6 +2141,8 @@ input Page_Meta_Image_where_or {
   width: Page_Meta_Image_width_operator
   height: Page_Meta_Image_height_operator
   id: Page_Meta_Image_id_operator
+  AND: [Page_Meta_Image_where_and]
+  OR: [Page_Meta_Image_where_or]
 }
 
 enum Page__status {
@@ -1884,6 +2414,8 @@ input Page_where_and {
   createdAt: Page_createdAt_operator
   _status: Page__status_operator
   id: Page_id_operator
+  AND: [Page_where_and]
+  OR: [Page_where_or]
 }
 
 input Page_where_or {
@@ -1907,6 +2439,8 @@ input Page_where_or {
   createdAt: Page_createdAt_operator
   _status: Page__status_operator
   id: Page_id_operator
+  AND: [Page_where_and]
+  OR: [Page_where_or]
 }
 
 type pagesDocAccess {
@@ -2370,34 +2904,9 @@ type PagesDocAccessFields_meta_Delete {
 }
 
 type PagesDocAccessFields_meta_Fields {
-  overview: PagesDocAccessFields_meta_overview
   title: PagesDocAccessFields_meta_title
   description: PagesDocAccessFields_meta_description
   image: PagesDocAccessFields_meta_image
-  preview: PagesDocAccessFields_meta_preview
-}
-
-type PagesDocAccessFields_meta_overview {
-  create: PagesDocAccessFields_meta_overview_Create
-  read: PagesDocAccessFields_meta_overview_Read
-  update: PagesDocAccessFields_meta_overview_Update
-  delete: PagesDocAccessFields_meta_overview_Delete
-}
-
-type PagesDocAccessFields_meta_overview_Create {
-  permission: Boolean!
-}
-
-type PagesDocAccessFields_meta_overview_Read {
-  permission: Boolean!
-}
-
-type PagesDocAccessFields_meta_overview_Update {
-  permission: Boolean!
-}
-
-type PagesDocAccessFields_meta_overview_Delete {
-  permission: Boolean!
 }
 
 type PagesDocAccessFields_meta_title {
@@ -2466,29 +2975,6 @@ type PagesDocAccessFields_meta_image_Update {
 }
 
 type PagesDocAccessFields_meta_image_Delete {
-  permission: Boolean!
-}
-
-type PagesDocAccessFields_meta_preview {
-  create: PagesDocAccessFields_meta_preview_Create
-  read: PagesDocAccessFields_meta_preview_Read
-  update: PagesDocAccessFields_meta_preview_Update
-  delete: PagesDocAccessFields_meta_preview_Delete
-}
-
-type PagesDocAccessFields_meta_preview_Create {
-  permission: Boolean!
-}
-
-type PagesDocAccessFields_meta_preview_Read {
-  permission: Boolean!
-}
-
-type PagesDocAccessFields_meta_preview_Update {
-  permission: Boolean!
-}
-
-type PagesDocAccessFields_meta_preview_Delete {
   permission: Boolean!
 }
 
@@ -2804,6 +3290,8 @@ input PageVersion_Version_Hero_Media_where_and {
   width: PageVersion_Version_Hero_Media_width_operator
   height: PageVersion_Version_Hero_Media_height_operator
   id: PageVersion_Version_Hero_Media_id_operator
+  AND: [PageVersion_Version_Hero_Media_where_and]
+  OR: [PageVersion_Version_Hero_Media_where_or]
 }
 
 input PageVersion_Version_Hero_Media_where_or {
@@ -2818,6 +3306,8 @@ input PageVersion_Version_Hero_Media_where_or {
   width: PageVersion_Version_Hero_Media_width_operator
   height: PageVersion_Version_Hero_Media_height_operator
   id: PageVersion_Version_Hero_Media_id_operator
+  AND: [PageVersion_Version_Hero_Media_where_and]
+  OR: [PageVersion_Version_Hero_Media_where_or]
 }
 
 union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive
@@ -2970,6 +3460,8 @@ input PageVersion_Version_Meta_Image_where_and {
   width: PageVersion_Version_Meta_Image_width_operator
   height: PageVersion_Version_Meta_Image_height_operator
   id: PageVersion_Version_Meta_Image_id_operator
+  AND: [PageVersion_Version_Meta_Image_where_and]
+  OR: [PageVersion_Version_Meta_Image_where_or]
 }
 
 input PageVersion_Version_Meta_Image_where_or {
@@ -2984,6 +3476,8 @@ input PageVersion_Version_Meta_Image_where_or {
   width: PageVersion_Version_Meta_Image_width_operator
   height: PageVersion_Version_Meta_Image_height_operator
   id: PageVersion_Version_Meta_Image_id_operator
+  AND: [PageVersion_Version_Meta_Image_where_and]
+  OR: [PageVersion_Version_Meta_Image_where_or]
 }
 
 enum PageVersion_Version__status {
@@ -3300,6 +3794,8 @@ input versionsPage_where_and {
   updatedAt: versionsPage_updatedAt_operator
   latest: versionsPage_latest_operator
   id: versionsPage_id_operator
+  AND: [versionsPage_where_and]
+  OR: [versionsPage_where_or]
 }
 
 input versionsPage_where_or {
@@ -3327,6 +3823,8 @@ input versionsPage_where_or {
   updatedAt: versionsPage_updatedAt_operator
   latest: versionsPage_latest_operator
   id: versionsPage_id_operator
+  AND: [versionsPage_where_and]
+  OR: [versionsPage_where_or]
 }
 
 type Posts {
@@ -3660,6 +4158,8 @@ input Post_where_and {
   createdAt: Post_createdAt_operator
   _status: Post__status_operator
   id: Post_id_operator
+  AND: [Post_where_and]
+  OR: [Post_where_or]
 }
 
 input Post_where_or {
@@ -3689,6 +4189,8 @@ input Post_where_or {
   createdAt: Post_createdAt_operator
   _status: Post__status_operator
   id: Post_id_operator
+  AND: [Post_where_and]
+  OR: [Post_where_or]
 }
 
 type postsDocAccess {
@@ -4348,34 +4850,9 @@ type PostsDocAccessFields_meta_Delete {
 }
 
 type PostsDocAccessFields_meta_Fields {
-  overview: PostsDocAccessFields_meta_overview
   title: PostsDocAccessFields_meta_title
   description: PostsDocAccessFields_meta_description
   image: PostsDocAccessFields_meta_image
-  preview: PostsDocAccessFields_meta_preview
-}
-
-type PostsDocAccessFields_meta_overview {
-  create: PostsDocAccessFields_meta_overview_Create
-  read: PostsDocAccessFields_meta_overview_Read
-  update: PostsDocAccessFields_meta_overview_Update
-  delete: PostsDocAccessFields_meta_overview_Delete
-}
-
-type PostsDocAccessFields_meta_overview_Create {
-  permission: Boolean!
-}
-
-type PostsDocAccessFields_meta_overview_Read {
-  permission: Boolean!
-}
-
-type PostsDocAccessFields_meta_overview_Update {
-  permission: Boolean!
-}
-
-type PostsDocAccessFields_meta_overview_Delete {
-  permission: Boolean!
 }
 
 type PostsDocAccessFields_meta_title {
@@ -4444,29 +4921,6 @@ type PostsDocAccessFields_meta_image_Update {
 }
 
 type PostsDocAccessFields_meta_image_Delete {
-  permission: Boolean!
-}
-
-type PostsDocAccessFields_meta_preview {
-  create: PostsDocAccessFields_meta_preview_Create
-  read: PostsDocAccessFields_meta_preview_Read
-  update: PostsDocAccessFields_meta_preview_Update
-  delete: PostsDocAccessFields_meta_preview_Delete
-}
-
-type PostsDocAccessFields_meta_preview_Create {
-  permission: Boolean!
-}
-
-type PostsDocAccessFields_meta_preview_Read {
-  permission: Boolean!
-}
-
-type PostsDocAccessFields_meta_preview_Update {
-  permission: Boolean!
-}
-
-type PostsDocAccessFields_meta_preview_Delete {
   permission: Boolean!
 }
 
@@ -4788,6 +5242,8 @@ input PostVersion_Version_Hero_Media_where_and {
   width: PostVersion_Version_Hero_Media_width_operator
   height: PostVersion_Version_Hero_Media_height_operator
   id: PostVersion_Version_Hero_Media_id_operator
+  AND: [PostVersion_Version_Hero_Media_where_and]
+  OR: [PostVersion_Version_Hero_Media_where_or]
 }
 
 input PostVersion_Version_Hero_Media_where_or {
@@ -4802,6 +5258,8 @@ input PostVersion_Version_Hero_Media_where_or {
   width: PostVersion_Version_Hero_Media_width_operator
   height: PostVersion_Version_Hero_Media_height_operator
   id: PostVersion_Version_Hero_Media_id_operator
+  AND: [PostVersion_Version_Hero_Media_where_and]
+  OR: [PostVersion_Version_Hero_Media_where_or]
 }
 
 union PostVersion_Version_Layout = Cta | Content | MediaBlock | Archive
@@ -4956,6 +5414,8 @@ input PostVersion_Version_Meta_Image_where_and {
   width: PostVersion_Version_Meta_Image_width_operator
   height: PostVersion_Version_Meta_Image_height_operator
   id: PostVersion_Version_Meta_Image_id_operator
+  AND: [PostVersion_Version_Meta_Image_where_and]
+  OR: [PostVersion_Version_Meta_Image_where_or]
 }
 
 input PostVersion_Version_Meta_Image_where_or {
@@ -4970,6 +5430,8 @@ input PostVersion_Version_Meta_Image_where_or {
   width: PostVersion_Version_Meta_Image_width_operator
   height: PostVersion_Version_Meta_Image_height_operator
   id: PostVersion_Version_Meta_Image_id_operator
+  AND: [PostVersion_Version_Meta_Image_where_and]
+  OR: [PostVersion_Version_Meta_Image_where_or]
 }
 
 enum PostVersion_Version__status {
@@ -5353,6 +5815,8 @@ input versionsPost_where_and {
   updatedAt: versionsPost_updatedAt_operator
   latest: versionsPost_latest_operator
   id: versionsPost_id_operator
+  AND: [versionsPost_where_and]
+  OR: [versionsPost_where_or]
 }
 
 input versionsPost_where_or {
@@ -5386,6 +5850,8 @@ input versionsPost_where_or {
   updatedAt: versionsPost_updatedAt_operator
   latest: versionsPost_latest_operator
   id: versionsPost_id_operator
+  AND: [versionsPost_where_and]
+  OR: [versionsPost_where_or]
 }
 
 type Projects {
@@ -5674,6 +6140,8 @@ input Project_where_and {
   createdAt: Project_createdAt_operator
   _status: Project__status_operator
   id: Project_id_operator
+  AND: [Project_where_and]
+  OR: [Project_where_or]
 }
 
 input Project_where_or {
@@ -5699,6 +6167,8 @@ input Project_where_or {
   createdAt: Project_createdAt_operator
   _status: Project__status_operator
   id: Project_id_operator
+  AND: [Project_where_and]
+  OR: [Project_where_or]
 }
 
 type projectsDocAccess {
@@ -6210,34 +6680,9 @@ type ProjectsDocAccessFields_meta_Delete {
 }
 
 type ProjectsDocAccessFields_meta_Fields {
-  overview: ProjectsDocAccessFields_meta_overview
   title: ProjectsDocAccessFields_meta_title
   description: ProjectsDocAccessFields_meta_description
   image: ProjectsDocAccessFields_meta_image
-  preview: ProjectsDocAccessFields_meta_preview
-}
-
-type ProjectsDocAccessFields_meta_overview {
-  create: ProjectsDocAccessFields_meta_overview_Create
-  read: ProjectsDocAccessFields_meta_overview_Read
-  update: ProjectsDocAccessFields_meta_overview_Update
-  delete: ProjectsDocAccessFields_meta_overview_Delete
-}
-
-type ProjectsDocAccessFields_meta_overview_Create {
-  permission: Boolean!
-}
-
-type ProjectsDocAccessFields_meta_overview_Read {
-  permission: Boolean!
-}
-
-type ProjectsDocAccessFields_meta_overview_Update {
-  permission: Boolean!
-}
-
-type ProjectsDocAccessFields_meta_overview_Delete {
-  permission: Boolean!
 }
 
 type ProjectsDocAccessFields_meta_title {
@@ -6306,29 +6751,6 @@ type ProjectsDocAccessFields_meta_image_Update {
 }
 
 type ProjectsDocAccessFields_meta_image_Delete {
-  permission: Boolean!
-}
-
-type ProjectsDocAccessFields_meta_preview {
-  create: ProjectsDocAccessFields_meta_preview_Create
-  read: ProjectsDocAccessFields_meta_preview_Read
-  update: ProjectsDocAccessFields_meta_preview_Update
-  delete: ProjectsDocAccessFields_meta_preview_Delete
-}
-
-type ProjectsDocAccessFields_meta_preview_Create {
-  permission: Boolean!
-}
-
-type ProjectsDocAccessFields_meta_preview_Read {
-  permission: Boolean!
-}
-
-type ProjectsDocAccessFields_meta_preview_Update {
-  permission: Boolean!
-}
-
-type ProjectsDocAccessFields_meta_preview_Delete {
   permission: Boolean!
 }
 
@@ -6641,6 +7063,8 @@ input ProjectVersion_Version_Hero_Media_where_and {
   width: ProjectVersion_Version_Hero_Media_width_operator
   height: ProjectVersion_Version_Hero_Media_height_operator
   id: ProjectVersion_Version_Hero_Media_id_operator
+  AND: [ProjectVersion_Version_Hero_Media_where_and]
+  OR: [ProjectVersion_Version_Hero_Media_where_or]
 }
 
 input ProjectVersion_Version_Hero_Media_where_or {
@@ -6655,6 +7079,8 @@ input ProjectVersion_Version_Hero_Media_where_or {
   width: ProjectVersion_Version_Hero_Media_width_operator
   height: ProjectVersion_Version_Hero_Media_height_operator
   id: ProjectVersion_Version_Hero_Media_id_operator
+  AND: [ProjectVersion_Version_Hero_Media_where_and]
+  OR: [ProjectVersion_Version_Hero_Media_where_or]
 }
 
 union ProjectVersion_Version_Layout = Cta | Content | MediaBlock | Archive
@@ -6807,6 +7233,8 @@ input ProjectVersion_Version_Meta_Image_where_and {
   width: ProjectVersion_Version_Meta_Image_width_operator
   height: ProjectVersion_Version_Meta_Image_height_operator
   id: ProjectVersion_Version_Meta_Image_id_operator
+  AND: [ProjectVersion_Version_Meta_Image_where_and]
+  OR: [ProjectVersion_Version_Meta_Image_where_or]
 }
 
 input ProjectVersion_Version_Meta_Image_where_or {
@@ -6821,6 +7249,8 @@ input ProjectVersion_Version_Meta_Image_where_or {
   width: ProjectVersion_Version_Meta_Image_width_operator
   height: ProjectVersion_Version_Meta_Image_height_operator
   id: ProjectVersion_Version_Meta_Image_id_operator
+  AND: [ProjectVersion_Version_Meta_Image_where_and]
+  OR: [ProjectVersion_Version_Meta_Image_where_or]
 }
 
 enum ProjectVersion_Version__status {
@@ -7159,6 +7589,8 @@ input versionsProject_where_and {
   updatedAt: versionsProject_updatedAt_operator
   latest: versionsProject_latest_operator
   id: versionsProject_id_operator
+  AND: [versionsProject_where_and]
+  OR: [versionsProject_where_or]
 }
 
 input versionsProject_where_or {
@@ -7188,6 +7620,8 @@ input versionsProject_where_or {
   updatedAt: versionsProject_updatedAt_operator
   latest: versionsProject_latest_operator
   id: versionsProject_id_operator
+  AND: [versionsProject_where_and]
+  OR: [versionsProject_where_or]
 }
 
 type allMedia {
@@ -7345,6 +7779,8 @@ input Media_where_and {
   width: Media_width_operator
   height: Media_height_operator
   id: Media_id_operator
+  AND: [Media_where_and]
+  OR: [Media_where_or]
 }
 
 input Media_where_or {
@@ -7359,6 +7795,8 @@ input Media_where_or {
   width: Media_width_operator
   height: Media_height_operator
   id: Media_id_operator
+  AND: [Media_where_and]
+  OR: [Media_where_or]
 }
 
 type mediaDocAccess {
@@ -7764,6 +8202,8 @@ input Category_where_and {
   updatedAt: Category_updatedAt_operator
   createdAt: Category_createdAt_operator
   id: Category_id_operator
+  AND: [Category_where_and]
+  OR: [Category_where_or]
 }
 
 input Category_where_or {
@@ -7776,6 +8216,8 @@ input Category_where_or {
   updatedAt: Category_updatedAt_operator
   createdAt: Category_createdAt_operator
   id: Category_id_operator
+  AND: [Category_where_and]
+  OR: [Category_where_or]
 }
 
 type categoriesDocAccess {
@@ -8076,6 +8518,7 @@ input User_roles_operator {
 
 enum User_roles_Input {
   admin
+  editor
   user
 }
 
@@ -8128,6 +8571,8 @@ input User_where_and {
   createdAt: User_createdAt_operator
   email: User_email_operator
   id: User_id_operator
+  AND: [User_where_and]
+  OR: [User_where_or]
 }
 
 input User_where_or {
@@ -8137,6 +8582,8 @@ input User_where_or {
   createdAt: User_createdAt_operator
   email: User_email_operator
   id: User_id_operator
+  AND: [User_where_and]
+  OR: [User_where_or]
 }
 
 type usersDocAccess {
@@ -8480,6 +8927,8 @@ input Comment_where_and {
   createdAt: Comment_createdAt_operator
   _status: Comment__status_operator
   id: Comment_id_operator
+  AND: [Comment_where_and]
+  OR: [Comment_where_or]
 }
 
 input Comment_where_or {
@@ -8492,6 +8941,8 @@ input Comment_where_or {
   createdAt: Comment_createdAt_operator
   _status: Comment__status_operator
   id: Comment_id_operator
+  AND: [Comment_where_and]
+  OR: [Comment_where_or]
 }
 
 type commentsDocAccess {
@@ -8957,6 +9408,8 @@ input versionsComment_where_and {
   updatedAt: versionsComment_updatedAt_operator
   latest: versionsComment_latest_operator
   id: versionsComment_id_operator
+  AND: [versionsComment_where_and]
+  OR: [versionsComment_where_or]
 }
 
 input versionsComment_where_or {
@@ -8973,6 +9426,3497 @@ input versionsComment_where_or {
   updatedAt: versionsComment_updatedAt_operator
   latest: versionsComment_latest_operator
   id: versionsComment_id_operator
+  AND: [versionsComment_where_and]
+  OR: [versionsComment_where_or]
+}
+
+type Events {
+  docs: [Event]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input Event_where {
+  title: Event_title_operator
+  categories: Event_categories_operator
+  publishedAt: Event_publishedAt_operator
+  authors: Event_authors_operator
+  populatedAuthors__id: Event_populatedAuthors__id_operator
+  populatedAuthors__name: Event_populatedAuthors__name_operator
+  hero__type: Event_hero__type_operator
+  hero__richText: Event_hero__richText_operator
+  hero__links__link__type: Event_hero__links__link__type_operator
+  hero__links__link__newTab: Event_hero__links__link__newTab_operator
+  hero__links__link__reference: Event_hero__links__link__reference_Relation
+  hero__links__link__url: Event_hero__links__link__url_operator
+  hero__links__link__label: Event_hero__links__link__label_operator
+  hero__links__link__appearance: Event_hero__links__link__appearance_operator
+  hero__links__id: Event_hero__links__id_operator
+  hero__media: Event_hero__media_operator
+  relatedEvents: Event_relatedEvents_operator
+  dateFrom: Event_dateFrom_operator
+  dateTo: Event_dateTo_operator
+  slug: Event_slug_operator
+  updatedAt: Event_updatedAt_operator
+  createdAt: Event_createdAt_operator
+  _status: Event__status_operator
+  id: Event_id_operator
+  AND: [Event_where_and]
+  OR: [Event_where_or]
+}
+
+input Event_title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Event_categories_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input Event_publishedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event_authors_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input Event_populatedAuthors__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_populatedAuthors__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_hero__type_operator {
+  equals: Event_hero__type_Input
+  not_equals: Event_hero__type_Input
+  in: [Event_hero__type_Input]
+  not_in: [Event_hero__type_Input]
+  all: [Event_hero__type_Input]
+}
+
+enum Event_hero__type_Input {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+input Event_hero__richText_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+}
+
+input Event_hero__links__link__type_operator {
+  equals: Event_hero__links__link__type_Input
+  not_equals: Event_hero__links__link__type_Input
+  like: Event_hero__links__link__type_Input
+  contains: Event_hero__links__link__type_Input
+  exists: Boolean
+}
+
+enum Event_hero__links__link__type_Input {
+  reference
+  custom
+}
+
+input Event_hero__links__link__newTab_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input Event_hero__links__link__reference_Relation {
+  relationTo: Event_hero__links__link__reference_Relation_RelationTo
+  value: JSON
+}
+
+enum Event_hero__links__link__reference_Relation_RelationTo {
+  pages
+}
+
+input Event_hero__links__link__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Event_hero__links__link__label_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Event_hero__links__link__appearance_operator {
+  equals: Event_hero__links__link__appearance_Input
+  not_equals: Event_hero__links__link__appearance_Input
+  in: [Event_hero__links__link__appearance_Input]
+  not_in: [Event_hero__links__link__appearance_Input]
+  all: [Event_hero__links__link__appearance_Input]
+  exists: Boolean
+}
+
+enum Event_hero__links__link__appearance_Input {
+  default
+  primary
+  secondary
+}
+
+input Event_hero__links__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_hero__media_operator {
+  equals: String
+  not_equals: String
+}
+
+input Event_relatedEvents_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input Event_dateFrom_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input Event_dateTo_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input Event_slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event__status_operator {
+  equals: Event__status_Input
+  not_equals: Event__status_Input
+  in: [Event__status_Input]
+  not_in: [Event__status_Input]
+  all: [Event__status_Input]
+  exists: Boolean
+}
+
+enum Event__status_Input {
+  draft
+  published
+}
+
+input Event_id_operator {
+  equals: Int
+  not_equals: Int
+  greater_than_equal: Int
+  greater_than: Int
+  less_than_equal: Int
+  less_than: Int
+  exists: Boolean
+}
+
+input Event_where_and {
+  title: Event_title_operator
+  categories: Event_categories_operator
+  publishedAt: Event_publishedAt_operator
+  authors: Event_authors_operator
+  populatedAuthors__id: Event_populatedAuthors__id_operator
+  populatedAuthors__name: Event_populatedAuthors__name_operator
+  hero__type: Event_hero__type_operator
+  hero__richText: Event_hero__richText_operator
+  hero__links__link__type: Event_hero__links__link__type_operator
+  hero__links__link__newTab: Event_hero__links__link__newTab_operator
+  hero__links__link__reference: Event_hero__links__link__reference_Relation
+  hero__links__link__url: Event_hero__links__link__url_operator
+  hero__links__link__label: Event_hero__links__link__label_operator
+  hero__links__link__appearance: Event_hero__links__link__appearance_operator
+  hero__links__id: Event_hero__links__id_operator
+  hero__media: Event_hero__media_operator
+  relatedEvents: Event_relatedEvents_operator
+  dateFrom: Event_dateFrom_operator
+  dateTo: Event_dateTo_operator
+  slug: Event_slug_operator
+  updatedAt: Event_updatedAt_operator
+  createdAt: Event_createdAt_operator
+  _status: Event__status_operator
+  id: Event_id_operator
+  AND: [Event_where_and]
+  OR: [Event_where_or]
+}
+
+input Event_where_or {
+  title: Event_title_operator
+  categories: Event_categories_operator
+  publishedAt: Event_publishedAt_operator
+  authors: Event_authors_operator
+  populatedAuthors__id: Event_populatedAuthors__id_operator
+  populatedAuthors__name: Event_populatedAuthors__name_operator
+  hero__type: Event_hero__type_operator
+  hero__richText: Event_hero__richText_operator
+  hero__links__link__type: Event_hero__links__link__type_operator
+  hero__links__link__newTab: Event_hero__links__link__newTab_operator
+  hero__links__link__reference: Event_hero__links__link__reference_Relation
+  hero__links__link__url: Event_hero__links__link__url_operator
+  hero__links__link__label: Event_hero__links__link__label_operator
+  hero__links__link__appearance: Event_hero__links__link__appearance_operator
+  hero__links__id: Event_hero__links__id_operator
+  hero__media: Event_hero__media_operator
+  relatedEvents: Event_relatedEvents_operator
+  dateFrom: Event_dateFrom_operator
+  dateTo: Event_dateTo_operator
+  slug: Event_slug_operator
+  updatedAt: Event_updatedAt_operator
+  createdAt: Event_createdAt_operator
+  _status: Event__status_operator
+  id: Event_id_operator
+  AND: [Event_where_and]
+  OR: [Event_where_or]
+}
+
+type eventsDocAccess {
+  fields: EventsDocAccessFields
+  create: EventsCreateDocAccess
+  read: EventsReadDocAccess
+  update: EventsUpdateDocAccess
+  delete: EventsDeleteDocAccess
+  readVersions: EventsReadVersionsDocAccess
+}
+
+type EventsDocAccessFields {
+  title: EventsDocAccessFields_title
+  categories: EventsDocAccessFields_categories
+  publishedAt: EventsDocAccessFields_publishedAt
+  authors: EventsDocAccessFields_authors
+  populatedAuthors: EventsDocAccessFields_populatedAuthors
+  hero: EventsDocAccessFields_hero
+  layout: EventsDocAccessFields_layout
+  relatedEvents: EventsDocAccessFields_relatedEvents
+  dateFrom: EventsDocAccessFields_dateFrom
+  dateTo: EventsDocAccessFields_dateTo
+  slug: EventsDocAccessFields_slug
+  updatedAt: EventsDocAccessFields_updatedAt
+  createdAt: EventsDocAccessFields_createdAt
+  _status: EventsDocAccessFields__status
+}
+
+type EventsDocAccessFields_title {
+  create: EventsDocAccessFields_title_Create
+  read: EventsDocAccessFields_title_Read
+  update: EventsDocAccessFields_title_Update
+  delete: EventsDocAccessFields_title_Delete
+}
+
+type EventsDocAccessFields_title_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_title_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_title_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_title_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_categories {
+  create: EventsDocAccessFields_categories_Create
+  read: EventsDocAccessFields_categories_Read
+  update: EventsDocAccessFields_categories_Update
+  delete: EventsDocAccessFields_categories_Delete
+}
+
+type EventsDocAccessFields_categories_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_categories_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_categories_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_categories_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_publishedAt {
+  create: EventsDocAccessFields_publishedAt_Create
+  read: EventsDocAccessFields_publishedAt_Read
+  update: EventsDocAccessFields_publishedAt_Update
+  delete: EventsDocAccessFields_publishedAt_Delete
+}
+
+type EventsDocAccessFields_publishedAt_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_publishedAt_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_publishedAt_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_publishedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_authors {
+  create: EventsDocAccessFields_authors_Create
+  read: EventsDocAccessFields_authors_Read
+  update: EventsDocAccessFields_authors_Update
+  delete: EventsDocAccessFields_authors_Delete
+}
+
+type EventsDocAccessFields_authors_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_authors_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_authors_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_authors_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors {
+  create: EventsDocAccessFields_populatedAuthors_Create
+  read: EventsDocAccessFields_populatedAuthors_Read
+  update: EventsDocAccessFields_populatedAuthors_Update
+  delete: EventsDocAccessFields_populatedAuthors_Delete
+  fields: EventsDocAccessFields_populatedAuthors_Fields
+}
+
+type EventsDocAccessFields_populatedAuthors_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_Fields {
+  id: EventsDocAccessFields_populatedAuthors_id
+  name: EventsDocAccessFields_populatedAuthors_name
+}
+
+type EventsDocAccessFields_populatedAuthors_id {
+  create: EventsDocAccessFields_populatedAuthors_id_Create
+  read: EventsDocAccessFields_populatedAuthors_id_Read
+  update: EventsDocAccessFields_populatedAuthors_id_Update
+  delete: EventsDocAccessFields_populatedAuthors_id_Delete
+}
+
+type EventsDocAccessFields_populatedAuthors_id_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_id_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_id_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_id_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_name {
+  create: EventsDocAccessFields_populatedAuthors_name_Create
+  read: EventsDocAccessFields_populatedAuthors_name_Read
+  update: EventsDocAccessFields_populatedAuthors_name_Update
+  delete: EventsDocAccessFields_populatedAuthors_name_Delete
+}
+
+type EventsDocAccessFields_populatedAuthors_name_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_name_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_name_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_populatedAuthors_name_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero {
+  create: EventsDocAccessFields_hero_Create
+  read: EventsDocAccessFields_hero_Read
+  update: EventsDocAccessFields_hero_Update
+  delete: EventsDocAccessFields_hero_Delete
+  fields: EventsDocAccessFields_hero_Fields
+}
+
+type EventsDocAccessFields_hero_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_Fields {
+  type: EventsDocAccessFields_hero_type
+  richText: EventsDocAccessFields_hero_richText
+  links: EventsDocAccessFields_hero_links
+  media: EventsDocAccessFields_hero_media
+}
+
+type EventsDocAccessFields_hero_type {
+  create: EventsDocAccessFields_hero_type_Create
+  read: EventsDocAccessFields_hero_type_Read
+  update: EventsDocAccessFields_hero_type_Update
+  delete: EventsDocAccessFields_hero_type_Delete
+}
+
+type EventsDocAccessFields_hero_type_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_type_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_type_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_type_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_richText {
+  create: EventsDocAccessFields_hero_richText_Create
+  read: EventsDocAccessFields_hero_richText_Read
+  update: EventsDocAccessFields_hero_richText_Update
+  delete: EventsDocAccessFields_hero_richText_Delete
+}
+
+type EventsDocAccessFields_hero_richText_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_richText_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_richText_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links {
+  create: EventsDocAccessFields_hero_links_Create
+  read: EventsDocAccessFields_hero_links_Read
+  update: EventsDocAccessFields_hero_links_Update
+  delete: EventsDocAccessFields_hero_links_Delete
+  fields: EventsDocAccessFields_hero_links_Fields
+}
+
+type EventsDocAccessFields_hero_links_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_Fields {
+  link: EventsDocAccessFields_hero_links_link
+  id: EventsDocAccessFields_hero_links_id
+}
+
+type EventsDocAccessFields_hero_links_link {
+  create: EventsDocAccessFields_hero_links_link_Create
+  read: EventsDocAccessFields_hero_links_link_Read
+  update: EventsDocAccessFields_hero_links_link_Update
+  delete: EventsDocAccessFields_hero_links_link_Delete
+  fields: EventsDocAccessFields_hero_links_link_Fields
+}
+
+type EventsDocAccessFields_hero_links_link_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_Fields {
+  type: EventsDocAccessFields_hero_links_link_type
+  newTab: EventsDocAccessFields_hero_links_link_newTab
+  reference: EventsDocAccessFields_hero_links_link_reference
+  url: EventsDocAccessFields_hero_links_link_url
+  label: EventsDocAccessFields_hero_links_link_label
+  appearance: EventsDocAccessFields_hero_links_link_appearance
+}
+
+type EventsDocAccessFields_hero_links_link_type {
+  create: EventsDocAccessFields_hero_links_link_type_Create
+  read: EventsDocAccessFields_hero_links_link_type_Read
+  update: EventsDocAccessFields_hero_links_link_type_Update
+  delete: EventsDocAccessFields_hero_links_link_type_Delete
+}
+
+type EventsDocAccessFields_hero_links_link_type_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_type_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_type_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_type_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_newTab {
+  create: EventsDocAccessFields_hero_links_link_newTab_Create
+  read: EventsDocAccessFields_hero_links_link_newTab_Read
+  update: EventsDocAccessFields_hero_links_link_newTab_Update
+  delete: EventsDocAccessFields_hero_links_link_newTab_Delete
+}
+
+type EventsDocAccessFields_hero_links_link_newTab_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_newTab_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_newTab_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_newTab_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_reference {
+  create: EventsDocAccessFields_hero_links_link_reference_Create
+  read: EventsDocAccessFields_hero_links_link_reference_Read
+  update: EventsDocAccessFields_hero_links_link_reference_Update
+  delete: EventsDocAccessFields_hero_links_link_reference_Delete
+}
+
+type EventsDocAccessFields_hero_links_link_reference_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_reference_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_reference_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_reference_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_url {
+  create: EventsDocAccessFields_hero_links_link_url_Create
+  read: EventsDocAccessFields_hero_links_link_url_Read
+  update: EventsDocAccessFields_hero_links_link_url_Update
+  delete: EventsDocAccessFields_hero_links_link_url_Delete
+}
+
+type EventsDocAccessFields_hero_links_link_url_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_url_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_url_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_url_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_label {
+  create: EventsDocAccessFields_hero_links_link_label_Create
+  read: EventsDocAccessFields_hero_links_link_label_Read
+  update: EventsDocAccessFields_hero_links_link_label_Update
+  delete: EventsDocAccessFields_hero_links_link_label_Delete
+}
+
+type EventsDocAccessFields_hero_links_link_label_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_label_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_label_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_label_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_appearance {
+  create: EventsDocAccessFields_hero_links_link_appearance_Create
+  read: EventsDocAccessFields_hero_links_link_appearance_Read
+  update: EventsDocAccessFields_hero_links_link_appearance_Update
+  delete: EventsDocAccessFields_hero_links_link_appearance_Delete
+}
+
+type EventsDocAccessFields_hero_links_link_appearance_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_appearance_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_appearance_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_link_appearance_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_id {
+  create: EventsDocAccessFields_hero_links_id_Create
+  read: EventsDocAccessFields_hero_links_id_Read
+  update: EventsDocAccessFields_hero_links_id_Update
+  delete: EventsDocAccessFields_hero_links_id_Delete
+}
+
+type EventsDocAccessFields_hero_links_id_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_id_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_id_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_links_id_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_media {
+  create: EventsDocAccessFields_hero_media_Create
+  read: EventsDocAccessFields_hero_media_Read
+  update: EventsDocAccessFields_hero_media_Update
+  delete: EventsDocAccessFields_hero_media_Delete
+}
+
+type EventsDocAccessFields_hero_media_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_media_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_media_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_hero_media_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_layout {
+  create: EventsDocAccessFields_layout_Create
+  read: EventsDocAccessFields_layout_Read
+  update: EventsDocAccessFields_layout_Update
+  delete: EventsDocAccessFields_layout_Delete
+}
+
+type EventsDocAccessFields_layout_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_layout_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_layout_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_layout_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_relatedEvents {
+  create: EventsDocAccessFields_relatedEvents_Create
+  read: EventsDocAccessFields_relatedEvents_Read
+  update: EventsDocAccessFields_relatedEvents_Update
+  delete: EventsDocAccessFields_relatedEvents_Delete
+}
+
+type EventsDocAccessFields_relatedEvents_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_relatedEvents_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_relatedEvents_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_relatedEvents_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dateFrom {
+  create: EventsDocAccessFields_dateFrom_Create
+  read: EventsDocAccessFields_dateFrom_Read
+  update: EventsDocAccessFields_dateFrom_Update
+  delete: EventsDocAccessFields_dateFrom_Delete
+}
+
+type EventsDocAccessFields_dateFrom_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dateFrom_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dateFrom_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dateFrom_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dateTo {
+  create: EventsDocAccessFields_dateTo_Create
+  read: EventsDocAccessFields_dateTo_Read
+  update: EventsDocAccessFields_dateTo_Update
+  delete: EventsDocAccessFields_dateTo_Delete
+}
+
+type EventsDocAccessFields_dateTo_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dateTo_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dateTo_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dateTo_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_slug {
+  create: EventsDocAccessFields_slug_Create
+  read: EventsDocAccessFields_slug_Read
+  update: EventsDocAccessFields_slug_Update
+  delete: EventsDocAccessFields_slug_Delete
+}
+
+type EventsDocAccessFields_slug_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_slug_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_slug_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_slug_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_updatedAt {
+  create: EventsDocAccessFields_updatedAt_Create
+  read: EventsDocAccessFields_updatedAt_Read
+  update: EventsDocAccessFields_updatedAt_Update
+  delete: EventsDocAccessFields_updatedAt_Delete
+}
+
+type EventsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_createdAt {
+  create: EventsDocAccessFields_createdAt_Create
+  read: EventsDocAccessFields_createdAt_Read
+  update: EventsDocAccessFields_createdAt_Update
+  delete: EventsDocAccessFields_createdAt_Delete
+}
+
+type EventsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields__status {
+  create: EventsDocAccessFields__status_Create
+  read: EventsDocAccessFields__status_Read
+  update: EventsDocAccessFields__status_Update
+  delete: EventsDocAccessFields__status_Delete
+}
+
+type EventsDocAccessFields__status_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields__status_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields__status_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields__status_Delete {
+  permission: Boolean!
+}
+
+type EventsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsReadVersionsDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventVersion {
+  parent: Event
+  version: EventVersion_Version
+  createdAt: DateTime
+  updatedAt: DateTime
+  latest: Boolean
+  id: Int
+}
+
+type EventVersion_Version {
+  title: String
+  categories: [Category!]
+  publishedAt: DateTime
+  authors: [User!]
+  populatedAuthors: [EventVersion_Version_PopulatedAuthors!]
+  hero: EventVersion_Version_Hero
+  layout: [EventVersion_Version_Layout!]!
+  relatedEvents: [Event!]
+  dateFrom: DateTime
+  dateTo: DateTime
+  slug: String
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: EventVersion_Version__status
+}
+
+type EventVersion_Version_PopulatedAuthors {
+  id: String
+  name: String
+}
+
+type EventVersion_Version_Hero {
+  type: EventVersion_Version_Hero_type
+  richText(depth: Int): JSON
+  links: [EventVersion_Version_Hero_Links!]
+  media(where: EventVersion_Version_Hero_Media_where): Media
+}
+
+enum EventVersion_Version_Hero_type {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+type EventVersion_Version_Hero_Links {
+  link: EventVersion_Version_Hero_Links_Link
+  id: String
+}
+
+type EventVersion_Version_Hero_Links_Link {
+  type: EventVersion_Version_Hero_Links_Link_type
+  newTab: Boolean
+  reference: EventVersion_Version_Hero_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: EventVersion_Version_Hero_Links_Link_appearance
+}
+
+enum EventVersion_Version_Hero_Links_Link_type {
+  reference
+  custom
+}
+
+type EventVersion_Version_Hero_Links_Link_Reference_Relationship {
+  relationTo: EventVersion_Version_Hero_Links_Link_Reference_RelationTo
+  value: EventVersion_Version_Hero_Links_Link_Reference
+}
+
+enum EventVersion_Version_Hero_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union EventVersion_Version_Hero_Links_Link_Reference = Page
+
+enum EventVersion_Version_Hero_Links_Link_appearance {
+  default
+  primary
+  secondary
+}
+
+input EventVersion_Version_Hero_Media_where {
+  alt: EventVersion_Version_Hero_Media_alt_operator
+  caption: EventVersion_Version_Hero_Media_caption_operator
+  updatedAt: EventVersion_Version_Hero_Media_updatedAt_operator
+  createdAt: EventVersion_Version_Hero_Media_createdAt_operator
+  url: EventVersion_Version_Hero_Media_url_operator
+  filename: EventVersion_Version_Hero_Media_filename_operator
+  mimeType: EventVersion_Version_Hero_Media_mimeType_operator
+  filesize: EventVersion_Version_Hero_Media_filesize_operator
+  width: EventVersion_Version_Hero_Media_width_operator
+  height: EventVersion_Version_Hero_Media_height_operator
+  id: EventVersion_Version_Hero_Media_id_operator
+  AND: [EventVersion_Version_Hero_Media_where_and]
+  OR: [EventVersion_Version_Hero_Media_where_or]
+}
+
+input EventVersion_Version_Hero_Media_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input EventVersion_Version_Hero_Media_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input EventVersion_Version_Hero_Media_where_and {
+  alt: EventVersion_Version_Hero_Media_alt_operator
+  caption: EventVersion_Version_Hero_Media_caption_operator
+  updatedAt: EventVersion_Version_Hero_Media_updatedAt_operator
+  createdAt: EventVersion_Version_Hero_Media_createdAt_operator
+  url: EventVersion_Version_Hero_Media_url_operator
+  filename: EventVersion_Version_Hero_Media_filename_operator
+  mimeType: EventVersion_Version_Hero_Media_mimeType_operator
+  filesize: EventVersion_Version_Hero_Media_filesize_operator
+  width: EventVersion_Version_Hero_Media_width_operator
+  height: EventVersion_Version_Hero_Media_height_operator
+  id: EventVersion_Version_Hero_Media_id_operator
+  AND: [EventVersion_Version_Hero_Media_where_and]
+  OR: [EventVersion_Version_Hero_Media_where_or]
+}
+
+input EventVersion_Version_Hero_Media_where_or {
+  alt: EventVersion_Version_Hero_Media_alt_operator
+  caption: EventVersion_Version_Hero_Media_caption_operator
+  updatedAt: EventVersion_Version_Hero_Media_updatedAt_operator
+  createdAt: EventVersion_Version_Hero_Media_createdAt_operator
+  url: EventVersion_Version_Hero_Media_url_operator
+  filename: EventVersion_Version_Hero_Media_filename_operator
+  mimeType: EventVersion_Version_Hero_Media_mimeType_operator
+  filesize: EventVersion_Version_Hero_Media_filesize_operator
+  width: EventVersion_Version_Hero_Media_width_operator
+  height: EventVersion_Version_Hero_Media_height_operator
+  id: EventVersion_Version_Hero_Media_id_operator
+  AND: [EventVersion_Version_Hero_Media_where_and]
+  OR: [EventVersion_Version_Hero_Media_where_or]
+}
+
+union EventVersion_Version_Layout = Cta | Content | MediaBlock | Archive
+
+enum EventVersion_Version__status {
+  draft
+  published
+}
+
+type versionsEvents {
+  docs: [EventVersion]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input versionsEvent_where {
+  parent: versionsEvent_parent_operator
+  version__title: versionsEvent_version__title_operator
+  version__categories: versionsEvent_version__categories_operator
+  version__publishedAt: versionsEvent_version__publishedAt_operator
+  version__authors: versionsEvent_version__authors_operator
+  version__populatedAuthors__id: versionsEvent_version__populatedAuthors__id_operator
+  version__populatedAuthors__name: versionsEvent_version__populatedAuthors__name_operator
+  version__hero__type: versionsEvent_version__hero__type_operator
+  version__hero__richText: versionsEvent_version__hero__richText_operator
+  version__hero__links__link__type: versionsEvent_version__hero__links__link__type_operator
+  version__hero__links__link__newTab: versionsEvent_version__hero__links__link__newTab_operator
+  version__hero__links__link__reference: versionsEvent_version__hero__links__link__reference_Relation
+  version__hero__links__link__url: versionsEvent_version__hero__links__link__url_operator
+  version__hero__links__link__label: versionsEvent_version__hero__links__link__label_operator
+  version__hero__links__link__appearance: versionsEvent_version__hero__links__link__appearance_operator
+  version__hero__links__id: versionsEvent_version__hero__links__id_operator
+  version__hero__media: versionsEvent_version__hero__media_operator
+  version__relatedEvents: versionsEvent_version__relatedEvents_operator
+  version__dateFrom: versionsEvent_version__dateFrom_operator
+  version__dateTo: versionsEvent_version__dateTo_operator
+  version__slug: versionsEvent_version__slug_operator
+  version__updatedAt: versionsEvent_version__updatedAt_operator
+  version__createdAt: versionsEvent_version__createdAt_operator
+  version___status: versionsEvent_version___status_operator
+  createdAt: versionsEvent_createdAt_operator
+  updatedAt: versionsEvent_updatedAt_operator
+  latest: versionsEvent_latest_operator
+  id: versionsEvent_id_operator
+  AND: [versionsEvent_where_and]
+  OR: [versionsEvent_where_or]
+}
+
+input versionsEvent_parent_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsEvent_version__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsEvent_version__categories_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsEvent_version__publishedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsEvent_version__authors_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsEvent_version__populatedAuthors__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__populatedAuthors__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__hero__type_operator {
+  equals: versionsEvent_version__hero__type_Input
+  not_equals: versionsEvent_version__hero__type_Input
+  in: [versionsEvent_version__hero__type_Input]
+  not_in: [versionsEvent_version__hero__type_Input]
+  all: [versionsEvent_version__hero__type_Input]
+}
+
+enum versionsEvent_version__hero__type_Input {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+input versionsEvent_version__hero__richText_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+}
+
+input versionsEvent_version__hero__links__link__type_operator {
+  equals: versionsEvent_version__hero__links__link__type_Input
+  not_equals: versionsEvent_version__hero__links__link__type_Input
+  like: versionsEvent_version__hero__links__link__type_Input
+  contains: versionsEvent_version__hero__links__link__type_Input
+  exists: Boolean
+}
+
+enum versionsEvent_version__hero__links__link__type_Input {
+  reference
+  custom
+}
+
+input versionsEvent_version__hero__links__link__newTab_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsEvent_version__hero__links__link__reference_Relation {
+  relationTo: versionsEvent_version__hero__links__link__reference_Relation_RelationTo
+  value: JSON
+}
+
+enum versionsEvent_version__hero__links__link__reference_Relation_RelationTo {
+  pages
+}
+
+input versionsEvent_version__hero__links__link__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsEvent_version__hero__links__link__label_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsEvent_version__hero__links__link__appearance_operator {
+  equals: versionsEvent_version__hero__links__link__appearance_Input
+  not_equals: versionsEvent_version__hero__links__link__appearance_Input
+  in: [versionsEvent_version__hero__links__link__appearance_Input]
+  not_in: [versionsEvent_version__hero__links__link__appearance_Input]
+  all: [versionsEvent_version__hero__links__link__appearance_Input]
+  exists: Boolean
+}
+
+enum versionsEvent_version__hero__links__link__appearance_Input {
+  default
+  primary
+  secondary
+}
+
+input versionsEvent_version__hero__links__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__hero__media_operator {
+  equals: String
+  not_equals: String
+}
+
+input versionsEvent_version__relatedEvents_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsEvent_version__dateFrom_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsEvent_version__dateTo_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsEvent_version__slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsEvent_version__createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsEvent_version___status_operator {
+  equals: versionsEvent_version___status_Input
+  not_equals: versionsEvent_version___status_Input
+  in: [versionsEvent_version___status_Input]
+  not_in: [versionsEvent_version___status_Input]
+  all: [versionsEvent_version___status_Input]
+  exists: Boolean
+}
+
+enum versionsEvent_version___status_Input {
+  draft
+  published
+}
+
+input versionsEvent_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsEvent_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsEvent_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsEvent_id_operator {
+  equals: Int
+  not_equals: Int
+  greater_than_equal: Int
+  greater_than: Int
+  less_than_equal: Int
+  less_than: Int
+  exists: Boolean
+}
+
+input versionsEvent_where_and {
+  parent: versionsEvent_parent_operator
+  version__title: versionsEvent_version__title_operator
+  version__categories: versionsEvent_version__categories_operator
+  version__publishedAt: versionsEvent_version__publishedAt_operator
+  version__authors: versionsEvent_version__authors_operator
+  version__populatedAuthors__id: versionsEvent_version__populatedAuthors__id_operator
+  version__populatedAuthors__name: versionsEvent_version__populatedAuthors__name_operator
+  version__hero__type: versionsEvent_version__hero__type_operator
+  version__hero__richText: versionsEvent_version__hero__richText_operator
+  version__hero__links__link__type: versionsEvent_version__hero__links__link__type_operator
+  version__hero__links__link__newTab: versionsEvent_version__hero__links__link__newTab_operator
+  version__hero__links__link__reference: versionsEvent_version__hero__links__link__reference_Relation
+  version__hero__links__link__url: versionsEvent_version__hero__links__link__url_operator
+  version__hero__links__link__label: versionsEvent_version__hero__links__link__label_operator
+  version__hero__links__link__appearance: versionsEvent_version__hero__links__link__appearance_operator
+  version__hero__links__id: versionsEvent_version__hero__links__id_operator
+  version__hero__media: versionsEvent_version__hero__media_operator
+  version__relatedEvents: versionsEvent_version__relatedEvents_operator
+  version__dateFrom: versionsEvent_version__dateFrom_operator
+  version__dateTo: versionsEvent_version__dateTo_operator
+  version__slug: versionsEvent_version__slug_operator
+  version__updatedAt: versionsEvent_version__updatedAt_operator
+  version__createdAt: versionsEvent_version__createdAt_operator
+  version___status: versionsEvent_version___status_operator
+  createdAt: versionsEvent_createdAt_operator
+  updatedAt: versionsEvent_updatedAt_operator
+  latest: versionsEvent_latest_operator
+  id: versionsEvent_id_operator
+  AND: [versionsEvent_where_and]
+  OR: [versionsEvent_where_or]
+}
+
+input versionsEvent_where_or {
+  parent: versionsEvent_parent_operator
+  version__title: versionsEvent_version__title_operator
+  version__categories: versionsEvent_version__categories_operator
+  version__publishedAt: versionsEvent_version__publishedAt_operator
+  version__authors: versionsEvent_version__authors_operator
+  version__populatedAuthors__id: versionsEvent_version__populatedAuthors__id_operator
+  version__populatedAuthors__name: versionsEvent_version__populatedAuthors__name_operator
+  version__hero__type: versionsEvent_version__hero__type_operator
+  version__hero__richText: versionsEvent_version__hero__richText_operator
+  version__hero__links__link__type: versionsEvent_version__hero__links__link__type_operator
+  version__hero__links__link__newTab: versionsEvent_version__hero__links__link__newTab_operator
+  version__hero__links__link__reference: versionsEvent_version__hero__links__link__reference_Relation
+  version__hero__links__link__url: versionsEvent_version__hero__links__link__url_operator
+  version__hero__links__link__label: versionsEvent_version__hero__links__link__label_operator
+  version__hero__links__link__appearance: versionsEvent_version__hero__links__link__appearance_operator
+  version__hero__links__id: versionsEvent_version__hero__links__id_operator
+  version__hero__media: versionsEvent_version__hero__media_operator
+  version__relatedEvents: versionsEvent_version__relatedEvents_operator
+  version__dateFrom: versionsEvent_version__dateFrom_operator
+  version__dateTo: versionsEvent_version__dateTo_operator
+  version__slug: versionsEvent_version__slug_operator
+  version__updatedAt: versionsEvent_version__updatedAt_operator
+  version__createdAt: versionsEvent_version__createdAt_operator
+  version___status: versionsEvent_version___status_operator
+  createdAt: versionsEvent_createdAt_operator
+  updatedAt: versionsEvent_updatedAt_operator
+  latest: versionsEvent_latest_operator
+  id: versionsEvent_id_operator
+  AND: [versionsEvent_where_and]
+  OR: [versionsEvent_where_or]
+}
+
+type AbsenceRequests {
+  docs: [AbsenceRequest]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input AbsenceRequest_where {
+  title: AbsenceRequest_title_operator
+  categories: AbsenceRequest_categories_operator
+  publishedAt: AbsenceRequest_publishedAt_operator
+  authors: AbsenceRequest_authors_operator
+  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
+  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
+  hero__type: AbsenceRequest_hero__type_operator
+  hero__richText: AbsenceRequest_hero__richText_operator
+  hero__links__link__type: AbsenceRequest_hero__links__link__type_operator
+  hero__links__link__newTab: AbsenceRequest_hero__links__link__newTab_operator
+  hero__links__link__reference: AbsenceRequest_hero__links__link__reference_Relation
+  hero__links__link__url: AbsenceRequest_hero__links__link__url_operator
+  hero__links__link__label: AbsenceRequest_hero__links__link__label_operator
+  hero__links__link__appearance: AbsenceRequest_hero__links__link__appearance_operator
+  hero__links__id: AbsenceRequest_hero__links__id_operator
+  hero__media: AbsenceRequest_hero__media_operator
+  dateFrom: AbsenceRequest_dateFrom_operator
+  dateTo: AbsenceRequest_dateTo_operator
+  userComments: AbsenceRequest_userComments_operator
+  adminComments: AbsenceRequest_adminComments_operator
+  slug: AbsenceRequest_slug_operator
+  updatedAt: AbsenceRequest_updatedAt_operator
+  createdAt: AbsenceRequest_createdAt_operator
+  _status: AbsenceRequest__status_operator
+  id: AbsenceRequest_id_operator
+  AND: [AbsenceRequest_where_and]
+  OR: [AbsenceRequest_where_or]
+}
+
+input AbsenceRequest_title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input AbsenceRequest_categories_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input AbsenceRequest_publishedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input AbsenceRequest_authors_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedAuthors__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedAuthors__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_hero__type_operator {
+  equals: AbsenceRequest_hero__type_Input
+  not_equals: AbsenceRequest_hero__type_Input
+  in: [AbsenceRequest_hero__type_Input]
+  not_in: [AbsenceRequest_hero__type_Input]
+  all: [AbsenceRequest_hero__type_Input]
+}
+
+enum AbsenceRequest_hero__type_Input {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+input AbsenceRequest_hero__richText_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+}
+
+input AbsenceRequest_hero__links__link__type_operator {
+  equals: AbsenceRequest_hero__links__link__type_Input
+  not_equals: AbsenceRequest_hero__links__link__type_Input
+  like: AbsenceRequest_hero__links__link__type_Input
+  contains: AbsenceRequest_hero__links__link__type_Input
+  exists: Boolean
+}
+
+enum AbsenceRequest_hero__links__link__type_Input {
+  reference
+  custom
+}
+
+input AbsenceRequest_hero__links__link__newTab_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input AbsenceRequest_hero__links__link__reference_Relation {
+  relationTo: AbsenceRequest_hero__links__link__reference_Relation_RelationTo
+  value: JSON
+}
+
+enum AbsenceRequest_hero__links__link__reference_Relation_RelationTo {
+  pages
+}
+
+input AbsenceRequest_hero__links__link__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input AbsenceRequest_hero__links__link__label_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input AbsenceRequest_hero__links__link__appearance_operator {
+  equals: AbsenceRequest_hero__links__link__appearance_Input
+  not_equals: AbsenceRequest_hero__links__link__appearance_Input
+  in: [AbsenceRequest_hero__links__link__appearance_Input]
+  not_in: [AbsenceRequest_hero__links__link__appearance_Input]
+  all: [AbsenceRequest_hero__links__link__appearance_Input]
+  exists: Boolean
+}
+
+enum AbsenceRequest_hero__links__link__appearance_Input {
+  default
+  primary
+  secondary
+}
+
+input AbsenceRequest_hero__links__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_hero__media_operator {
+  equals: String
+  not_equals: String
+}
+
+input AbsenceRequest_dateFrom_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input AbsenceRequest_dateTo_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input AbsenceRequest_userComments_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input AbsenceRequest_adminComments_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input AbsenceRequest_slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input AbsenceRequest_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input AbsenceRequest__status_operator {
+  equals: AbsenceRequest__status_Input
+  not_equals: AbsenceRequest__status_Input
+  in: [AbsenceRequest__status_Input]
+  not_in: [AbsenceRequest__status_Input]
+  all: [AbsenceRequest__status_Input]
+  exists: Boolean
+}
+
+enum AbsenceRequest__status_Input {
+  draft
+  published
+}
+
+input AbsenceRequest_id_operator {
+  equals: Int
+  not_equals: Int
+  greater_than_equal: Int
+  greater_than: Int
+  less_than_equal: Int
+  less_than: Int
+  exists: Boolean
+}
+
+input AbsenceRequest_where_and {
+  title: AbsenceRequest_title_operator
+  categories: AbsenceRequest_categories_operator
+  publishedAt: AbsenceRequest_publishedAt_operator
+  authors: AbsenceRequest_authors_operator
+  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
+  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
+  hero__type: AbsenceRequest_hero__type_operator
+  hero__richText: AbsenceRequest_hero__richText_operator
+  hero__links__link__type: AbsenceRequest_hero__links__link__type_operator
+  hero__links__link__newTab: AbsenceRequest_hero__links__link__newTab_operator
+  hero__links__link__reference: AbsenceRequest_hero__links__link__reference_Relation
+  hero__links__link__url: AbsenceRequest_hero__links__link__url_operator
+  hero__links__link__label: AbsenceRequest_hero__links__link__label_operator
+  hero__links__link__appearance: AbsenceRequest_hero__links__link__appearance_operator
+  hero__links__id: AbsenceRequest_hero__links__id_operator
+  hero__media: AbsenceRequest_hero__media_operator
+  dateFrom: AbsenceRequest_dateFrom_operator
+  dateTo: AbsenceRequest_dateTo_operator
+  userComments: AbsenceRequest_userComments_operator
+  adminComments: AbsenceRequest_adminComments_operator
+  slug: AbsenceRequest_slug_operator
+  updatedAt: AbsenceRequest_updatedAt_operator
+  createdAt: AbsenceRequest_createdAt_operator
+  _status: AbsenceRequest__status_operator
+  id: AbsenceRequest_id_operator
+  AND: [AbsenceRequest_where_and]
+  OR: [AbsenceRequest_where_or]
+}
+
+input AbsenceRequest_where_or {
+  title: AbsenceRequest_title_operator
+  categories: AbsenceRequest_categories_operator
+  publishedAt: AbsenceRequest_publishedAt_operator
+  authors: AbsenceRequest_authors_operator
+  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
+  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
+  hero__type: AbsenceRequest_hero__type_operator
+  hero__richText: AbsenceRequest_hero__richText_operator
+  hero__links__link__type: AbsenceRequest_hero__links__link__type_operator
+  hero__links__link__newTab: AbsenceRequest_hero__links__link__newTab_operator
+  hero__links__link__reference: AbsenceRequest_hero__links__link__reference_Relation
+  hero__links__link__url: AbsenceRequest_hero__links__link__url_operator
+  hero__links__link__label: AbsenceRequest_hero__links__link__label_operator
+  hero__links__link__appearance: AbsenceRequest_hero__links__link__appearance_operator
+  hero__links__id: AbsenceRequest_hero__links__id_operator
+  hero__media: AbsenceRequest_hero__media_operator
+  dateFrom: AbsenceRequest_dateFrom_operator
+  dateTo: AbsenceRequest_dateTo_operator
+  userComments: AbsenceRequest_userComments_operator
+  adminComments: AbsenceRequest_adminComments_operator
+  slug: AbsenceRequest_slug_operator
+  updatedAt: AbsenceRequest_updatedAt_operator
+  createdAt: AbsenceRequest_createdAt_operator
+  _status: AbsenceRequest__status_operator
+  id: AbsenceRequest_id_operator
+  AND: [AbsenceRequest_where_and]
+  OR: [AbsenceRequest_where_or]
+}
+
+type absence_requestsDocAccess {
+  fields: AbsenceRequestsDocAccessFields
+  create: AbsenceRequestsCreateDocAccess
+  read: AbsenceRequestsReadDocAccess
+  update: AbsenceRequestsUpdateDocAccess
+  delete: AbsenceRequestsDeleteDocAccess
+  readVersions: AbsenceRequestsReadVersionsDocAccess
+}
+
+type AbsenceRequestsDocAccessFields {
+  title: AbsenceRequestsDocAccessFields_title
+  categories: AbsenceRequestsDocAccessFields_categories
+  publishedAt: AbsenceRequestsDocAccessFields_publishedAt
+  authors: AbsenceRequestsDocAccessFields_authors
+  populatedAuthors: AbsenceRequestsDocAccessFields_populatedAuthors
+  hero: AbsenceRequestsDocAccessFields_hero
+  layout: AbsenceRequestsDocAccessFields_layout
+  dateFrom: AbsenceRequestsDocAccessFields_dateFrom
+  dateTo: AbsenceRequestsDocAccessFields_dateTo
+  userComments: AbsenceRequestsDocAccessFields_userComments
+  adminComments: AbsenceRequestsDocAccessFields_adminComments
+  slug: AbsenceRequestsDocAccessFields_slug
+  updatedAt: AbsenceRequestsDocAccessFields_updatedAt
+  createdAt: AbsenceRequestsDocAccessFields_createdAt
+  _status: AbsenceRequestsDocAccessFields__status
+}
+
+type AbsenceRequestsDocAccessFields_title {
+  create: AbsenceRequestsDocAccessFields_title_Create
+  read: AbsenceRequestsDocAccessFields_title_Read
+  update: AbsenceRequestsDocAccessFields_title_Update
+  delete: AbsenceRequestsDocAccessFields_title_Delete
+}
+
+type AbsenceRequestsDocAccessFields_title_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_title_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_title_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_title_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_categories {
+  create: AbsenceRequestsDocAccessFields_categories_Create
+  read: AbsenceRequestsDocAccessFields_categories_Read
+  update: AbsenceRequestsDocAccessFields_categories_Update
+  delete: AbsenceRequestsDocAccessFields_categories_Delete
+}
+
+type AbsenceRequestsDocAccessFields_categories_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_categories_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_categories_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_categories_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_publishedAt {
+  create: AbsenceRequestsDocAccessFields_publishedAt_Create
+  read: AbsenceRequestsDocAccessFields_publishedAt_Read
+  update: AbsenceRequestsDocAccessFields_publishedAt_Update
+  delete: AbsenceRequestsDocAccessFields_publishedAt_Delete
+}
+
+type AbsenceRequestsDocAccessFields_publishedAt_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_publishedAt_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_publishedAt_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_publishedAt_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_authors {
+  create: AbsenceRequestsDocAccessFields_authors_Create
+  read: AbsenceRequestsDocAccessFields_authors_Read
+  update: AbsenceRequestsDocAccessFields_authors_Update
+  delete: AbsenceRequestsDocAccessFields_authors_Delete
+}
+
+type AbsenceRequestsDocAccessFields_authors_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_authors_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_authors_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_authors_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors {
+  create: AbsenceRequestsDocAccessFields_populatedAuthors_Create
+  read: AbsenceRequestsDocAccessFields_populatedAuthors_Read
+  update: AbsenceRequestsDocAccessFields_populatedAuthors_Update
+  delete: AbsenceRequestsDocAccessFields_populatedAuthors_Delete
+  fields: AbsenceRequestsDocAccessFields_populatedAuthors_Fields
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_Fields {
+  id: AbsenceRequestsDocAccessFields_populatedAuthors_id
+  name: AbsenceRequestsDocAccessFields_populatedAuthors_name
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_id {
+  create: AbsenceRequestsDocAccessFields_populatedAuthors_id_Create
+  read: AbsenceRequestsDocAccessFields_populatedAuthors_id_Read
+  update: AbsenceRequestsDocAccessFields_populatedAuthors_id_Update
+  delete: AbsenceRequestsDocAccessFields_populatedAuthors_id_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_id_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_id_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_id_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_id_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_name {
+  create: AbsenceRequestsDocAccessFields_populatedAuthors_name_Create
+  read: AbsenceRequestsDocAccessFields_populatedAuthors_name_Read
+  update: AbsenceRequestsDocAccessFields_populatedAuthors_name_Update
+  delete: AbsenceRequestsDocAccessFields_populatedAuthors_name_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_name_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_name_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_name_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedAuthors_name_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero {
+  create: AbsenceRequestsDocAccessFields_hero_Create
+  read: AbsenceRequestsDocAccessFields_hero_Read
+  update: AbsenceRequestsDocAccessFields_hero_Update
+  delete: AbsenceRequestsDocAccessFields_hero_Delete
+  fields: AbsenceRequestsDocAccessFields_hero_Fields
+}
+
+type AbsenceRequestsDocAccessFields_hero_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_Fields {
+  type: AbsenceRequestsDocAccessFields_hero_type
+  richText: AbsenceRequestsDocAccessFields_hero_richText
+  links: AbsenceRequestsDocAccessFields_hero_links
+  media: AbsenceRequestsDocAccessFields_hero_media
+}
+
+type AbsenceRequestsDocAccessFields_hero_type {
+  create: AbsenceRequestsDocAccessFields_hero_type_Create
+  read: AbsenceRequestsDocAccessFields_hero_type_Read
+  update: AbsenceRequestsDocAccessFields_hero_type_Update
+  delete: AbsenceRequestsDocAccessFields_hero_type_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_type_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_type_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_type_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_type_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_richText {
+  create: AbsenceRequestsDocAccessFields_hero_richText_Create
+  read: AbsenceRequestsDocAccessFields_hero_richText_Read
+  update: AbsenceRequestsDocAccessFields_hero_richText_Update
+  delete: AbsenceRequestsDocAccessFields_hero_richText_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_richText_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_richText_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_richText_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links {
+  create: AbsenceRequestsDocAccessFields_hero_links_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_Delete
+  fields: AbsenceRequestsDocAccessFields_hero_links_Fields
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_Fields {
+  link: AbsenceRequestsDocAccessFields_hero_links_link
+  id: AbsenceRequestsDocAccessFields_hero_links_id
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link {
+  create: AbsenceRequestsDocAccessFields_hero_links_link_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_link_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_link_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_link_Delete
+  fields: AbsenceRequestsDocAccessFields_hero_links_link_Fields
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_Fields {
+  type: AbsenceRequestsDocAccessFields_hero_links_link_type
+  newTab: AbsenceRequestsDocAccessFields_hero_links_link_newTab
+  reference: AbsenceRequestsDocAccessFields_hero_links_link_reference
+  url: AbsenceRequestsDocAccessFields_hero_links_link_url
+  label: AbsenceRequestsDocAccessFields_hero_links_link_label
+  appearance: AbsenceRequestsDocAccessFields_hero_links_link_appearance
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_type {
+  create: AbsenceRequestsDocAccessFields_hero_links_link_type_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_link_type_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_link_type_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_link_type_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_type_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_type_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_type_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_type_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_newTab {
+  create: AbsenceRequestsDocAccessFields_hero_links_link_newTab_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_link_newTab_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_link_newTab_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_link_newTab_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_newTab_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_newTab_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_newTab_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_newTab_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_reference {
+  create: AbsenceRequestsDocAccessFields_hero_links_link_reference_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_link_reference_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_link_reference_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_link_reference_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_reference_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_reference_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_reference_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_reference_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_url {
+  create: AbsenceRequestsDocAccessFields_hero_links_link_url_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_link_url_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_link_url_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_link_url_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_url_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_url_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_url_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_url_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_label {
+  create: AbsenceRequestsDocAccessFields_hero_links_link_label_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_link_label_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_link_label_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_link_label_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_label_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_label_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_label_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_label_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_appearance {
+  create: AbsenceRequestsDocAccessFields_hero_links_link_appearance_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_link_appearance_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_link_appearance_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_link_appearance_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_appearance_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_appearance_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_appearance_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_link_appearance_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_id {
+  create: AbsenceRequestsDocAccessFields_hero_links_id_Create
+  read: AbsenceRequestsDocAccessFields_hero_links_id_Read
+  update: AbsenceRequestsDocAccessFields_hero_links_id_Update
+  delete: AbsenceRequestsDocAccessFields_hero_links_id_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_id_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_id_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_id_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_links_id_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_media {
+  create: AbsenceRequestsDocAccessFields_hero_media_Create
+  read: AbsenceRequestsDocAccessFields_hero_media_Read
+  update: AbsenceRequestsDocAccessFields_hero_media_Update
+  delete: AbsenceRequestsDocAccessFields_hero_media_Delete
+}
+
+type AbsenceRequestsDocAccessFields_hero_media_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_media_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_media_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_hero_media_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_layout {
+  create: AbsenceRequestsDocAccessFields_layout_Create
+  read: AbsenceRequestsDocAccessFields_layout_Read
+  update: AbsenceRequestsDocAccessFields_layout_Update
+  delete: AbsenceRequestsDocAccessFields_layout_Delete
+}
+
+type AbsenceRequestsDocAccessFields_layout_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_layout_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_layout_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_layout_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_dateFrom {
+  create: AbsenceRequestsDocAccessFields_dateFrom_Create
+  read: AbsenceRequestsDocAccessFields_dateFrom_Read
+  update: AbsenceRequestsDocAccessFields_dateFrom_Update
+  delete: AbsenceRequestsDocAccessFields_dateFrom_Delete
+}
+
+type AbsenceRequestsDocAccessFields_dateFrom_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_dateFrom_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_dateFrom_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_dateFrom_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_dateTo {
+  create: AbsenceRequestsDocAccessFields_dateTo_Create
+  read: AbsenceRequestsDocAccessFields_dateTo_Read
+  update: AbsenceRequestsDocAccessFields_dateTo_Update
+  delete: AbsenceRequestsDocAccessFields_dateTo_Delete
+}
+
+type AbsenceRequestsDocAccessFields_dateTo_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_dateTo_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_dateTo_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_dateTo_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_userComments {
+  create: AbsenceRequestsDocAccessFields_userComments_Create
+  read: AbsenceRequestsDocAccessFields_userComments_Read
+  update: AbsenceRequestsDocAccessFields_userComments_Update
+  delete: AbsenceRequestsDocAccessFields_userComments_Delete
+}
+
+type AbsenceRequestsDocAccessFields_userComments_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_userComments_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_userComments_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_userComments_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_adminComments {
+  create: AbsenceRequestsDocAccessFields_adminComments_Create
+  read: AbsenceRequestsDocAccessFields_adminComments_Read
+  update: AbsenceRequestsDocAccessFields_adminComments_Update
+  delete: AbsenceRequestsDocAccessFields_adminComments_Delete
+}
+
+type AbsenceRequestsDocAccessFields_adminComments_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_adminComments_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_adminComments_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_adminComments_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_slug {
+  create: AbsenceRequestsDocAccessFields_slug_Create
+  read: AbsenceRequestsDocAccessFields_slug_Read
+  update: AbsenceRequestsDocAccessFields_slug_Update
+  delete: AbsenceRequestsDocAccessFields_slug_Delete
+}
+
+type AbsenceRequestsDocAccessFields_slug_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_slug_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_slug_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_slug_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_updatedAt {
+  create: AbsenceRequestsDocAccessFields_updatedAt_Create
+  read: AbsenceRequestsDocAccessFields_updatedAt_Read
+  update: AbsenceRequestsDocAccessFields_updatedAt_Update
+  delete: AbsenceRequestsDocAccessFields_updatedAt_Delete
+}
+
+type AbsenceRequestsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_createdAt {
+  create: AbsenceRequestsDocAccessFields_createdAt_Create
+  read: AbsenceRequestsDocAccessFields_createdAt_Read
+  update: AbsenceRequestsDocAccessFields_createdAt_Update
+  delete: AbsenceRequestsDocAccessFields_createdAt_Delete
+}
+
+type AbsenceRequestsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields__status {
+  create: AbsenceRequestsDocAccessFields__status_Create
+  read: AbsenceRequestsDocAccessFields__status_Read
+  update: AbsenceRequestsDocAccessFields__status_Update
+  delete: AbsenceRequestsDocAccessFields__status_Delete
+}
+
+type AbsenceRequestsDocAccessFields__status_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields__status_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields__status_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields__status_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestsReadVersionsDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestVersion {
+  parent: AbsenceRequest
+  version: AbsenceRequestVersion_Version
+  createdAt: DateTime
+  updatedAt: DateTime
+  latest: Boolean
+  id: Int
+}
+
+type AbsenceRequestVersion_Version {
+  title: String
+  categories: [Category!]
+  publishedAt: DateTime
+  authors: [User!]
+  populatedAuthors: [AbsenceRequestVersion_Version_PopulatedAuthors!]
+  hero: AbsenceRequestVersion_Version_Hero
+  layout: [AbsenceRequestVersion_Version_Layout!]!
+  dateFrom: DateTime
+  dateTo: DateTime
+  userComments: String
+  adminComments: String
+  slug: String
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: AbsenceRequestVersion_Version__status
+}
+
+type AbsenceRequestVersion_Version_PopulatedAuthors {
+  id: String
+  name: String
+}
+
+type AbsenceRequestVersion_Version_Hero {
+  type: AbsenceRequestVersion_Version_Hero_type
+  richText(depth: Int): JSON
+  links: [AbsenceRequestVersion_Version_Hero_Links!]
+  media(where: AbsenceRequestVersion_Version_Hero_Media_where): Media
+}
+
+enum AbsenceRequestVersion_Version_Hero_type {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+type AbsenceRequestVersion_Version_Hero_Links {
+  link: AbsenceRequestVersion_Version_Hero_Links_Link
+  id: String
+}
+
+type AbsenceRequestVersion_Version_Hero_Links_Link {
+  type: AbsenceRequestVersion_Version_Hero_Links_Link_type
+  newTab: Boolean
+  reference: AbsenceRequestVersion_Version_Hero_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: AbsenceRequestVersion_Version_Hero_Links_Link_appearance
+}
+
+enum AbsenceRequestVersion_Version_Hero_Links_Link_type {
+  reference
+  custom
+}
+
+type AbsenceRequestVersion_Version_Hero_Links_Link_Reference_Relationship {
+  relationTo: AbsenceRequestVersion_Version_Hero_Links_Link_Reference_RelationTo
+  value: AbsenceRequestVersion_Version_Hero_Links_Link_Reference
+}
+
+enum AbsenceRequestVersion_Version_Hero_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union AbsenceRequestVersion_Version_Hero_Links_Link_Reference = Page
+
+enum AbsenceRequestVersion_Version_Hero_Links_Link_appearance {
+  default
+  primary
+  secondary
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_where {
+  alt: AbsenceRequestVersion_Version_Hero_Media_alt_operator
+  caption: AbsenceRequestVersion_Version_Hero_Media_caption_operator
+  updatedAt: AbsenceRequestVersion_Version_Hero_Media_updatedAt_operator
+  createdAt: AbsenceRequestVersion_Version_Hero_Media_createdAt_operator
+  url: AbsenceRequestVersion_Version_Hero_Media_url_operator
+  filename: AbsenceRequestVersion_Version_Hero_Media_filename_operator
+  mimeType: AbsenceRequestVersion_Version_Hero_Media_mimeType_operator
+  filesize: AbsenceRequestVersion_Version_Hero_Media_filesize_operator
+  width: AbsenceRequestVersion_Version_Hero_Media_width_operator
+  height: AbsenceRequestVersion_Version_Hero_Media_height_operator
+  id: AbsenceRequestVersion_Version_Hero_Media_id_operator
+  AND: [AbsenceRequestVersion_Version_Hero_Media_where_and]
+  OR: [AbsenceRequestVersion_Version_Hero_Media_where_or]
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_where_and {
+  alt: AbsenceRequestVersion_Version_Hero_Media_alt_operator
+  caption: AbsenceRequestVersion_Version_Hero_Media_caption_operator
+  updatedAt: AbsenceRequestVersion_Version_Hero_Media_updatedAt_operator
+  createdAt: AbsenceRequestVersion_Version_Hero_Media_createdAt_operator
+  url: AbsenceRequestVersion_Version_Hero_Media_url_operator
+  filename: AbsenceRequestVersion_Version_Hero_Media_filename_operator
+  mimeType: AbsenceRequestVersion_Version_Hero_Media_mimeType_operator
+  filesize: AbsenceRequestVersion_Version_Hero_Media_filesize_operator
+  width: AbsenceRequestVersion_Version_Hero_Media_width_operator
+  height: AbsenceRequestVersion_Version_Hero_Media_height_operator
+  id: AbsenceRequestVersion_Version_Hero_Media_id_operator
+  AND: [AbsenceRequestVersion_Version_Hero_Media_where_and]
+  OR: [AbsenceRequestVersion_Version_Hero_Media_where_or]
+}
+
+input AbsenceRequestVersion_Version_Hero_Media_where_or {
+  alt: AbsenceRequestVersion_Version_Hero_Media_alt_operator
+  caption: AbsenceRequestVersion_Version_Hero_Media_caption_operator
+  updatedAt: AbsenceRequestVersion_Version_Hero_Media_updatedAt_operator
+  createdAt: AbsenceRequestVersion_Version_Hero_Media_createdAt_operator
+  url: AbsenceRequestVersion_Version_Hero_Media_url_operator
+  filename: AbsenceRequestVersion_Version_Hero_Media_filename_operator
+  mimeType: AbsenceRequestVersion_Version_Hero_Media_mimeType_operator
+  filesize: AbsenceRequestVersion_Version_Hero_Media_filesize_operator
+  width: AbsenceRequestVersion_Version_Hero_Media_width_operator
+  height: AbsenceRequestVersion_Version_Hero_Media_height_operator
+  id: AbsenceRequestVersion_Version_Hero_Media_id_operator
+  AND: [AbsenceRequestVersion_Version_Hero_Media_where_and]
+  OR: [AbsenceRequestVersion_Version_Hero_Media_where_or]
+}
+
+union AbsenceRequestVersion_Version_Layout = Cta | Content | MediaBlock | Archive
+
+enum AbsenceRequestVersion_Version__status {
+  draft
+  published
+}
+
+type versionsAbsenceRequests {
+  docs: [AbsenceRequestVersion]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input versionsAbsenceRequest_where {
+  parent: versionsAbsenceRequest_parent_operator
+  version__title: versionsAbsenceRequest_version__title_operator
+  version__categories: versionsAbsenceRequest_version__categories_operator
+  version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
+  version__authors: versionsAbsenceRequest_version__authors_operator
+  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
+  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
+  version__hero__type: versionsAbsenceRequest_version__hero__type_operator
+  version__hero__richText: versionsAbsenceRequest_version__hero__richText_operator
+  version__hero__links__link__type: versionsAbsenceRequest_version__hero__links__link__type_operator
+  version__hero__links__link__newTab: versionsAbsenceRequest_version__hero__links__link__newTab_operator
+  version__hero__links__link__reference: versionsAbsenceRequest_version__hero__links__link__reference_Relation
+  version__hero__links__link__url: versionsAbsenceRequest_version__hero__links__link__url_operator
+  version__hero__links__link__label: versionsAbsenceRequest_version__hero__links__link__label_operator
+  version__hero__links__link__appearance: versionsAbsenceRequest_version__hero__links__link__appearance_operator
+  version__hero__links__id: versionsAbsenceRequest_version__hero__links__id_operator
+  version__hero__media: versionsAbsenceRequest_version__hero__media_operator
+  version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
+  version__dateTo: versionsAbsenceRequest_version__dateTo_operator
+  version__userComments: versionsAbsenceRequest_version__userComments_operator
+  version__adminComments: versionsAbsenceRequest_version__adminComments_operator
+  version__slug: versionsAbsenceRequest_version__slug_operator
+  version__updatedAt: versionsAbsenceRequest_version__updatedAt_operator
+  version__createdAt: versionsAbsenceRequest_version__createdAt_operator
+  version___status: versionsAbsenceRequest_version___status_operator
+  createdAt: versionsAbsenceRequest_createdAt_operator
+  updatedAt: versionsAbsenceRequest_updatedAt_operator
+  latest: versionsAbsenceRequest_latest_operator
+  id: versionsAbsenceRequest_id_operator
+  AND: [versionsAbsenceRequest_where_and]
+  OR: [versionsAbsenceRequest_where_or]
+}
+
+input versionsAbsenceRequest_parent_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsAbsenceRequest_version__categories_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__publishedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__authors_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedAuthors__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedAuthors__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__hero__type_operator {
+  equals: versionsAbsenceRequest_version__hero__type_Input
+  not_equals: versionsAbsenceRequest_version__hero__type_Input
+  in: [versionsAbsenceRequest_version__hero__type_Input]
+  not_in: [versionsAbsenceRequest_version__hero__type_Input]
+  all: [versionsAbsenceRequest_version__hero__type_Input]
+}
+
+enum versionsAbsenceRequest_version__hero__type_Input {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+input versionsAbsenceRequest_version__hero__richText_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+}
+
+input versionsAbsenceRequest_version__hero__links__link__type_operator {
+  equals: versionsAbsenceRequest_version__hero__links__link__type_Input
+  not_equals: versionsAbsenceRequest_version__hero__links__link__type_Input
+  like: versionsAbsenceRequest_version__hero__links__link__type_Input
+  contains: versionsAbsenceRequest_version__hero__links__link__type_Input
+  exists: Boolean
+}
+
+enum versionsAbsenceRequest_version__hero__links__link__type_Input {
+  reference
+  custom
+}
+
+input versionsAbsenceRequest_version__hero__links__link__newTab_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__hero__links__link__reference_Relation {
+  relationTo: versionsAbsenceRequest_version__hero__links__link__reference_Relation_RelationTo
+  value: JSON
+}
+
+enum versionsAbsenceRequest_version__hero__links__link__reference_Relation_RelationTo {
+  pages
+}
+
+input versionsAbsenceRequest_version__hero__links__link__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsAbsenceRequest_version__hero__links__link__label_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsAbsenceRequest_version__hero__links__link__appearance_operator {
+  equals: versionsAbsenceRequest_version__hero__links__link__appearance_Input
+  not_equals: versionsAbsenceRequest_version__hero__links__link__appearance_Input
+  in: [versionsAbsenceRequest_version__hero__links__link__appearance_Input]
+  not_in: [versionsAbsenceRequest_version__hero__links__link__appearance_Input]
+  all: [versionsAbsenceRequest_version__hero__links__link__appearance_Input]
+  exists: Boolean
+}
+
+enum versionsAbsenceRequest_version__hero__links__link__appearance_Input {
+  default
+  primary
+  secondary
+}
+
+input versionsAbsenceRequest_version__hero__links__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__hero__media_operator {
+  equals: String
+  not_equals: String
+}
+
+input versionsAbsenceRequest_version__dateFrom_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsAbsenceRequest_version__dateTo_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsAbsenceRequest_version__userComments_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__adminComments_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version___status_operator {
+  equals: versionsAbsenceRequest_version___status_Input
+  not_equals: versionsAbsenceRequest_version___status_Input
+  in: [versionsAbsenceRequest_version___status_Input]
+  not_in: [versionsAbsenceRequest_version___status_Input]
+  all: [versionsAbsenceRequest_version___status_Input]
+  exists: Boolean
+}
+
+enum versionsAbsenceRequest_version___status_Input {
+  draft
+  published
+}
+
+input versionsAbsenceRequest_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_id_operator {
+  equals: Int
+  not_equals: Int
+  greater_than_equal: Int
+  greater_than: Int
+  less_than_equal: Int
+  less_than: Int
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_where_and {
+  parent: versionsAbsenceRequest_parent_operator
+  version__title: versionsAbsenceRequest_version__title_operator
+  version__categories: versionsAbsenceRequest_version__categories_operator
+  version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
+  version__authors: versionsAbsenceRequest_version__authors_operator
+  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
+  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
+  version__hero__type: versionsAbsenceRequest_version__hero__type_operator
+  version__hero__richText: versionsAbsenceRequest_version__hero__richText_operator
+  version__hero__links__link__type: versionsAbsenceRequest_version__hero__links__link__type_operator
+  version__hero__links__link__newTab: versionsAbsenceRequest_version__hero__links__link__newTab_operator
+  version__hero__links__link__reference: versionsAbsenceRequest_version__hero__links__link__reference_Relation
+  version__hero__links__link__url: versionsAbsenceRequest_version__hero__links__link__url_operator
+  version__hero__links__link__label: versionsAbsenceRequest_version__hero__links__link__label_operator
+  version__hero__links__link__appearance: versionsAbsenceRequest_version__hero__links__link__appearance_operator
+  version__hero__links__id: versionsAbsenceRequest_version__hero__links__id_operator
+  version__hero__media: versionsAbsenceRequest_version__hero__media_operator
+  version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
+  version__dateTo: versionsAbsenceRequest_version__dateTo_operator
+  version__userComments: versionsAbsenceRequest_version__userComments_operator
+  version__adminComments: versionsAbsenceRequest_version__adminComments_operator
+  version__slug: versionsAbsenceRequest_version__slug_operator
+  version__updatedAt: versionsAbsenceRequest_version__updatedAt_operator
+  version__createdAt: versionsAbsenceRequest_version__createdAt_operator
+  version___status: versionsAbsenceRequest_version___status_operator
+  createdAt: versionsAbsenceRequest_createdAt_operator
+  updatedAt: versionsAbsenceRequest_updatedAt_operator
+  latest: versionsAbsenceRequest_latest_operator
+  id: versionsAbsenceRequest_id_operator
+  AND: [versionsAbsenceRequest_where_and]
+  OR: [versionsAbsenceRequest_where_or]
+}
+
+input versionsAbsenceRequest_where_or {
+  parent: versionsAbsenceRequest_parent_operator
+  version__title: versionsAbsenceRequest_version__title_operator
+  version__categories: versionsAbsenceRequest_version__categories_operator
+  version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
+  version__authors: versionsAbsenceRequest_version__authors_operator
+  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
+  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
+  version__hero__type: versionsAbsenceRequest_version__hero__type_operator
+  version__hero__richText: versionsAbsenceRequest_version__hero__richText_operator
+  version__hero__links__link__type: versionsAbsenceRequest_version__hero__links__link__type_operator
+  version__hero__links__link__newTab: versionsAbsenceRequest_version__hero__links__link__newTab_operator
+  version__hero__links__link__reference: versionsAbsenceRequest_version__hero__links__link__reference_Relation
+  version__hero__links__link__url: versionsAbsenceRequest_version__hero__links__link__url_operator
+  version__hero__links__link__label: versionsAbsenceRequest_version__hero__links__link__label_operator
+  version__hero__links__link__appearance: versionsAbsenceRequest_version__hero__links__link__appearance_operator
+  version__hero__links__id: versionsAbsenceRequest_version__hero__links__id_operator
+  version__hero__media: versionsAbsenceRequest_version__hero__media_operator
+  version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
+  version__dateTo: versionsAbsenceRequest_version__dateTo_operator
+  version__userComments: versionsAbsenceRequest_version__userComments_operator
+  version__adminComments: versionsAbsenceRequest_version__adminComments_operator
+  version__slug: versionsAbsenceRequest_version__slug_operator
+  version__updatedAt: versionsAbsenceRequest_version__updatedAt_operator
+  version__createdAt: versionsAbsenceRequest_version__createdAt_operator
+  version___status: versionsAbsenceRequest_version___status_operator
+  createdAt: versionsAbsenceRequest_createdAt_operator
+  updatedAt: versionsAbsenceRequest_updatedAt_operator
+  latest: versionsAbsenceRequest_latest_operator
+  id: versionsAbsenceRequest_id_operator
+  AND: [versionsAbsenceRequest_where_and]
+  OR: [versionsAbsenceRequest_where_or]
 }
 
 type Redirect {
@@ -9115,6 +13059,8 @@ input Redirect_where_and {
   updatedAt: Redirect_updatedAt_operator
   createdAt: Redirect_createdAt_operator
   id: Redirect_id_operator
+  AND: [Redirect_where_and]
+  OR: [Redirect_where_or]
 }
 
 input Redirect_where_or {
@@ -9125,6 +13071,8 @@ input Redirect_where_or {
   updatedAt: Redirect_updatedAt_operator
   createdAt: Redirect_createdAt_operator
   id: Redirect_id_operator
+  AND: [Redirect_where_and]
+  OR: [Redirect_where_or]
 }
 
 type redirectsDocAccess {
@@ -9444,6 +13392,8 @@ input PayloadPreference_where_and {
   updatedAt: PayloadPreference_updatedAt_operator
   createdAt: PayloadPreference_createdAt_operator
   id: PayloadPreference_id_operator
+  AND: [PayloadPreference_where_and]
+  OR: [PayloadPreference_where_or]
 }
 
 input PayloadPreference_where_or {
@@ -9453,6 +13403,8 @@ input PayloadPreference_where_or {
   updatedAt: PayloadPreference_updatedAt_operator
   createdAt: PayloadPreference_createdAt_operator
   id: PayloadPreference_id_operator
+  AND: [PayloadPreference_where_and]
+  OR: [PayloadPreference_where_or]
 }
 
 type payload_preferencesDocAccess {
@@ -9608,6 +13560,8 @@ type PayloadPreferencesDeleteDocAccess {
 
 type Settings {
   postsPage: Page
+  eventsPage: Page
+  absenceRequestsPage: Page
   projectsPage: Page
   updatedAt: DateTime
   createdAt: DateTime
@@ -9621,6 +13575,8 @@ type settingsDocAccess {
 
 type SettingsDocAccessFields {
   postsPage: SettingsDocAccessFields_postsPage
+  eventsPage: SettingsDocAccessFields_eventsPage
+  absenceRequestsPage: SettingsDocAccessFields_absenceRequestsPage
   projectsPage: SettingsDocAccessFields_projectsPage
   updatedAt: SettingsDocAccessFields_updatedAt
   createdAt: SettingsDocAccessFields_createdAt
@@ -9646,6 +13602,52 @@ type SettingsDocAccessFields_postsPage_Update {
 }
 
 type SettingsDocAccessFields_postsPage_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_eventsPage {
+  create: SettingsDocAccessFields_eventsPage_Create
+  read: SettingsDocAccessFields_eventsPage_Read
+  update: SettingsDocAccessFields_eventsPage_Update
+  delete: SettingsDocAccessFields_eventsPage_Delete
+}
+
+type SettingsDocAccessFields_eventsPage_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_eventsPage_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_eventsPage_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_eventsPage_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_absenceRequestsPage {
+  create: SettingsDocAccessFields_absenceRequestsPage_Create
+  read: SettingsDocAccessFields_absenceRequestsPage_Read
+  update: SettingsDocAccessFields_absenceRequestsPage_Update
+  delete: SettingsDocAccessFields_absenceRequestsPage_Delete
+}
+
+type SettingsDocAccessFields_absenceRequestsPage_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_absenceRequestsPage_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_absenceRequestsPage_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_absenceRequestsPage_Delete {
   permission: Boolean!
 }
 
@@ -10341,6 +14343,8 @@ type Access {
   categories: categoriesAccess
   users: usersAccess
   comments: commentsAccess
+  events: eventsAccess
+  absence_requests: absence_requestsAccess
   redirects: redirectsAccess
   payload_preferences: payload_preferencesAccess
   settings: settingsAccess
@@ -10809,34 +14813,9 @@ type PagesFields_meta_Delete {
 }
 
 type PagesFields_meta_Fields {
-  overview: PagesFields_meta_overview
   title: PagesFields_meta_title
   description: PagesFields_meta_description
   image: PagesFields_meta_image
-  preview: PagesFields_meta_preview
-}
-
-type PagesFields_meta_overview {
-  create: PagesFields_meta_overview_Create
-  read: PagesFields_meta_overview_Read
-  update: PagesFields_meta_overview_Update
-  delete: PagesFields_meta_overview_Delete
-}
-
-type PagesFields_meta_overview_Create {
-  permission: Boolean!
-}
-
-type PagesFields_meta_overview_Read {
-  permission: Boolean!
-}
-
-type PagesFields_meta_overview_Update {
-  permission: Boolean!
-}
-
-type PagesFields_meta_overview_Delete {
-  permission: Boolean!
 }
 
 type PagesFields_meta_title {
@@ -10905,29 +14884,6 @@ type PagesFields_meta_image_Update {
 }
 
 type PagesFields_meta_image_Delete {
-  permission: Boolean!
-}
-
-type PagesFields_meta_preview {
-  create: PagesFields_meta_preview_Create
-  read: PagesFields_meta_preview_Read
-  update: PagesFields_meta_preview_Update
-  delete: PagesFields_meta_preview_Delete
-}
-
-type PagesFields_meta_preview_Create {
-  permission: Boolean!
-}
-
-type PagesFields_meta_preview_Read {
-  permission: Boolean!
-}
-
-type PagesFields_meta_preview_Update {
-  permission: Boolean!
-}
-
-type PagesFields_meta_preview_Delete {
   permission: Boolean!
 }
 
@@ -11682,34 +15638,9 @@ type PostsFields_meta_Delete {
 }
 
 type PostsFields_meta_Fields {
-  overview: PostsFields_meta_overview
   title: PostsFields_meta_title
   description: PostsFields_meta_description
   image: PostsFields_meta_image
-  preview: PostsFields_meta_preview
-}
-
-type PostsFields_meta_overview {
-  create: PostsFields_meta_overview_Create
-  read: PostsFields_meta_overview_Read
-  update: PostsFields_meta_overview_Update
-  delete: PostsFields_meta_overview_Delete
-}
-
-type PostsFields_meta_overview_Create {
-  permission: Boolean!
-}
-
-type PostsFields_meta_overview_Read {
-  permission: Boolean!
-}
-
-type PostsFields_meta_overview_Update {
-  permission: Boolean!
-}
-
-type PostsFields_meta_overview_Delete {
-  permission: Boolean!
 }
 
 type PostsFields_meta_title {
@@ -11778,29 +15709,6 @@ type PostsFields_meta_image_Update {
 }
 
 type PostsFields_meta_image_Delete {
-  permission: Boolean!
-}
-
-type PostsFields_meta_preview {
-  create: PostsFields_meta_preview_Create
-  read: PostsFields_meta_preview_Read
-  update: PostsFields_meta_preview_Update
-  delete: PostsFields_meta_preview_Delete
-}
-
-type PostsFields_meta_preview_Create {
-  permission: Boolean!
-}
-
-type PostsFields_meta_preview_Read {
-  permission: Boolean!
-}
-
-type PostsFields_meta_preview_Update {
-  permission: Boolean!
-}
-
-type PostsFields_meta_preview_Delete {
   permission: Boolean!
 }
 
@@ -12407,34 +16315,9 @@ type ProjectsFields_meta_Delete {
 }
 
 type ProjectsFields_meta_Fields {
-  overview: ProjectsFields_meta_overview
   title: ProjectsFields_meta_title
   description: ProjectsFields_meta_description
   image: ProjectsFields_meta_image
-  preview: ProjectsFields_meta_preview
-}
-
-type ProjectsFields_meta_overview {
-  create: ProjectsFields_meta_overview_Create
-  read: ProjectsFields_meta_overview_Read
-  update: ProjectsFields_meta_overview_Update
-  delete: ProjectsFields_meta_overview_Delete
-}
-
-type ProjectsFields_meta_overview_Create {
-  permission: Boolean!
-}
-
-type ProjectsFields_meta_overview_Read {
-  permission: Boolean!
-}
-
-type ProjectsFields_meta_overview_Update {
-  permission: Boolean!
-}
-
-type ProjectsFields_meta_overview_Delete {
-  permission: Boolean!
 }
 
 type ProjectsFields_meta_title {
@@ -12503,29 +16386,6 @@ type ProjectsFields_meta_image_Update {
 }
 
 type ProjectsFields_meta_image_Delete {
-  permission: Boolean!
-}
-
-type ProjectsFields_meta_preview {
-  create: ProjectsFields_meta_preview_Create
-  read: ProjectsFields_meta_preview_Read
-  update: ProjectsFields_meta_preview_Update
-  delete: ProjectsFields_meta_preview_Delete
-}
-
-type ProjectsFields_meta_preview_Create {
-  permission: Boolean!
-}
-
-type ProjectsFields_meta_preview_Read {
-  permission: Boolean!
-}
-
-type ProjectsFields_meta_preview_Update {
-  permission: Boolean!
-}
-
-type ProjectsFields_meta_preview_Delete {
   permission: Boolean!
 }
 
@@ -13583,6 +17443,1480 @@ type CommentsReadVersionsAccess {
   where: JSONObject
 }
 
+type eventsAccess {
+  fields: EventsFields
+  create: EventsCreateAccess
+  read: EventsReadAccess
+  update: EventsUpdateAccess
+  delete: EventsDeleteAccess
+  readVersions: EventsReadVersionsAccess
+}
+
+type EventsFields {
+  title: EventsFields_title
+  categories: EventsFields_categories
+  publishedAt: EventsFields_publishedAt
+  authors: EventsFields_authors
+  populatedAuthors: EventsFields_populatedAuthors
+  hero: EventsFields_hero
+  layout: EventsFields_layout
+  relatedEvents: EventsFields_relatedEvents
+  dateFrom: EventsFields_dateFrom
+  dateTo: EventsFields_dateTo
+  slug: EventsFields_slug
+  updatedAt: EventsFields_updatedAt
+  createdAt: EventsFields_createdAt
+  _status: EventsFields__status
+}
+
+type EventsFields_title {
+  create: EventsFields_title_Create
+  read: EventsFields_title_Read
+  update: EventsFields_title_Update
+  delete: EventsFields_title_Delete
+}
+
+type EventsFields_title_Create {
+  permission: Boolean!
+}
+
+type EventsFields_title_Read {
+  permission: Boolean!
+}
+
+type EventsFields_title_Update {
+  permission: Boolean!
+}
+
+type EventsFields_title_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_categories {
+  create: EventsFields_categories_Create
+  read: EventsFields_categories_Read
+  update: EventsFields_categories_Update
+  delete: EventsFields_categories_Delete
+}
+
+type EventsFields_categories_Create {
+  permission: Boolean!
+}
+
+type EventsFields_categories_Read {
+  permission: Boolean!
+}
+
+type EventsFields_categories_Update {
+  permission: Boolean!
+}
+
+type EventsFields_categories_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_publishedAt {
+  create: EventsFields_publishedAt_Create
+  read: EventsFields_publishedAt_Read
+  update: EventsFields_publishedAt_Update
+  delete: EventsFields_publishedAt_Delete
+}
+
+type EventsFields_publishedAt_Create {
+  permission: Boolean!
+}
+
+type EventsFields_publishedAt_Read {
+  permission: Boolean!
+}
+
+type EventsFields_publishedAt_Update {
+  permission: Boolean!
+}
+
+type EventsFields_publishedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_authors {
+  create: EventsFields_authors_Create
+  read: EventsFields_authors_Read
+  update: EventsFields_authors_Update
+  delete: EventsFields_authors_Delete
+}
+
+type EventsFields_authors_Create {
+  permission: Boolean!
+}
+
+type EventsFields_authors_Read {
+  permission: Boolean!
+}
+
+type EventsFields_authors_Update {
+  permission: Boolean!
+}
+
+type EventsFields_authors_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors {
+  create: EventsFields_populatedAuthors_Create
+  read: EventsFields_populatedAuthors_Read
+  update: EventsFields_populatedAuthors_Update
+  delete: EventsFields_populatedAuthors_Delete
+  fields: EventsFields_populatedAuthors_Fields
+}
+
+type EventsFields_populatedAuthors_Create {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_Read {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_Update {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_Fields {
+  id: EventsFields_populatedAuthors_id
+  name: EventsFields_populatedAuthors_name
+}
+
+type EventsFields_populatedAuthors_id {
+  create: EventsFields_populatedAuthors_id_Create
+  read: EventsFields_populatedAuthors_id_Read
+  update: EventsFields_populatedAuthors_id_Update
+  delete: EventsFields_populatedAuthors_id_Delete
+}
+
+type EventsFields_populatedAuthors_id_Create {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_id_Read {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_id_Update {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_id_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_name {
+  create: EventsFields_populatedAuthors_name_Create
+  read: EventsFields_populatedAuthors_name_Read
+  update: EventsFields_populatedAuthors_name_Update
+  delete: EventsFields_populatedAuthors_name_Delete
+}
+
+type EventsFields_populatedAuthors_name_Create {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_name_Read {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_name_Update {
+  permission: Boolean!
+}
+
+type EventsFields_populatedAuthors_name_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero {
+  create: EventsFields_hero_Create
+  read: EventsFields_hero_Read
+  update: EventsFields_hero_Update
+  delete: EventsFields_hero_Delete
+  fields: EventsFields_hero_Fields
+}
+
+type EventsFields_hero_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_Fields {
+  type: EventsFields_hero_type
+  richText: EventsFields_hero_richText
+  links: EventsFields_hero_links
+  media: EventsFields_hero_media
+}
+
+type EventsFields_hero_type {
+  create: EventsFields_hero_type_Create
+  read: EventsFields_hero_type_Read
+  update: EventsFields_hero_type_Update
+  delete: EventsFields_hero_type_Delete
+}
+
+type EventsFields_hero_type_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_type_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_type_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_type_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_richText {
+  create: EventsFields_hero_richText_Create
+  read: EventsFields_hero_richText_Read
+  update: EventsFields_hero_richText_Update
+  delete: EventsFields_hero_richText_Delete
+}
+
+type EventsFields_hero_richText_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_richText_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_richText_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links {
+  create: EventsFields_hero_links_Create
+  read: EventsFields_hero_links_Read
+  update: EventsFields_hero_links_Update
+  delete: EventsFields_hero_links_Delete
+  fields: EventsFields_hero_links_Fields
+}
+
+type EventsFields_hero_links_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_Fields {
+  link: EventsFields_hero_links_link
+  id: EventsFields_hero_links_id
+}
+
+type EventsFields_hero_links_link {
+  create: EventsFields_hero_links_link_Create
+  read: EventsFields_hero_links_link_Read
+  update: EventsFields_hero_links_link_Update
+  delete: EventsFields_hero_links_link_Delete
+  fields: EventsFields_hero_links_link_Fields
+}
+
+type EventsFields_hero_links_link_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_Fields {
+  type: EventsFields_hero_links_link_type
+  newTab: EventsFields_hero_links_link_newTab
+  reference: EventsFields_hero_links_link_reference
+  url: EventsFields_hero_links_link_url
+  label: EventsFields_hero_links_link_label
+  appearance: EventsFields_hero_links_link_appearance
+}
+
+type EventsFields_hero_links_link_type {
+  create: EventsFields_hero_links_link_type_Create
+  read: EventsFields_hero_links_link_type_Read
+  update: EventsFields_hero_links_link_type_Update
+  delete: EventsFields_hero_links_link_type_Delete
+}
+
+type EventsFields_hero_links_link_type_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_type_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_type_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_type_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_newTab {
+  create: EventsFields_hero_links_link_newTab_Create
+  read: EventsFields_hero_links_link_newTab_Read
+  update: EventsFields_hero_links_link_newTab_Update
+  delete: EventsFields_hero_links_link_newTab_Delete
+}
+
+type EventsFields_hero_links_link_newTab_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_newTab_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_newTab_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_newTab_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_reference {
+  create: EventsFields_hero_links_link_reference_Create
+  read: EventsFields_hero_links_link_reference_Read
+  update: EventsFields_hero_links_link_reference_Update
+  delete: EventsFields_hero_links_link_reference_Delete
+}
+
+type EventsFields_hero_links_link_reference_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_reference_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_reference_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_reference_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_url {
+  create: EventsFields_hero_links_link_url_Create
+  read: EventsFields_hero_links_link_url_Read
+  update: EventsFields_hero_links_link_url_Update
+  delete: EventsFields_hero_links_link_url_Delete
+}
+
+type EventsFields_hero_links_link_url_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_url_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_url_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_url_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_label {
+  create: EventsFields_hero_links_link_label_Create
+  read: EventsFields_hero_links_link_label_Read
+  update: EventsFields_hero_links_link_label_Update
+  delete: EventsFields_hero_links_link_label_Delete
+}
+
+type EventsFields_hero_links_link_label_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_label_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_label_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_label_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_appearance {
+  create: EventsFields_hero_links_link_appearance_Create
+  read: EventsFields_hero_links_link_appearance_Read
+  update: EventsFields_hero_links_link_appearance_Update
+  delete: EventsFields_hero_links_link_appearance_Delete
+}
+
+type EventsFields_hero_links_link_appearance_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_appearance_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_appearance_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_link_appearance_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_id {
+  create: EventsFields_hero_links_id_Create
+  read: EventsFields_hero_links_id_Read
+  update: EventsFields_hero_links_id_Update
+  delete: EventsFields_hero_links_id_Delete
+}
+
+type EventsFields_hero_links_id_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_id_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_id_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_links_id_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_hero_media {
+  create: EventsFields_hero_media_Create
+  read: EventsFields_hero_media_Read
+  update: EventsFields_hero_media_Update
+  delete: EventsFields_hero_media_Delete
+}
+
+type EventsFields_hero_media_Create {
+  permission: Boolean!
+}
+
+type EventsFields_hero_media_Read {
+  permission: Boolean!
+}
+
+type EventsFields_hero_media_Update {
+  permission: Boolean!
+}
+
+type EventsFields_hero_media_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_layout {
+  create: EventsFields_layout_Create
+  read: EventsFields_layout_Read
+  update: EventsFields_layout_Update
+  delete: EventsFields_layout_Delete
+}
+
+type EventsFields_layout_Create {
+  permission: Boolean!
+}
+
+type EventsFields_layout_Read {
+  permission: Boolean!
+}
+
+type EventsFields_layout_Update {
+  permission: Boolean!
+}
+
+type EventsFields_layout_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_relatedEvents {
+  create: EventsFields_relatedEvents_Create
+  read: EventsFields_relatedEvents_Read
+  update: EventsFields_relatedEvents_Update
+  delete: EventsFields_relatedEvents_Delete
+}
+
+type EventsFields_relatedEvents_Create {
+  permission: Boolean!
+}
+
+type EventsFields_relatedEvents_Read {
+  permission: Boolean!
+}
+
+type EventsFields_relatedEvents_Update {
+  permission: Boolean!
+}
+
+type EventsFields_relatedEvents_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_dateFrom {
+  create: EventsFields_dateFrom_Create
+  read: EventsFields_dateFrom_Read
+  update: EventsFields_dateFrom_Update
+  delete: EventsFields_dateFrom_Delete
+}
+
+type EventsFields_dateFrom_Create {
+  permission: Boolean!
+}
+
+type EventsFields_dateFrom_Read {
+  permission: Boolean!
+}
+
+type EventsFields_dateFrom_Update {
+  permission: Boolean!
+}
+
+type EventsFields_dateFrom_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_dateTo {
+  create: EventsFields_dateTo_Create
+  read: EventsFields_dateTo_Read
+  update: EventsFields_dateTo_Update
+  delete: EventsFields_dateTo_Delete
+}
+
+type EventsFields_dateTo_Create {
+  permission: Boolean!
+}
+
+type EventsFields_dateTo_Read {
+  permission: Boolean!
+}
+
+type EventsFields_dateTo_Update {
+  permission: Boolean!
+}
+
+type EventsFields_dateTo_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_slug {
+  create: EventsFields_slug_Create
+  read: EventsFields_slug_Read
+  update: EventsFields_slug_Update
+  delete: EventsFields_slug_Delete
+}
+
+type EventsFields_slug_Create {
+  permission: Boolean!
+}
+
+type EventsFields_slug_Read {
+  permission: Boolean!
+}
+
+type EventsFields_slug_Update {
+  permission: Boolean!
+}
+
+type EventsFields_slug_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_updatedAt {
+  create: EventsFields_updatedAt_Create
+  read: EventsFields_updatedAt_Read
+  update: EventsFields_updatedAt_Update
+  delete: EventsFields_updatedAt_Delete
+}
+
+type EventsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type EventsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type EventsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type EventsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_createdAt {
+  create: EventsFields_createdAt_Create
+  read: EventsFields_createdAt_Read
+  update: EventsFields_createdAt_Update
+  delete: EventsFields_createdAt_Delete
+}
+
+type EventsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type EventsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type EventsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type EventsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type EventsFields__status {
+  create: EventsFields__status_Create
+  read: EventsFields__status_Read
+  update: EventsFields__status_Update
+  delete: EventsFields__status_Delete
+}
+
+type EventsFields__status_Create {
+  permission: Boolean!
+}
+
+type EventsFields__status_Read {
+  permission: Boolean!
+}
+
+type EventsFields__status_Update {
+  permission: Boolean!
+}
+
+type EventsFields__status_Delete {
+  permission: Boolean!
+}
+
+type EventsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsReadVersionsAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type absence_requestsAccess {
+  fields: AbsenceRequestsFields
+  create: AbsenceRequestsCreateAccess
+  read: AbsenceRequestsReadAccess
+  update: AbsenceRequestsUpdateAccess
+  delete: AbsenceRequestsDeleteAccess
+  readVersions: AbsenceRequestsReadVersionsAccess
+}
+
+type AbsenceRequestsFields {
+  title: AbsenceRequestsFields_title
+  categories: AbsenceRequestsFields_categories
+  publishedAt: AbsenceRequestsFields_publishedAt
+  authors: AbsenceRequestsFields_authors
+  populatedAuthors: AbsenceRequestsFields_populatedAuthors
+  hero: AbsenceRequestsFields_hero
+  layout: AbsenceRequestsFields_layout
+  dateFrom: AbsenceRequestsFields_dateFrom
+  dateTo: AbsenceRequestsFields_dateTo
+  userComments: AbsenceRequestsFields_userComments
+  adminComments: AbsenceRequestsFields_adminComments
+  slug: AbsenceRequestsFields_slug
+  updatedAt: AbsenceRequestsFields_updatedAt
+  createdAt: AbsenceRequestsFields_createdAt
+  _status: AbsenceRequestsFields__status
+}
+
+type AbsenceRequestsFields_title {
+  create: AbsenceRequestsFields_title_Create
+  read: AbsenceRequestsFields_title_Read
+  update: AbsenceRequestsFields_title_Update
+  delete: AbsenceRequestsFields_title_Delete
+}
+
+type AbsenceRequestsFields_title_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_title_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_title_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_title_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_categories {
+  create: AbsenceRequestsFields_categories_Create
+  read: AbsenceRequestsFields_categories_Read
+  update: AbsenceRequestsFields_categories_Update
+  delete: AbsenceRequestsFields_categories_Delete
+}
+
+type AbsenceRequestsFields_categories_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_categories_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_categories_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_categories_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_publishedAt {
+  create: AbsenceRequestsFields_publishedAt_Create
+  read: AbsenceRequestsFields_publishedAt_Read
+  update: AbsenceRequestsFields_publishedAt_Update
+  delete: AbsenceRequestsFields_publishedAt_Delete
+}
+
+type AbsenceRequestsFields_publishedAt_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_publishedAt_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_publishedAt_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_publishedAt_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_authors {
+  create: AbsenceRequestsFields_authors_Create
+  read: AbsenceRequestsFields_authors_Read
+  update: AbsenceRequestsFields_authors_Update
+  delete: AbsenceRequestsFields_authors_Delete
+}
+
+type AbsenceRequestsFields_authors_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_authors_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_authors_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_authors_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors {
+  create: AbsenceRequestsFields_populatedAuthors_Create
+  read: AbsenceRequestsFields_populatedAuthors_Read
+  update: AbsenceRequestsFields_populatedAuthors_Update
+  delete: AbsenceRequestsFields_populatedAuthors_Delete
+  fields: AbsenceRequestsFields_populatedAuthors_Fields
+}
+
+type AbsenceRequestsFields_populatedAuthors_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_Fields {
+  id: AbsenceRequestsFields_populatedAuthors_id
+  name: AbsenceRequestsFields_populatedAuthors_name
+}
+
+type AbsenceRequestsFields_populatedAuthors_id {
+  create: AbsenceRequestsFields_populatedAuthors_id_Create
+  read: AbsenceRequestsFields_populatedAuthors_id_Read
+  update: AbsenceRequestsFields_populatedAuthors_id_Update
+  delete: AbsenceRequestsFields_populatedAuthors_id_Delete
+}
+
+type AbsenceRequestsFields_populatedAuthors_id_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_id_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_id_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_id_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_name {
+  create: AbsenceRequestsFields_populatedAuthors_name_Create
+  read: AbsenceRequestsFields_populatedAuthors_name_Read
+  update: AbsenceRequestsFields_populatedAuthors_name_Update
+  delete: AbsenceRequestsFields_populatedAuthors_name_Delete
+}
+
+type AbsenceRequestsFields_populatedAuthors_name_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_name_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_name_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedAuthors_name_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero {
+  create: AbsenceRequestsFields_hero_Create
+  read: AbsenceRequestsFields_hero_Read
+  update: AbsenceRequestsFields_hero_Update
+  delete: AbsenceRequestsFields_hero_Delete
+  fields: AbsenceRequestsFields_hero_Fields
+}
+
+type AbsenceRequestsFields_hero_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_Fields {
+  type: AbsenceRequestsFields_hero_type
+  richText: AbsenceRequestsFields_hero_richText
+  links: AbsenceRequestsFields_hero_links
+  media: AbsenceRequestsFields_hero_media
+}
+
+type AbsenceRequestsFields_hero_type {
+  create: AbsenceRequestsFields_hero_type_Create
+  read: AbsenceRequestsFields_hero_type_Read
+  update: AbsenceRequestsFields_hero_type_Update
+  delete: AbsenceRequestsFields_hero_type_Delete
+}
+
+type AbsenceRequestsFields_hero_type_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_type_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_type_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_type_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_richText {
+  create: AbsenceRequestsFields_hero_richText_Create
+  read: AbsenceRequestsFields_hero_richText_Read
+  update: AbsenceRequestsFields_hero_richText_Update
+  delete: AbsenceRequestsFields_hero_richText_Delete
+}
+
+type AbsenceRequestsFields_hero_richText_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_richText_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_richText_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links {
+  create: AbsenceRequestsFields_hero_links_Create
+  read: AbsenceRequestsFields_hero_links_Read
+  update: AbsenceRequestsFields_hero_links_Update
+  delete: AbsenceRequestsFields_hero_links_Delete
+  fields: AbsenceRequestsFields_hero_links_Fields
+}
+
+type AbsenceRequestsFields_hero_links_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_Fields {
+  link: AbsenceRequestsFields_hero_links_link
+  id: AbsenceRequestsFields_hero_links_id
+}
+
+type AbsenceRequestsFields_hero_links_link {
+  create: AbsenceRequestsFields_hero_links_link_Create
+  read: AbsenceRequestsFields_hero_links_link_Read
+  update: AbsenceRequestsFields_hero_links_link_Update
+  delete: AbsenceRequestsFields_hero_links_link_Delete
+  fields: AbsenceRequestsFields_hero_links_link_Fields
+}
+
+type AbsenceRequestsFields_hero_links_link_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_Fields {
+  type: AbsenceRequestsFields_hero_links_link_type
+  newTab: AbsenceRequestsFields_hero_links_link_newTab
+  reference: AbsenceRequestsFields_hero_links_link_reference
+  url: AbsenceRequestsFields_hero_links_link_url
+  label: AbsenceRequestsFields_hero_links_link_label
+  appearance: AbsenceRequestsFields_hero_links_link_appearance
+}
+
+type AbsenceRequestsFields_hero_links_link_type {
+  create: AbsenceRequestsFields_hero_links_link_type_Create
+  read: AbsenceRequestsFields_hero_links_link_type_Read
+  update: AbsenceRequestsFields_hero_links_link_type_Update
+  delete: AbsenceRequestsFields_hero_links_link_type_Delete
+}
+
+type AbsenceRequestsFields_hero_links_link_type_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_type_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_type_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_type_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_newTab {
+  create: AbsenceRequestsFields_hero_links_link_newTab_Create
+  read: AbsenceRequestsFields_hero_links_link_newTab_Read
+  update: AbsenceRequestsFields_hero_links_link_newTab_Update
+  delete: AbsenceRequestsFields_hero_links_link_newTab_Delete
+}
+
+type AbsenceRequestsFields_hero_links_link_newTab_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_newTab_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_newTab_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_newTab_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_reference {
+  create: AbsenceRequestsFields_hero_links_link_reference_Create
+  read: AbsenceRequestsFields_hero_links_link_reference_Read
+  update: AbsenceRequestsFields_hero_links_link_reference_Update
+  delete: AbsenceRequestsFields_hero_links_link_reference_Delete
+}
+
+type AbsenceRequestsFields_hero_links_link_reference_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_reference_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_reference_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_reference_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_url {
+  create: AbsenceRequestsFields_hero_links_link_url_Create
+  read: AbsenceRequestsFields_hero_links_link_url_Read
+  update: AbsenceRequestsFields_hero_links_link_url_Update
+  delete: AbsenceRequestsFields_hero_links_link_url_Delete
+}
+
+type AbsenceRequestsFields_hero_links_link_url_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_url_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_url_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_url_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_label {
+  create: AbsenceRequestsFields_hero_links_link_label_Create
+  read: AbsenceRequestsFields_hero_links_link_label_Read
+  update: AbsenceRequestsFields_hero_links_link_label_Update
+  delete: AbsenceRequestsFields_hero_links_link_label_Delete
+}
+
+type AbsenceRequestsFields_hero_links_link_label_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_label_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_label_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_label_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_appearance {
+  create: AbsenceRequestsFields_hero_links_link_appearance_Create
+  read: AbsenceRequestsFields_hero_links_link_appearance_Read
+  update: AbsenceRequestsFields_hero_links_link_appearance_Update
+  delete: AbsenceRequestsFields_hero_links_link_appearance_Delete
+}
+
+type AbsenceRequestsFields_hero_links_link_appearance_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_appearance_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_appearance_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_link_appearance_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_id {
+  create: AbsenceRequestsFields_hero_links_id_Create
+  read: AbsenceRequestsFields_hero_links_id_Read
+  update: AbsenceRequestsFields_hero_links_id_Update
+  delete: AbsenceRequestsFields_hero_links_id_Delete
+}
+
+type AbsenceRequestsFields_hero_links_id_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_id_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_id_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_links_id_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_media {
+  create: AbsenceRequestsFields_hero_media_Create
+  read: AbsenceRequestsFields_hero_media_Read
+  update: AbsenceRequestsFields_hero_media_Update
+  delete: AbsenceRequestsFields_hero_media_Delete
+}
+
+type AbsenceRequestsFields_hero_media_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_media_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_media_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_hero_media_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_layout {
+  create: AbsenceRequestsFields_layout_Create
+  read: AbsenceRequestsFields_layout_Read
+  update: AbsenceRequestsFields_layout_Update
+  delete: AbsenceRequestsFields_layout_Delete
+}
+
+type AbsenceRequestsFields_layout_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_layout_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_layout_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_layout_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_dateFrom {
+  create: AbsenceRequestsFields_dateFrom_Create
+  read: AbsenceRequestsFields_dateFrom_Read
+  update: AbsenceRequestsFields_dateFrom_Update
+  delete: AbsenceRequestsFields_dateFrom_Delete
+}
+
+type AbsenceRequestsFields_dateFrom_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_dateFrom_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_dateFrom_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_dateFrom_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_dateTo {
+  create: AbsenceRequestsFields_dateTo_Create
+  read: AbsenceRequestsFields_dateTo_Read
+  update: AbsenceRequestsFields_dateTo_Update
+  delete: AbsenceRequestsFields_dateTo_Delete
+}
+
+type AbsenceRequestsFields_dateTo_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_dateTo_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_dateTo_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_dateTo_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_userComments {
+  create: AbsenceRequestsFields_userComments_Create
+  read: AbsenceRequestsFields_userComments_Read
+  update: AbsenceRequestsFields_userComments_Update
+  delete: AbsenceRequestsFields_userComments_Delete
+}
+
+type AbsenceRequestsFields_userComments_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_userComments_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_userComments_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_userComments_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_adminComments {
+  create: AbsenceRequestsFields_adminComments_Create
+  read: AbsenceRequestsFields_adminComments_Read
+  update: AbsenceRequestsFields_adminComments_Update
+  delete: AbsenceRequestsFields_adminComments_Delete
+}
+
+type AbsenceRequestsFields_adminComments_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_adminComments_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_adminComments_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_adminComments_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_slug {
+  create: AbsenceRequestsFields_slug_Create
+  read: AbsenceRequestsFields_slug_Read
+  update: AbsenceRequestsFields_slug_Update
+  delete: AbsenceRequestsFields_slug_Delete
+}
+
+type AbsenceRequestsFields_slug_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_slug_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_slug_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_slug_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_updatedAt {
+  create: AbsenceRequestsFields_updatedAt_Create
+  read: AbsenceRequestsFields_updatedAt_Read
+  update: AbsenceRequestsFields_updatedAt_Update
+  delete: AbsenceRequestsFields_updatedAt_Delete
+}
+
+type AbsenceRequestsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_createdAt {
+  create: AbsenceRequestsFields_createdAt_Create
+  read: AbsenceRequestsFields_createdAt_Read
+  update: AbsenceRequestsFields_createdAt_Update
+  delete: AbsenceRequestsFields_createdAt_Delete
+}
+
+type AbsenceRequestsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields__status {
+  create: AbsenceRequestsFields__status_Create
+  read: AbsenceRequestsFields__status_Read
+  update: AbsenceRequestsFields__status_Update
+  delete: AbsenceRequestsFields__status_Delete
+}
+
+type AbsenceRequestsFields__status_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields__status_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields__status_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields__status_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type AbsenceRequestsReadVersionsAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type redirectsAccess {
   fields: RedirectsFields
   create: RedirectsCreateAccess
@@ -13945,6 +19279,8 @@ type settingsAccess {
 
 type SettingsFields {
   postsPage: SettingsFields_postsPage
+  eventsPage: SettingsFields_eventsPage
+  absenceRequestsPage: SettingsFields_absenceRequestsPage
   projectsPage: SettingsFields_projectsPage
   updatedAt: SettingsFields_updatedAt
   createdAt: SettingsFields_createdAt
@@ -13970,6 +19306,52 @@ type SettingsFields_postsPage_Update {
 }
 
 type SettingsFields_postsPage_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_eventsPage {
+  create: SettingsFields_eventsPage_Create
+  read: SettingsFields_eventsPage_Read
+  update: SettingsFields_eventsPage_Update
+  delete: SettingsFields_eventsPage_Delete
+}
+
+type SettingsFields_eventsPage_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_eventsPage_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_eventsPage_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_eventsPage_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_absenceRequestsPage {
+  create: SettingsFields_absenceRequestsPage_Create
+  read: SettingsFields_absenceRequestsPage_Read
+  update: SettingsFields_absenceRequestsPage_Update
+  delete: SettingsFields_absenceRequestsPage_Delete
+}
+
+type SettingsFields_absenceRequestsPage_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_absenceRequestsPage_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_absenceRequestsPage_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_absenceRequestsPage_Delete {
   permission: Boolean!
 }
 
@@ -14619,6 +20001,14 @@ type Mutation {
   updateComment(id: Int!, autosave: Boolean, data: mutationCommentUpdateInput!, draft: Boolean): Comment
   deleteComment(id: Int!): Comment
   restoreVersionComment(id: Int): Comment
+  createEvent(data: mutationEventInput!, draft: Boolean): Event
+  updateEvent(id: Int!, autosave: Boolean, data: mutationEventUpdateInput!, draft: Boolean): Event
+  deleteEvent(id: Int!): Event
+  restoreVersionEvent(id: Int): Event
+  createAbsenceRequest(data: mutationAbsenceRequestInput!, draft: Boolean): AbsenceRequest
+  updateAbsenceRequest(id: Int!, autosave: Boolean, data: mutationAbsenceRequestUpdateInput!, draft: Boolean): AbsenceRequest
+  deleteAbsenceRequest(id: Int!): AbsenceRequest
+  restoreVersionAbsenceRequest(id: Int): AbsenceRequest
   createRedirect(data: mutationRedirectInput!, draft: Boolean): Redirect
   updateRedirect(id: Int!, autosave: Boolean, data: mutationRedirectUpdateInput!, draft: Boolean): Redirect
   deleteRedirect(id: Int!): Redirect
@@ -15125,6 +20515,7 @@ input mutationUserInput {
 
 enum User_roles_MutationInput {
   admin
+  editor
   user
 }
 
@@ -15145,6 +20536,7 @@ input mutationUserUpdateInput {
 
 enum UserUpdate_roles_MutationInput {
   admin
+  editor
   user
 }
 
@@ -15206,6 +20598,288 @@ input mutationCommentUpdate_PopulatedUserInput {
 }
 
 enum CommentUpdate__status_MutationInput {
+  draft
+  published
+}
+
+input mutationEventInput {
+  title: String!
+  categories: [Int]
+  publishedAt: String
+  authors: [Int]
+  populatedAuthors: [mutationEvent_PopulatedAuthorsInput]
+  hero: mutationEvent_HeroInput!
+  layout: JSON
+  relatedEvents: [Int]
+  dateFrom: String!
+  dateTo: String!
+  slug: String
+  updatedAt: String
+  createdAt: String
+  _status: Event__status_MutationInput
+}
+
+input mutationEvent_PopulatedAuthorsInput {
+  id: String
+  name: String
+}
+
+input mutationEvent_HeroInput {
+  type: Event_Hero_type_MutationInput!
+  richText: JSON!
+  links: [mutationEvent_Hero_LinksInput]
+  media: String
+}
+
+enum Event_Hero_type_MutationInput {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+input mutationEvent_Hero_LinksInput {
+  link: mutationEvent_Hero_Links_LinkInput
+  id: String
+}
+
+input mutationEvent_Hero_Links_LinkInput {
+  type: String
+  newTab: Boolean
+  reference: Event_Hero_Links_Link_ReferenceRelationshipInput
+  url: String
+  label: String!
+  appearance: Event_Hero_Links_Link_appearance_MutationInput
+}
+
+input Event_Hero_Links_Link_ReferenceRelationshipInput {
+  relationTo: Event_Hero_Links_Link_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum Event_Hero_Links_Link_ReferenceRelationshipInputRelationTo {
+  pages
+}
+
+enum Event_Hero_Links_Link_appearance_MutationInput {
+  default
+  primary
+  secondary
+}
+
+enum Event__status_MutationInput {
+  draft
+  published
+}
+
+input mutationEventUpdateInput {
+  title: String
+  categories: [Int]
+  publishedAt: String
+  authors: [Int]
+  populatedAuthors: [mutationEventUpdate_PopulatedAuthorsInput]
+  hero: mutationEventUpdate_HeroInput!
+  layout: JSON
+  relatedEvents: [Int]
+  dateFrom: String
+  dateTo: String
+  slug: String
+  updatedAt: String
+  createdAt: String
+  _status: EventUpdate__status_MutationInput
+}
+
+input mutationEventUpdate_PopulatedAuthorsInput {
+  id: String
+  name: String
+}
+
+input mutationEventUpdate_HeroInput {
+  type: EventUpdate_Hero_type_MutationInput!
+  richText: JSON!
+  links: [mutationEventUpdate_Hero_LinksInput]
+  media: String
+}
+
+enum EventUpdate_Hero_type_MutationInput {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+input mutationEventUpdate_Hero_LinksInput {
+  link: mutationEventUpdate_Hero_Links_LinkInput
+  id: String
+}
+
+input mutationEventUpdate_Hero_Links_LinkInput {
+  type: String
+  newTab: Boolean
+  reference: EventUpdate_Hero_Links_Link_ReferenceRelationshipInput
+  url: String
+  label: String!
+  appearance: EventUpdate_Hero_Links_Link_appearance_MutationInput
+}
+
+input EventUpdate_Hero_Links_Link_ReferenceRelationshipInput {
+  relationTo: EventUpdate_Hero_Links_Link_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum EventUpdate_Hero_Links_Link_ReferenceRelationshipInputRelationTo {
+  pages
+}
+
+enum EventUpdate_Hero_Links_Link_appearance_MutationInput {
+  default
+  primary
+  secondary
+}
+
+enum EventUpdate__status_MutationInput {
+  draft
+  published
+}
+
+input mutationAbsenceRequestInput {
+  title: String!
+  categories: [Int]
+  publishedAt: String
+  authors: [Int]
+  populatedAuthors: [mutationAbsenceRequest_PopulatedAuthorsInput]
+  hero: mutationAbsenceRequest_HeroInput!
+  layout: JSON
+  dateFrom: String!
+  dateTo: String!
+  userComments: String
+  adminComments: String
+  slug: String
+  updatedAt: String
+  createdAt: String
+  _status: AbsenceRequest__status_MutationInput
+}
+
+input mutationAbsenceRequest_PopulatedAuthorsInput {
+  id: String
+  name: String
+}
+
+input mutationAbsenceRequest_HeroInput {
+  type: AbsenceRequest_Hero_type_MutationInput!
+  richText: JSON!
+  links: [mutationAbsenceRequest_Hero_LinksInput]
+  media: String
+}
+
+enum AbsenceRequest_Hero_type_MutationInput {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+input mutationAbsenceRequest_Hero_LinksInput {
+  link: mutationAbsenceRequest_Hero_Links_LinkInput
+  id: String
+}
+
+input mutationAbsenceRequest_Hero_Links_LinkInput {
+  type: String
+  newTab: Boolean
+  reference: AbsenceRequest_Hero_Links_Link_ReferenceRelationshipInput
+  url: String
+  label: String!
+  appearance: AbsenceRequest_Hero_Links_Link_appearance_MutationInput
+}
+
+input AbsenceRequest_Hero_Links_Link_ReferenceRelationshipInput {
+  relationTo: AbsenceRequest_Hero_Links_Link_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum AbsenceRequest_Hero_Links_Link_ReferenceRelationshipInputRelationTo {
+  pages
+}
+
+enum AbsenceRequest_Hero_Links_Link_appearance_MutationInput {
+  default
+  primary
+  secondary
+}
+
+enum AbsenceRequest__status_MutationInput {
+  draft
+  published
+}
+
+input mutationAbsenceRequestUpdateInput {
+  title: String
+  categories: [Int]
+  publishedAt: String
+  authors: [Int]
+  populatedAuthors: [mutationAbsenceRequestUpdate_PopulatedAuthorsInput]
+  hero: mutationAbsenceRequestUpdate_HeroInput!
+  layout: JSON
+  dateFrom: String
+  dateTo: String
+  userComments: String
+  adminComments: String
+  slug: String
+  updatedAt: String
+  createdAt: String
+  _status: AbsenceRequestUpdate__status_MutationInput
+}
+
+input mutationAbsenceRequestUpdate_PopulatedAuthorsInput {
+  id: String
+  name: String
+}
+
+input mutationAbsenceRequestUpdate_HeroInput {
+  type: AbsenceRequestUpdate_Hero_type_MutationInput!
+  richText: JSON!
+  links: [mutationAbsenceRequestUpdate_Hero_LinksInput]
+  media: String
+}
+
+enum AbsenceRequestUpdate_Hero_type_MutationInput {
+  none
+  highImpact
+  mediumImpact
+  lowImpact
+}
+
+input mutationAbsenceRequestUpdate_Hero_LinksInput {
+  link: mutationAbsenceRequestUpdate_Hero_Links_LinkInput
+  id: String
+}
+
+input mutationAbsenceRequestUpdate_Hero_Links_LinkInput {
+  type: String
+  newTab: Boolean
+  reference: AbsenceRequestUpdate_Hero_Links_Link_ReferenceRelationshipInput
+  url: String
+  label: String!
+  appearance: AbsenceRequestUpdate_Hero_Links_Link_appearance_MutationInput
+}
+
+input AbsenceRequestUpdate_Hero_Links_Link_ReferenceRelationshipInput {
+  relationTo: AbsenceRequestUpdate_Hero_Links_Link_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum AbsenceRequestUpdate_Hero_Links_Link_ReferenceRelationshipInputRelationTo {
+  pages
+}
+
+enum AbsenceRequestUpdate_Hero_Links_Link_appearance_MutationInput {
+  default
+  primary
+  secondary
+}
+
+enum AbsenceRequestUpdate__status_MutationInput {
   draft
   published
 }
@@ -15292,6 +20966,8 @@ enum PayloadPreferenceUpdate_UserRelationshipInputRelationTo {
 
 input mutationSettingsInput {
   postsPage: Int
+  eventsPage: Int
+  absenceRequestsPage: Int
   projectsPage: Int
   updatedAt: String
   createdAt: String

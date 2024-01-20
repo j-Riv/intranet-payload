@@ -33,6 +33,12 @@ export const SETTINGS = `
     postsPage {
       slug
     }
+    eventsPage {
+      slug
+    }
+    absenceRequestsPage {
+      slug
+    }
     projectsPage {
       slug
     }
