@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  # postgres
+  postgres:
+    image: postgres
+    container_name: postgres
+    # hostname: postgres
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: postgres
+      # POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payload
+      # POSTGRES_DB_HOST: localhost
+    # env_file:
+    #   - database.env
+    restart: always
+    ports:
+      - 5555:5432
+    volumes:
+      - 'payload_pg_data:/var/lib/postgresql/data'
+    logging:
+      options:
+        max-size: '10m'
+        max-file: '3'
+        
+volumes:
+  payload_pg_data:
