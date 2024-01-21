@@ -13,6 +13,8 @@ type Props = {
   validate?: (value: string) => boolean | string
   placeholder?: string
   disabled?: boolean
+  value?: string
+  readOnly?: boolean
 }
 
 export const Input: React.FC<Props> = ({
@@ -25,6 +27,8 @@ export const Input: React.FC<Props> = ({
   validate,
   placeholder,
   disabled,
+  value,
+  readOnly = false,
 }) => {
   return (
     <div className={classes.inputWrap}>
@@ -63,6 +67,8 @@ export const Input: React.FC<Props> = ({
               : {}),
           })}
           disabled={disabled}
+          value={value}
+          readOnly={readOnly}
         />
       )}
       {error && (

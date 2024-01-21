@@ -11,7 +11,7 @@ export const populateArchiveBlock: AfterReadHook = async ({ doc, context, req: {
       if (block.blockType === 'archive') {
         const archiveBlock = block as Extract<Page['layout'][0], { blockType: 'archive' }> & {
           populatedDocs: Array<{
-            relationTo: 'pages' | 'posts'
+            relationTo: 'pages' | 'posts' | 'events' | 'absence-requests'
             value: string
           }>
         }
