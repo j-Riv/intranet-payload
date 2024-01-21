@@ -13,6 +13,7 @@ import { buildConfig } from 'payload/config'
 import { AbsenceRequests } from './collections/AbsenceRequests'
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
+import Departments from './collections/Departments'
 import { Events } from './collections/Events'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -74,6 +75,7 @@ export default buildConfig({
     Projects,
     Media,
     Categories,
+    Departments,
     Users,
     Comments,
     Events,

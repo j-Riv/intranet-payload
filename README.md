@@ -26,5 +26,11 @@ Email: demo-user@payloadcms.com
 Password: password
 Role: user
 
+## Setup
+```bash
+npx payload generate:types
+npx payload generate:graphQLSchema
+```
+
 ## Resources
 - https://payloadcms.com/docs/rest-api/overview

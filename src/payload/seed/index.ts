@@ -28,6 +28,7 @@ const collections = [
   'comments',
   'events',
   'absence-requests',
+  'departments',
 ]
 const globals = ['header', 'settings', 'footer']
 
@@ -68,7 +69,38 @@ export const seed = async (payload: Payload): Promise<void> => {
     ), // eslint-disable-line function-paren-newline
   ])
 
-  payload.logger.info(`— Seeding demo author and user...`)
+  payload.logger.info(`— Seeding departments...`)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [mediaDepartment, salesDepartment, warehouseDepartment, purchasingDepartment] =
+    await Promise.all([
+      await payload.create({
+        collection: 'departments',
+        data: {
+          name: 'Media',
+        },
+      }),
+      await payload.create({
+        collection: 'departments',
+        data: {
+          name: 'Sales',
+        },
+      }),
+      await payload.create({
+        collection: 'departments',
+        data: {
+          name: 'Warehouse',
+        },
+      }),
+      await payload.create({
+        collection: 'departments',
+        data: {
+          name: 'Purchasing',
+        },
+      }),
+    ])
+
+  payload.logger.info(`— Seeding demo users...`)
 
   await Promise.all(
     ['demo-admin@payloadcms.com', 'demo-editor@payloadcms.com', 'demo-user@payloadcms.com'].map(
@@ -94,6 +126,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         name: 'Demo Admin',
         password: 'password',
         roles: ['admin'],
+        department: mediaDepartment.id,
       },
     }),
     await payload.create({
@@ -103,6 +136,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         name: 'Demo Editor',
         password: 'password',
         roles: ['editor'],
+        department: mediaDepartment.id,
       },
     }),
     await payload.create({
@@ -112,6 +146,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         name: 'Demo User',
         password: 'password',
         roles: ['user'],
+        department: salesDepartment.id,
       },
     }),
   ])

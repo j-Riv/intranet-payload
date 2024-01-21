@@ -56,6 +56,17 @@ const Users: CollectionConfig = {
         update: admins,
       },
     },
+    {
+      name: 'department',
+      type: 'relationship',
+      relationTo: 'departments',
+      hasMany: false,
+    },
+    {
+      name: 'isManager',
+      type: 'checkbox',
+      defaultValue: false,
+    },
   ],
   timestamps: true,
 }
