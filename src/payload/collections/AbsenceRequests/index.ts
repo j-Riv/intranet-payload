@@ -35,7 +35,9 @@ export const AbsenceRequests: CollectionConfig = {
   access: {
     read: adminsOrPublished,
     update: admins,
-    create: admins,
+    create: ({ req: { user } }) => {
+      return Boolean(user)
+    },
     delete: admins,
   },
   fields: [

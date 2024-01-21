@@ -6,8 +6,10 @@ export const post1: Partial<Post> = {
   meta: {
     title: 'Post 1',
     description: 'This is the first post.',
+    // @ts-expect-error
     image: '{{IMAGE}}',
   },
+  // @ts-expect-error
   authors: ['{{AUTHOR}}'],
   hero: {
     type: 'lowImpact',

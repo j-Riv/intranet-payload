@@ -85,7 +85,8 @@ export const seed = async (payload: Payload): Promise<void> => {
     ),
   )
 
-  let [{ id: demoAdminID }, { id: demoEditorID }, { id: demoUserID }] = await Promise.all([
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let [{ id: demoAdminId }, _, { id: demoUserID }] = await Promise.all([
     await payload.create({
       collection: 'users',
       data: {
@@ -199,14 +200,16 @@ export const seed = async (payload: Payload): Promise<void> => {
     }),
   ])
 
-  let image1ID = image1Doc.id
-  let image2ID = image2Doc.id
+  // we are using postgres our ids are strings
+  let image1ID = image1Doc.id.toString()
+  let image2ID = image2Doc.id.toString()
+  let demoAdminID = demoAdminId.toString()
 
-  if (payload.db.defaultIDType === 'text') {
-    image1ID = `"${image1Doc.id}"`
-    image2ID = `"${image2Doc.id}"`
-    demoAdminID = `"${demoAdminID}"`
-  }
+  // if (payload.db.defaultIDType === 'text') {
+  //   image1ID = `"${image1Doc.id}"`
+  //   image2ID = `"${image2Doc.id}"`
+  //   demoAdminID = `"${demoAdminId}"`
+  // }
 
   payload.logger.info(`— Seeding posts...`)
 
@@ -448,17 +451,18 @@ export const seed = async (payload: Payload): Promise<void> => {
     data: JSON.parse(JSON.stringify(projectsPage).replace(/"\{\{IMAGE\}\}"/g, image1ID)),
   })
 
-  let postsPageID = postsPageDoc.id
-  let eventsPageID = eventsPageDoc.id
-  let absenceRequestsPageID = absenceRequestsPageDoc.id
-  let projectsPageID = projectsPageDoc.id
+  // we are using postgres our ids are strings
+  let postsPageID = postsPageDoc.id.toString()
+  let eventsPageID = eventsPageDoc.id.toString()
+  let absenceRequestsPageID = absenceRequestsPageDoc.id.toString()
+  let projectsPageID = projectsPageDoc.id.toString()
 
-  if (payload.db.defaultIDType === 'text') {
-    postsPageID = `"${postsPageID}"`
-    eventsPageID = `"${eventsPageID}"`
-    absenceRequestsPageID = `"${absenceRequestsPageID}"`
-    projectsPageID = `"${projectsPageID}"`
-  }
+  // if (payload.db.defaultIDType === 'text') {
+  //   postsPageID = `"${postsPageID}"`
+  //   eventsPageID = `"${eventsPageID}"`
+  //   absenceRequestsPageID = `"${absenceRequestsPageID}"`
+  //   projectsPageID = `"${projectsPageID}"`
+  // }
 
   payload.logger.info(`— Seeding home page...`)
 

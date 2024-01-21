@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
+import { adminsOrEditors } from '../../access/adminsOrEditors'
 import { adminsOrPublished } from '../../access/adminsOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock'
 import { CallToAction } from '../../blocks/CallToAction'
@@ -34,8 +35,8 @@ export const Events: CollectionConfig = {
   },
   access: {
     read: adminsOrPublished,
-    update: admins,
-    create: admins,
+    update: adminsOrEditors,
+    create: adminsOrEditors,
     delete: admins,
   },
   fields: [

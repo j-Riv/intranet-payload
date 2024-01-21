@@ -6,6 +6,7 @@ export const event1: Partial<Event> = {
   meta: {
     title: 'Event 1',
     description: 'This is the first event.',
+    // @ts-expect-error
     image: '{{IMAGE}}',
   },
   users: ['{{USER}}'],
