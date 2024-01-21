@@ -3,15 +3,15 @@ import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
-import { Page } from '../../../payload/payload-types'
+import { AbsenceRequest, Event, Page } from '../../../payload/payload-types'
 import { staticHome } from '../../../payload/seed/home-static'
 import { fetchDoc } from '../../_api/fetchDoc'
 import { fetchDocs } from '../../_api/fetchDocs'
 import { Blocks } from '../../_components/Blocks'
+import { EventsCalander } from '../../_components/EventsCalendar'
 import { Hero } from '../../_components/Hero'
 import { generateMeta } from '../../_utilities/generateMeta'
-import { getMeUser } from '../../_utilities/getMeUser'
-import AbsenceRequestForm from './AbsenceRequestForm'
+// import { getMeUser } from '../../_utilities/getMeUser'
 
 // Payload Cloud caches all files through Cloudflare, so we don't need Next.js to cache them as well
 // This means that we can turn off Next.js data caching and instead rely solely on the Cloudflare CDN
@@ -21,16 +21,18 @@ import AbsenceRequestForm from './AbsenceRequestForm'
 // If you are not using Payload Cloud then this line can be removed, see `../../../README.md#cache`
 export const dynamic = 'force-dynamic'
 
-export default async function Page({ params: { slug = 'absence-requests' } }) {
-  await getMeUser({
-    nullUserRedirect: `/login?error=${encodeURIComponent(
-      'You must be logged in to access absence requests.',
-    )}&redirect=${encodeURIComponent('/absence-requests')}`,
-  })
+export default async function Page({ params: { slug = 'events' } }) {
+  // await getMeUser({
+  //   nullUserRedirect: `/login?error=${encodeURIComponent(
+  //     'You must be logged in to access absence requests.',
+  //   )}&redirect=${encodeURIComponent('/absence-requests')}`,
+  // })
 
   const { isEnabled: isDraftMode } = draftMode()
 
   let page: Page | null = null
+  let events: Event[] | null = null
+  let absenceRequests: AbsenceRequest[] | null = null
 
   try {
     page = await fetchDoc<Page>({
@@ -38,6 +40,10 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
       slug,
       draft: isDraftMode,
     })
+
+    events = await fetchDocs<Event>('events')
+
+    absenceRequests = await fetchDocs<AbsenceRequest>('absence-requests')
   } catch (error) {
     // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
     // so swallow the error here and simply render the page with fallback data where necessary
@@ -58,10 +64,32 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
 
   const { hero, layout } = page
 
+  const eventsList =
+    events?.map(event => {
+      return {
+        title: event.title,
+        start: new Date(event.dateFrom),
+        end: new Date(event.dateTo),
+        // allDay: true,
+      }
+    }) ?? []
+
+  const absenceRequestList =
+    absenceRequests?.map(event => {
+      return {
+        title: event.title,
+        start: new Date(event.dateFrom),
+        end: new Date(event.dateTo),
+        // allDay: true,
+      }
+    }) ?? []
+
+  const allEvents = [...eventsList, ...absenceRequestList]
+
   return (
     <React.Fragment>
       <Hero {...hero} />
-      <AbsenceRequestForm />
+      <EventsCalander events={allEvents} />
       {/* <Blocks
         blocks={layout}
         disableTopPadding={!hero || hero?.type === 'none' || hero?.type === 'lowImpact'}
@@ -79,16 +107,14 @@ export async function generateStaticParams() {
   }
 }
 
-export async function generateMetadata({
-  params: { slug = 'absence-requests' },
-}): Promise<Metadata> {
+export async function generateMetadata({ params: { slug = 'events' } }): Promise<Metadata> {
   const { isEnabled: isDraftMode } = draftMode()
 
   let page: Page | null = null
 
   try {
     page = await fetchDoc<Page>({
-      collection: 'pages',
+      collection: 'events',
       slug,
       draft: isDraftMode,
     })

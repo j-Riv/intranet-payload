@@ -3,13 +3,13 @@ import type { CollectionConfig } from 'payload/types'
 import { admins } from '../../access/admins'
 import { adminsOrEditors } from '../../access/adminsOrEditors'
 import { adminsOrPublished } from '../../access/adminsOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock'
-import { CallToAction } from '../../blocks/CallToAction'
-import { Content } from '../../blocks/Content'
-import { MediaBlock } from '../../blocks/MediaBlock'
-import { hero } from '../../fields/hero'
+// import { Archive } from '../../blocks/ArchiveBlock'
+// import { CallToAction } from '../../blocks/CallToAction'
+// import { Content } from '../../blocks/Content'
+// import { MediaBlock } from '../../blocks/MediaBlock'
+// import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug'
-import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
+// import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateEvent } from './hooks/revalidateEvent'
@@ -28,7 +28,10 @@ export const Events: CollectionConfig = {
   hooks: {
     beforeChange: [populatePublishedAt],
     afterChange: [revalidateEvent],
-    afterRead: [populateArchiveBlock, populateAuthors],
+    afterRead: [
+      // populateArchiveBlock,
+      populateAuthors,
+    ],
   },
   versions: {
     drafts: true,
@@ -107,26 +110,26 @@ export const Events: CollectionConfig = {
         },
       ],
     },
-    {
-      type: 'tabs',
-      tabs: [
-        {
-          label: 'Hero',
-          fields: [hero],
-        },
-        {
-          label: 'Content',
-          fields: [
-            {
-              name: 'layout',
-              type: 'blocks',
-              required: true,
-              blocks: [CallToAction, Content, MediaBlock, Archive],
-            },
-          ],
-        },
-      ],
-    },
+    // {
+    //   type: 'tabs',
+    //   tabs: [
+    //     {
+    //       label: 'Hero',
+    //       fields: [hero],
+    //     },
+    //     {
+    //       label: 'Content',
+    //       fields: [
+    //         {
+    //           name: 'layout',
+    //           type: 'blocks',
+    //           required: true,
+    //           blocks: [CallToAction, Content, MediaBlock, Archive],
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
     {
       name: 'relatedEvents',
       type: 'relationship',
