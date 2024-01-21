@@ -7,6 +7,7 @@ export const eventsPage: Partial<Page> = {
   meta: {
     title: 'Payload Website Template',
     description: 'An open-source website built with Payload and Next.js.',
+    // @ts-expect-error
     image: '{{IMAGE}}',
   },
   hero: {

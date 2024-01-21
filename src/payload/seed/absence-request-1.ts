@@ -6,6 +6,7 @@ export const absenceRequest1: Partial<AbsenceRequest> = {
   meta: {
     title: 'Absence Request 1',
     description: 'This is the first absence request.',
+    // @ts-expect-error
     image: '{{IMAGE}}',
   },
   users: ['{{USER}}'],

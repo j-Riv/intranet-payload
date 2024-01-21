@@ -6,6 +6,7 @@ export const project1: Partial<Project> = {
   meta: {
     title: 'Project 1',
     description: 'This is the first project.',
+    // @ts-expect-error
     image: '{{IMAGE}}',
   },
   hero: {
