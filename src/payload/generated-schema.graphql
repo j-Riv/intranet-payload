@@ -1922,8 +1922,8 @@ type AbsenceRequest {
   title: String
   categories: [Category!]
   publishedAt: DateTime
-  authors: [User!]
-  populatedAuthors: [AbsenceRequest_PopulatedAuthors!]
+  author: User
+  approver: User
   dateFrom: DateTime
   dateTo: DateTime
   userComments: String
@@ -1933,11 +1933,6 @@ type AbsenceRequest {
   updatedAt: DateTime
   createdAt: DateTime
   _status: AbsenceRequest__status
-}
-
-type AbsenceRequest_PopulatedAuthors {
-  id: String
-  name: String
 }
 
 type AbsenceRequest_Meta {
@@ -12369,9 +12364,8 @@ input AbsenceRequest_where {
   title: AbsenceRequest_title_operator
   categories: AbsenceRequest_categories_operator
   publishedAt: AbsenceRequest_publishedAt_operator
-  authors: AbsenceRequest_authors_operator
-  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
-  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
+  author: AbsenceRequest_author_operator
+  approver: AbsenceRequest_approver_operator
   dateFrom: AbsenceRequest_dateFrom_operator
   dateTo: AbsenceRequest_dateTo_operator
   userComments: AbsenceRequest_userComments_operator
@@ -12418,7 +12412,7 @@ input AbsenceRequest_publishedAt_operator {
   exists: Boolean
 }
 
-input AbsenceRequest_authors_operator {
+input AbsenceRequest_author_operator {
   equals: JSON
   not_equals: JSON
   in: [JSON]
@@ -12427,25 +12421,12 @@ input AbsenceRequest_authors_operator {
   exists: Boolean
 }
 
-input AbsenceRequest_populatedAuthors__id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input AbsenceRequest_populatedAuthors__name_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
+input AbsenceRequest_approver_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
   exists: Boolean
 }
 
@@ -12571,9 +12552,8 @@ input AbsenceRequest_where_and {
   title: AbsenceRequest_title_operator
   categories: AbsenceRequest_categories_operator
   publishedAt: AbsenceRequest_publishedAt_operator
-  authors: AbsenceRequest_authors_operator
-  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
-  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
+  author: AbsenceRequest_author_operator
+  approver: AbsenceRequest_approver_operator
   dateFrom: AbsenceRequest_dateFrom_operator
   dateTo: AbsenceRequest_dateTo_operator
   userComments: AbsenceRequest_userComments_operator
@@ -12594,9 +12574,8 @@ input AbsenceRequest_where_or {
   title: AbsenceRequest_title_operator
   categories: AbsenceRequest_categories_operator
   publishedAt: AbsenceRequest_publishedAt_operator
-  authors: AbsenceRequest_authors_operator
-  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
-  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
+  author: AbsenceRequest_author_operator
+  approver: AbsenceRequest_approver_operator
   dateFrom: AbsenceRequest_dateFrom_operator
   dateTo: AbsenceRequest_dateTo_operator
   userComments: AbsenceRequest_userComments_operator
@@ -12626,8 +12605,8 @@ type AbsenceRequestsDocAccessFields {
   title: AbsenceRequestsDocAccessFields_title
   categories: AbsenceRequestsDocAccessFields_categories
   publishedAt: AbsenceRequestsDocAccessFields_publishedAt
-  authors: AbsenceRequestsDocAccessFields_authors
-  populatedAuthors: AbsenceRequestsDocAccessFields_populatedAuthors
+  author: AbsenceRequestsDocAccessFields_author
+  approver: AbsenceRequestsDocAccessFields_approver
   dateFrom: AbsenceRequestsDocAccessFields_dateFrom
   dateTo: AbsenceRequestsDocAccessFields_dateTo
   userComments: AbsenceRequestsDocAccessFields_userComments
@@ -12708,101 +12687,49 @@ type AbsenceRequestsDocAccessFields_publishedAt_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_authors {
-  create: AbsenceRequestsDocAccessFields_authors_Create
-  read: AbsenceRequestsDocAccessFields_authors_Read
-  update: AbsenceRequestsDocAccessFields_authors_Update
-  delete: AbsenceRequestsDocAccessFields_authors_Delete
+type AbsenceRequestsDocAccessFields_author {
+  create: AbsenceRequestsDocAccessFields_author_Create
+  read: AbsenceRequestsDocAccessFields_author_Read
+  update: AbsenceRequestsDocAccessFields_author_Update
+  delete: AbsenceRequestsDocAccessFields_author_Delete
 }
 
-type AbsenceRequestsDocAccessFields_authors_Create {
+type AbsenceRequestsDocAccessFields_author_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_authors_Read {
+type AbsenceRequestsDocAccessFields_author_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_authors_Update {
+type AbsenceRequestsDocAccessFields_author_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_authors_Delete {
+type AbsenceRequestsDocAccessFields_author_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors {
-  create: AbsenceRequestsDocAccessFields_populatedAuthors_Create
-  read: AbsenceRequestsDocAccessFields_populatedAuthors_Read
-  update: AbsenceRequestsDocAccessFields_populatedAuthors_Update
-  delete: AbsenceRequestsDocAccessFields_populatedAuthors_Delete
-  fields: AbsenceRequestsDocAccessFields_populatedAuthors_Fields
+type AbsenceRequestsDocAccessFields_approver {
+  create: AbsenceRequestsDocAccessFields_approver_Create
+  read: AbsenceRequestsDocAccessFields_approver_Read
+  update: AbsenceRequestsDocAccessFields_approver_Update
+  delete: AbsenceRequestsDocAccessFields_approver_Delete
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Create {
+type AbsenceRequestsDocAccessFields_approver_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Read {
+type AbsenceRequestsDocAccessFields_approver_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Update {
+type AbsenceRequestsDocAccessFields_approver_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Delete {
-  permission: Boolean!
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_Fields {
-  id: AbsenceRequestsDocAccessFields_populatedAuthors_id
-  name: AbsenceRequestsDocAccessFields_populatedAuthors_name
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_id {
-  create: AbsenceRequestsDocAccessFields_populatedAuthors_id_Create
-  read: AbsenceRequestsDocAccessFields_populatedAuthors_id_Read
-  update: AbsenceRequestsDocAccessFields_populatedAuthors_id_Update
-  delete: AbsenceRequestsDocAccessFields_populatedAuthors_id_Delete
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_id_Create {
-  permission: Boolean!
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_id_Read {
-  permission: Boolean!
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_id_Update {
-  permission: Boolean!
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_id_Delete {
-  permission: Boolean!
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_name {
-  create: AbsenceRequestsDocAccessFields_populatedAuthors_name_Create
-  read: AbsenceRequestsDocAccessFields_populatedAuthors_name_Read
-  update: AbsenceRequestsDocAccessFields_populatedAuthors_name_Update
-  delete: AbsenceRequestsDocAccessFields_populatedAuthors_name_Delete
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_name_Create {
-  permission: Boolean!
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_name_Read {
-  permission: Boolean!
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_name_Update {
-  permission: Boolean!
-}
-
-type AbsenceRequestsDocAccessFields_populatedAuthors_name_Delete {
+type AbsenceRequestsDocAccessFields_approver_Delete {
   permission: Boolean!
 }
 
@@ -13127,8 +13054,8 @@ type AbsenceRequestVersion_Version {
   title: String
   categories: [Category!]
   publishedAt: DateTime
-  authors: [User!]
-  populatedAuthors: [AbsenceRequestVersion_Version_PopulatedAuthors!]
+  author: User
+  approver: User
   dateFrom: DateTime
   dateTo: DateTime
   userComments: String
@@ -13138,11 +13065,6 @@ type AbsenceRequestVersion_Version {
   updatedAt: DateTime
   createdAt: DateTime
   _status: AbsenceRequestVersion_Version__status
-}
-
-type AbsenceRequestVersion_Version_PopulatedAuthors {
-  id: String
-  name: String
 }
 
 type AbsenceRequestVersion_Version_Meta {
@@ -13337,9 +13259,8 @@ input versionsAbsenceRequest_where {
   version__title: versionsAbsenceRequest_version__title_operator
   version__categories: versionsAbsenceRequest_version__categories_operator
   version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
-  version__authors: versionsAbsenceRequest_version__authors_operator
-  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
-  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
+  version__author: versionsAbsenceRequest_version__author_operator
+  version__approver: versionsAbsenceRequest_version__approver_operator
   version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
   version__dateTo: versionsAbsenceRequest_version__dateTo_operator
   version__userComments: versionsAbsenceRequest_version__userComments_operator
@@ -13398,7 +13319,7 @@ input versionsAbsenceRequest_version__publishedAt_operator {
   exists: Boolean
 }
 
-input versionsAbsenceRequest_version__authors_operator {
+input versionsAbsenceRequest_version__author_operator {
   equals: JSON
   not_equals: JSON
   in: [JSON]
@@ -13407,25 +13328,12 @@ input versionsAbsenceRequest_version__authors_operator {
   exists: Boolean
 }
 
-input versionsAbsenceRequest_version__populatedAuthors__id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsAbsenceRequest_version__populatedAuthors__name_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
+input versionsAbsenceRequest_version__approver_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
   exists: Boolean
 }
 
@@ -13580,9 +13488,8 @@ input versionsAbsenceRequest_where_and {
   version__title: versionsAbsenceRequest_version__title_operator
   version__categories: versionsAbsenceRequest_version__categories_operator
   version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
-  version__authors: versionsAbsenceRequest_version__authors_operator
-  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
-  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
+  version__author: versionsAbsenceRequest_version__author_operator
+  version__approver: versionsAbsenceRequest_version__approver_operator
   version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
   version__dateTo: versionsAbsenceRequest_version__dateTo_operator
   version__userComments: versionsAbsenceRequest_version__userComments_operator
@@ -13607,9 +13514,8 @@ input versionsAbsenceRequest_where_or {
   version__title: versionsAbsenceRequest_version__title_operator
   version__categories: versionsAbsenceRequest_version__categories_operator
   version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
-  version__authors: versionsAbsenceRequest_version__authors_operator
-  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
-  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
+  version__author: versionsAbsenceRequest_version__author_operator
+  version__approver: versionsAbsenceRequest_version__approver_operator
   version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
   version__dateTo: versionsAbsenceRequest_version__dateTo_operator
   version__userComments: versionsAbsenceRequest_version__userComments_operator
@@ -19297,8 +19203,8 @@ type AbsenceRequestsFields {
   title: AbsenceRequestsFields_title
   categories: AbsenceRequestsFields_categories
   publishedAt: AbsenceRequestsFields_publishedAt
-  authors: AbsenceRequestsFields_authors
-  populatedAuthors: AbsenceRequestsFields_populatedAuthors
+  author: AbsenceRequestsFields_author
+  approver: AbsenceRequestsFields_approver
   dateFrom: AbsenceRequestsFields_dateFrom
   dateTo: AbsenceRequestsFields_dateTo
   userComments: AbsenceRequestsFields_userComments
@@ -19379,101 +19285,49 @@ type AbsenceRequestsFields_publishedAt_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_authors {
-  create: AbsenceRequestsFields_authors_Create
-  read: AbsenceRequestsFields_authors_Read
-  update: AbsenceRequestsFields_authors_Update
-  delete: AbsenceRequestsFields_authors_Delete
+type AbsenceRequestsFields_author {
+  create: AbsenceRequestsFields_author_Create
+  read: AbsenceRequestsFields_author_Read
+  update: AbsenceRequestsFields_author_Update
+  delete: AbsenceRequestsFields_author_Delete
 }
 
-type AbsenceRequestsFields_authors_Create {
+type AbsenceRequestsFields_author_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_authors_Read {
+type AbsenceRequestsFields_author_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_authors_Update {
+type AbsenceRequestsFields_author_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_authors_Delete {
+type AbsenceRequestsFields_author_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors {
-  create: AbsenceRequestsFields_populatedAuthors_Create
-  read: AbsenceRequestsFields_populatedAuthors_Read
-  update: AbsenceRequestsFields_populatedAuthors_Update
-  delete: AbsenceRequestsFields_populatedAuthors_Delete
-  fields: AbsenceRequestsFields_populatedAuthors_Fields
+type AbsenceRequestsFields_approver {
+  create: AbsenceRequestsFields_approver_Create
+  read: AbsenceRequestsFields_approver_Read
+  update: AbsenceRequestsFields_approver_Update
+  delete: AbsenceRequestsFields_approver_Delete
 }
 
-type AbsenceRequestsFields_populatedAuthors_Create {
+type AbsenceRequestsFields_approver_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_Read {
+type AbsenceRequestsFields_approver_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_Update {
+type AbsenceRequestsFields_approver_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_Delete {
-  permission: Boolean!
-}
-
-type AbsenceRequestsFields_populatedAuthors_Fields {
-  id: AbsenceRequestsFields_populatedAuthors_id
-  name: AbsenceRequestsFields_populatedAuthors_name
-}
-
-type AbsenceRequestsFields_populatedAuthors_id {
-  create: AbsenceRequestsFields_populatedAuthors_id_Create
-  read: AbsenceRequestsFields_populatedAuthors_id_Read
-  update: AbsenceRequestsFields_populatedAuthors_id_Update
-  delete: AbsenceRequestsFields_populatedAuthors_id_Delete
-}
-
-type AbsenceRequestsFields_populatedAuthors_id_Create {
-  permission: Boolean!
-}
-
-type AbsenceRequestsFields_populatedAuthors_id_Read {
-  permission: Boolean!
-}
-
-type AbsenceRequestsFields_populatedAuthors_id_Update {
-  permission: Boolean!
-}
-
-type AbsenceRequestsFields_populatedAuthors_id_Delete {
-  permission: Boolean!
-}
-
-type AbsenceRequestsFields_populatedAuthors_name {
-  create: AbsenceRequestsFields_populatedAuthors_name_Create
-  read: AbsenceRequestsFields_populatedAuthors_name_Read
-  update: AbsenceRequestsFields_populatedAuthors_name_Update
-  delete: AbsenceRequestsFields_populatedAuthors_name_Delete
-}
-
-type AbsenceRequestsFields_populatedAuthors_name_Create {
-  permission: Boolean!
-}
-
-type AbsenceRequestsFields_populatedAuthors_name_Read {
-  permission: Boolean!
-}
-
-type AbsenceRequestsFields_populatedAuthors_name_Update {
-  permission: Boolean!
-}
-
-type AbsenceRequestsFields_populatedAuthors_name_Delete {
+type AbsenceRequestsFields_approver_Delete {
   permission: Boolean!
 }
 
@@ -21676,8 +21530,8 @@ input mutationAbsenceRequestInput {
   title: String!
   categories: [Int]
   publishedAt: String
-  authors: [Int]
-  populatedAuthors: [mutationAbsenceRequest_PopulatedAuthorsInput]
+  author: Int
+  approver: Int
   dateFrom: String!
   dateTo: String!
   userComments: String
@@ -21687,11 +21541,6 @@ input mutationAbsenceRequestInput {
   updatedAt: String
   createdAt: String
   _status: AbsenceRequest__status_MutationInput
-}
-
-input mutationAbsenceRequest_PopulatedAuthorsInput {
-  id: String
-  name: String
 }
 
 input mutationAbsenceRequest_MetaInput {
@@ -21709,8 +21558,8 @@ input mutationAbsenceRequestUpdateInput {
   title: String
   categories: [Int]
   publishedAt: String
-  authors: [Int]
-  populatedAuthors: [mutationAbsenceRequestUpdate_PopulatedAuthorsInput]
+  author: Int
+  approver: Int
   dateFrom: String
   dateTo: String
   userComments: String
@@ -21720,11 +21569,6 @@ input mutationAbsenceRequestUpdateInput {
   updatedAt: String
   createdAt: String
   _status: AbsenceRequestUpdate__status_MutationInput
-}
-
-input mutationAbsenceRequestUpdate_PopulatedAuthorsInput {
-  id: String
-  name: String
 }
 
 input mutationAbsenceRequestUpdate_MetaInput {

@@ -10,7 +10,7 @@ import { adminsOrPublished } from '../../access/adminsOrPublished'
 import { slugField } from '../../fields/slug'
 // import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { populateAuthors } from './hooks/populateAuthors'
+// import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateAbsenceRequest } from './hooks/revalidateAbsenceRequest'
 
 export const AbsenceRequests: CollectionConfig = {
@@ -27,10 +27,10 @@ export const AbsenceRequests: CollectionConfig = {
   hooks: {
     beforeChange: [populatePublishedAt],
     afterChange: [revalidateAbsenceRequest],
-    afterRead: [
-      // populateArchiveBlock,
-      populateAuthors,
-    ],
+    // afterRead: [
+    //   // populateArchiveBlock,
+    //   populateAuthors,
+    // ],
   },
   versions: {
     drafts: true,
@@ -79,10 +79,19 @@ export const AbsenceRequests: CollectionConfig = {
       },
     },
     {
-      name: 'authors',
+      name: 'author',
       type: 'relationship',
       relationTo: 'users',
-      hasMany: true,
+      hasMany: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'approver',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: false,
       admin: {
         position: 'sidebar',
       },
@@ -90,27 +99,27 @@ export const AbsenceRequests: CollectionConfig = {
     // This field is only used to populate the user data via the `populateAuthors` hook
     // This is because the `user` collection has access control locked to protect user privacy
     // GraphQL will also not return mutated user data that differs from the underlying schema
-    {
-      name: 'populatedAuthors',
-      type: 'array',
-      admin: {
-        readOnly: true,
-        disabled: true,
-      },
-      access: {
-        update: () => false,
-      },
-      fields: [
-        {
-          name: 'id',
-          type: 'text',
-        },
-        {
-          name: 'name',
-          type: 'text',
-        },
-      ],
-    },
+    // {
+    //   name: 'populatedAuthors',
+    //   type: 'array',
+    //   admin: {
+    //     readOnly: true,
+    //     disabled: true,
+    //   },
+    //   access: {
+    //     update: () => false,
+    //   },
+    //   fields: [
+    //     {
+    //       name: 'id',
+    //       type: 'text',
+    //     },
+    //     {
+    //       name: 'name',
+    //       type: 'text',
+    //     },
+    //   ],
+    // },
     // {
     //   type: 'tabs',
     //   tabs: [

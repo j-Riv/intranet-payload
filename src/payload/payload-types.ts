@@ -845,13 +845,8 @@ export interface AbsenceRequest {
   title: string;
   categories?: (number | Category)[] | null;
   publishedAt?: string | null;
-  authors?: (number | User)[] | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-      }[]
-    | null;
+  author?: (number | null) | User;
+  approver?: (number | null) | User;
   dateFrom: string;
   dateTo: string;
   userComments?: string | null;
