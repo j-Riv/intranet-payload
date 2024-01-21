@@ -1,8 +1,8 @@
 import type { Page } from '../payload-types'
 
-export const postsPage: Partial<Page> = {
-  title: 'Posts',
-  slug: 'posts',
+export const eventsPage: Partial<Page> = {
+  title: 'Events',
+  slug: 'events',
   _status: 'published',
   meta: {
     title: 'Payload Website Template',
@@ -17,7 +17,7 @@ export const postsPage: Partial<Page> = {
         type: 'h1',
         children: [
           {
-            text: 'All posts',
+            text: 'All Events',
           },
         ],
       },
@@ -25,7 +25,7 @@ export const postsPage: Partial<Page> = {
         type: 'p',
         children: [
           {
-            text: 'This page displays all or some of the posts of your blog. Each post is complete with a dynamic page layout builder for a completely custom user experience that is under your full control.',
+            text: 'This page displays all or some of the events of your blog. Each post is complete with a dynamic page layout builder for a completely custom user experience that is under your full control.',
           },
         ],
       },
@@ -41,7 +41,7 @@ export const postsPage: Partial<Page> = {
           type: 'h4',
           children: [
             {
-              text: 'All posts',
+              text: 'All Events',
             },
           ],
         },
@@ -49,13 +49,13 @@ export const postsPage: Partial<Page> = {
           type: 'p',
           children: [
             {
-              text: 'The posts below are displayed in an "Archive" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or posts can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.',
+              text: 'The events below are displayed in an "Archive" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or posts can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.',
             },
           ],
         },
       ],
       populateBy: 'collection',
-      relationTo: 'posts',
+      relationTo: 'events',
       limit: 10,
       categories: [],
     },

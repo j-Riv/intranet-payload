@@ -1,6 +1,7 @@
 import type { Page } from '../payload-types'
 
 export const staticHome: Page = {
+  // @ts-expect-error
   id: '',
   title: 'Home',
   slug: 'home',
@@ -75,6 +76,7 @@ export const staticHome: Page = {
         ],
       },
     ],
+    // @ts-expect-error
     media: '',
   },
   layout: [

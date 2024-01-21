@@ -1,6 +1,8 @@
 import type { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
 import type { Config } from '../../payload/payload-types'
+import { ABSENCE_REQUEST } from '../_graphql/absence-requests'
+import { EVENT } from '../_graphql/events'
 import { PAGE } from '../_graphql/pages'
 import { POST } from '../_graphql/posts'
 import { PROJECT } from '../_graphql/projects'
@@ -19,6 +21,14 @@ const queryMap = {
   projects: {
     query: PROJECT,
     key: 'Projects',
+  },
+  events: {
+    query: EVENT,
+    key: 'Events',
+  },
+  absenceRequests: {
+    query: ABSENCE_REQUEST,
+    key: 'AbsenceRequests',
   },
 }
 

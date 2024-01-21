@@ -12,22 +12,22 @@ import { slugField } from '../../fields/slug'
 import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { populateAuthors } from './hooks/populateAuthors'
-import { revalidatePost } from './hooks/revalidatePost'
+import { revalidateEvent } from './hooks/revalidateEvent'
 
-export const Posts: CollectionConfig = {
-  slug: 'posts',
+export const Events: CollectionConfig = {
+  slug: 'events',
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     preview: doc => {
       return `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(
-        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/posts/${doc?.slug}`,
+        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/events/${doc?.slug}`,
       )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`
     },
   },
   hooks: {
     beforeChange: [populatePublishedAt],
-    afterChange: [revalidatePost],
+    afterChange: [revalidateEvent],
     afterRead: [populateArchiveBlock, populateAuthors],
   },
   versions: {
@@ -35,7 +35,7 @@ export const Posts: CollectionConfig = {
   },
   access: {
     read: adminsOrPublished,
-    update: admins,
+    update: adminsOrEditors,
     create: adminsOrEditors,
     delete: admins,
   },
@@ -123,27 +123,14 @@ export const Posts: CollectionConfig = {
               required: true,
               blocks: [CallToAction, Content, MediaBlock, Archive],
             },
-            {
-              name: 'enablePremiumContent',
-              label: 'Enable Premium Content',
-              type: 'checkbox',
-            },
-            {
-              name: 'premiumContent',
-              type: 'blocks',
-              access: {
-                read: ({ req }) => req.user,
-              },
-              blocks: [CallToAction, Content, MediaBlock, Archive],
-            },
           ],
         },
       ],
     },
     {
-      name: 'relatedPosts',
+      name: 'relatedEvents',
       type: 'relationship',
-      relationTo: 'posts',
+      relationTo: 'events',
       hasMany: true,
       filterOptions: ({ id }) => {
         return {
@@ -152,6 +139,16 @@ export const Posts: CollectionConfig = {
           },
         }
       },
+    },
+    {
+      name: 'dateFrom',
+      type: 'date',
+      required: true,
+    },
+    {
+      name: 'dateTo',
+      type: 'date',
+      required: true,
     },
     slugField(),
   ],

@@ -7,6 +7,7 @@ export const home: Partial<Page> = {
   meta: {
     title: 'Payload Website Template',
     description: 'An open-source website built with Payload and Next.js.',
+    // @ts-expect-error
     image: '{{IMAGE_1}}',
   },
   hero: {
@@ -63,6 +64,7 @@ export const home: Partial<Page> = {
           appearance: 'primary',
           reference: {
             relationTo: 'pages',
+            // @ts-expect-error
             value: '{{POSTS_PAGE_ID}}',
           },
           label: 'All posts',
@@ -75,6 +77,7 @@ export const home: Partial<Page> = {
           appearance: 'secondary',
           reference: {
             relationTo: 'pages',
+            // @ts-expect-error
             value: '{{PROJECTS_PAGE_ID}}',
           },
           label: 'All projects',
@@ -82,6 +85,7 @@ export const home: Partial<Page> = {
         },
       },
     ],
+    // @ts-expect-error
     media: '{{IMAGE_1}}',
   },
   layout: [
@@ -428,6 +432,7 @@ export const home: Partial<Page> = {
       blockType: 'mediaBlock',
       blockName: 'Media Block',
       position: 'default',
+      // @ts-expect-error
       media: '{{IMAGE_2}}',
     },
     {
@@ -521,6 +526,7 @@ export const home: Partial<Page> = {
             label: 'All posts',
             appearance: 'primary',
             reference: {
+              // @ts-expect-error
               value: '{{POSTS_PAGE_ID}}',
               relationTo: 'pages',
             },
@@ -533,6 +539,7 @@ export const home: Partial<Page> = {
             label: 'All projects',
             appearance: 'secondary',
             reference: {
+              // @ts-expect-error
               value: '{{PROJECTS_PAGE_ID}}',
               relationTo: 'pages',
             },
