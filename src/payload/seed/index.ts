@@ -147,6 +147,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         password: 'password',
         roles: ['user'],
         department: salesDepartment.id,
+        isManager: true,
       },
     }),
   ])
@@ -553,16 +554,16 @@ export const seed = async (payload: Payload): Promise<void> => {
             label: 'Events',
           },
         },
-        {
-          link: {
-            type: 'reference',
-            reference: {
-              relationTo: 'pages',
-              value: absenceRequestsPageDoc.id,
-            },
-            label: 'Absence Requests',
-          },
-        },
+        // {
+        //   link: {
+        //     type: 'reference',
+        //     reference: {
+        //       relationTo: 'pages',
+        //       value: absenceRequestsPageDoc.id,
+        //     },
+        //     label: 'Absence Requests',
+        //   },
+        // },
         {
           link: {
             type: 'reference',

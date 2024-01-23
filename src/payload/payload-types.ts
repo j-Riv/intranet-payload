@@ -704,10 +704,18 @@ export interface Event {
 }
 export interface AbsenceRequest {
   id: number;
+  approved?: ('pending' | 'approved' | 'denied') | null;
   title: string;
   categories?: (number | Category)[] | null;
   publishedAt?: string | null;
-  author?: (number | null) | User;
+  authors?: (number | User)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+        email?: string | null;
+      }[]
+    | null;
   approver?: (number | null) | User;
   dateFrom: string;
   dateTo: string;
