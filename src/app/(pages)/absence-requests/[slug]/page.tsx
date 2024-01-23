@@ -38,7 +38,7 @@ export default async function AbsenceRequests({ params: { slug } }) {
   //   doc: event?.id,
   // })
 
-  const { layout } = absenceRequest
+  // const { layout } = absenceRequest
 
   return (
     <React.Fragment>

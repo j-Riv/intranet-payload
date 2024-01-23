@@ -1,4 +1,7 @@
+import moment from 'moment'
+
 import type { AbsenceRequest } from '../payload-types'
+
 export const absenceRequest1: Partial<AbsenceRequest> = {
   title: 'Absence Request 1',
   slug: 'absence-request-1',
@@ -53,8 +56,8 @@ export const absenceRequest1: Partial<AbsenceRequest> = {
     },
   ],
   // relatedAbsenceRequests: [], // this is populated by the seed script
-  dateFrom: '1/12/2024',
-  dateTo: '1/12/2024',
+  dateFrom: moment('2024-01-12').startOf('day').toISOString(),
+  dateTo: moment('2024-01-12').endOf('day').toISOString(),
   userComments: 'Going out of Town',
   adminComments: null,
 }

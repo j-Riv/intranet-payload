@@ -4,7 +4,7 @@ const policies = {
   'child-src': ["'self'"],
   'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
   'img-src': ["'self'", 'https://raw.githubusercontent.com'],
-  'font-src': ["'self'"],
+  'font-src': ["'self'", 'data'],
   'frame-src': ["'self'"],
   'connect-src': ["'self'", 'https://maps.googleapis.com'],
 }

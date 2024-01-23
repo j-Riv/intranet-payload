@@ -7,7 +7,14 @@ export const ABSENCE_REQUESTS = `#graphql
   query AbsenceRequests {
     AbsenceRequests(limit: 300) {
       docs {
+        id
         slug
+        title
+        dateFrom
+        dateTo
+        categories {
+          title
+        }
       }
     }
   }

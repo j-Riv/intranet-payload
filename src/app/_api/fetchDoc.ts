@@ -26,7 +26,7 @@ const queryMap = {
     query: EVENT,
     key: 'Events',
   },
-  absenceRequests: {
+  'absence-requests': {
     query: ABSENCE_REQUEST,
     key: 'AbsenceRequests',
   },

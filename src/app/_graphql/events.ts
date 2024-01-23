@@ -7,7 +7,14 @@ export const EVENTS = `
   query Events {
     Events(limit: 300) {
       docs {
+        id
         slug
+        title
+        dateFrom
+        dateTo
+        categories {
+          title
+        }
       }
     }
   }
