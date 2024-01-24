@@ -8,6 +8,7 @@ import { fetchComments } from '../../../_api/fetchComments'
 import { fetchDoc } from '../../../_api/fetchDoc'
 import { fetchDocs } from '../../../_api/fetchDocs'
 import { Blocks } from '../../../_components/Blocks'
+import { Hero } from '../../../_components/Hero'
 import { PremiumContent } from '../../../_components/PremiumContent'
 import { PostHero } from '../../../_heros/PostHero'
 import { generateMeta } from '../../../_utilities/generateMeta'
@@ -39,10 +40,12 @@ export default async function Post({ params: { slug } }) {
     doc: post?.id,
   })
 
-  const { layout, relatedPosts, enablePremiumContent, premiumContent } = post
+  const { layout, relatedPosts, enablePremiumContent, premiumContent, hero } = post
 
   return (
     <React.Fragment>
+      {/* <Hero {...hero} /> */}
+
       <PostHero post={post} />
       <Blocks blocks={layout} />
       {enablePremiumContent && <PremiumContent postSlug={slug as string} disableTopPadding />}

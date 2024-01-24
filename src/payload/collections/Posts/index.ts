@@ -5,8 +5,10 @@ import { adminsOrEditors } from '../../access/adminsOrEditors'
 import { adminsOrPublished } from '../../access/adminsOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock'
 import { CallToAction } from '../../blocks/CallToAction'
+import { Cards } from '../../blocks/Cards'
 import { Content } from '../../blocks/Content'
 import { MediaBlock } from '../../blocks/MediaBlock'
+import { ProductBlock } from '../../blocks/ProductBlock'
 import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug'
 import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
@@ -121,7 +123,7 @@ export const Posts: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               required: true,
-              blocks: [CallToAction, Content, MediaBlock, Archive],
+              blocks: [CallToAction, Content, MediaBlock, Archive, ProductBlock, Cards],
             },
             {
               name: 'enablePremiumContent',
@@ -134,7 +136,7 @@ export const Posts: CollectionConfig = {
               access: {
                 read: ({ req }) => req.user,
               },
-              blocks: [CallToAction, Content, MediaBlock, Archive],
+              blocks: [CallToAction, Content, MediaBlock, Archive, ProductBlock, Cards],
             },
           ],
         },

@@ -83,3 +83,33 @@ export const ARCHIVE_BLOCK = `
   populatedDocsTotal
 }
 `
+
+export const PRODUCT_BLOCK = `
+...on ProductBlock {
+  blockType
+  invertBackground
+  ${MEDIA}
+  title {
+    appearance
+    value
+  }
+  sku {
+    appearance
+    value
+  }
+}
+`
+
+export const CARDS = `
+...on Cards {
+  blockType
+  invertBackground
+  cards {
+    size
+    ${MEDIA}
+    richText
+    enableLink
+    link ${LINK_FIELDS()}
+  }
+}
+`

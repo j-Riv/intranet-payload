@@ -309,7 +309,7 @@ input Page_Hero_Media_where_or {
   OR: [Page_Hero_Media_where_or]
 }
 
-union Page_Layout = Cta | Content | MediaBlock | Archive
+union Page_Layout = Cta | Content | MediaBlock | Archive | ProductBlock | Cards
 
 type Cta {
   invertBackground: Boolean
@@ -927,9 +927,425 @@ input Post_Hero_Media_where_or {
   OR: [Post_Hero_Media_where_or]
 }
 
-union Post_Layout = Cta | Content | MediaBlock | Archive
+union Post_Layout = Cta | Content | MediaBlock | Archive | ProductBlock | Cards
 
-union Post_PremiumContent = Cta | Content | MediaBlock | Archive
+type ProductBlock {
+  invertBackground: Boolean
+  media(where: ProductBlock_Media_where): Media
+  title: ProductBlock_Title
+  sku: ProductBlock_Sku
+  id: String
+  blockName: String
+  blockType: String
+}
+
+input ProductBlock_Media_where {
+  alt: ProductBlock_Media_alt_operator
+  caption: ProductBlock_Media_caption_operator
+  updatedAt: ProductBlock_Media_updatedAt_operator
+  createdAt: ProductBlock_Media_createdAt_operator
+  url: ProductBlock_Media_url_operator
+  filename: ProductBlock_Media_filename_operator
+  mimeType: ProductBlock_Media_mimeType_operator
+  filesize: ProductBlock_Media_filesize_operator
+  width: ProductBlock_Media_width_operator
+  height: ProductBlock_Media_height_operator
+  id: ProductBlock_Media_id_operator
+  AND: [ProductBlock_Media_where_and]
+  OR: [ProductBlock_Media_where_or]
+}
+
+input ProductBlock_Media_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input ProductBlock_Media_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input ProductBlock_Media_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input ProductBlock_Media_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input ProductBlock_Media_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ProductBlock_Media_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ProductBlock_Media_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ProductBlock_Media_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input ProductBlock_Media_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input ProductBlock_Media_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input ProductBlock_Media_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ProductBlock_Media_where_and {
+  alt: ProductBlock_Media_alt_operator
+  caption: ProductBlock_Media_caption_operator
+  updatedAt: ProductBlock_Media_updatedAt_operator
+  createdAt: ProductBlock_Media_createdAt_operator
+  url: ProductBlock_Media_url_operator
+  filename: ProductBlock_Media_filename_operator
+  mimeType: ProductBlock_Media_mimeType_operator
+  filesize: ProductBlock_Media_filesize_operator
+  width: ProductBlock_Media_width_operator
+  height: ProductBlock_Media_height_operator
+  id: ProductBlock_Media_id_operator
+  AND: [ProductBlock_Media_where_and]
+  OR: [ProductBlock_Media_where_or]
+}
+
+input ProductBlock_Media_where_or {
+  alt: ProductBlock_Media_alt_operator
+  caption: ProductBlock_Media_caption_operator
+  updatedAt: ProductBlock_Media_updatedAt_operator
+  createdAt: ProductBlock_Media_createdAt_operator
+  url: ProductBlock_Media_url_operator
+  filename: ProductBlock_Media_filename_operator
+  mimeType: ProductBlock_Media_mimeType_operator
+  filesize: ProductBlock_Media_filesize_operator
+  width: ProductBlock_Media_width_operator
+  height: ProductBlock_Media_height_operator
+  id: ProductBlock_Media_id_operator
+  AND: [ProductBlock_Media_where_and]
+  OR: [ProductBlock_Media_where_or]
+}
+
+type ProductBlock_Title {
+  appearance: ProductBlock_Title_appearance
+  value: String
+}
+
+enum ProductBlock_Title_appearance {
+  default
+  heading
+  lead
+  copy
+  fine
+}
+
+type ProductBlock_Sku {
+  appearance: ProductBlock_Sku_appearance
+  value: String
+}
+
+enum ProductBlock_Sku_appearance {
+  default
+  heading
+  lead
+  copy
+  fine
+}
+
+type Cards {
+  invertBackground: Boolean
+  cards: [Cards_Cards!]
+  id: String
+  blockName: String
+  blockType: String
+}
+
+type Cards_Cards {
+  size: Cards_Cards_size
+  media(where: Cards_Cards_Media_where): Media
+  richText(depth: Int): JSON
+  enableLink: Boolean
+  link: Cards_Cards_Link
+  id: String
+}
+
+enum Cards_Cards_size {
+  oneThird
+  half
+  twoThirds
+  OneFourth
+  full
+}
+
+input Cards_Cards_Media_where {
+  alt: Cards_Cards_Media_alt_operator
+  caption: Cards_Cards_Media_caption_operator
+  updatedAt: Cards_Cards_Media_updatedAt_operator
+  createdAt: Cards_Cards_Media_createdAt_operator
+  url: Cards_Cards_Media_url_operator
+  filename: Cards_Cards_Media_filename_operator
+  mimeType: Cards_Cards_Media_mimeType_operator
+  filesize: Cards_Cards_Media_filesize_operator
+  width: Cards_Cards_Media_width_operator
+  height: Cards_Cards_Media_height_operator
+  id: Cards_Cards_Media_id_operator
+  AND: [Cards_Cards_Media_where_and]
+  OR: [Cards_Cards_Media_where_or]
+}
+
+input Cards_Cards_Media_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Cards_Cards_Media_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Cards_Cards_Media_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Cards_Cards_Media_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Cards_Cards_Media_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Cards_Cards_Media_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Cards_Cards_Media_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Cards_Cards_Media_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Cards_Cards_Media_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Cards_Cards_Media_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Cards_Cards_Media_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Cards_Cards_Media_where_and {
+  alt: Cards_Cards_Media_alt_operator
+  caption: Cards_Cards_Media_caption_operator
+  updatedAt: Cards_Cards_Media_updatedAt_operator
+  createdAt: Cards_Cards_Media_createdAt_operator
+  url: Cards_Cards_Media_url_operator
+  filename: Cards_Cards_Media_filename_operator
+  mimeType: Cards_Cards_Media_mimeType_operator
+  filesize: Cards_Cards_Media_filesize_operator
+  width: Cards_Cards_Media_width_operator
+  height: Cards_Cards_Media_height_operator
+  id: Cards_Cards_Media_id_operator
+  AND: [Cards_Cards_Media_where_and]
+  OR: [Cards_Cards_Media_where_or]
+}
+
+input Cards_Cards_Media_where_or {
+  alt: Cards_Cards_Media_alt_operator
+  caption: Cards_Cards_Media_caption_operator
+  updatedAt: Cards_Cards_Media_updatedAt_operator
+  createdAt: Cards_Cards_Media_createdAt_operator
+  url: Cards_Cards_Media_url_operator
+  filename: Cards_Cards_Media_filename_operator
+  mimeType: Cards_Cards_Media_mimeType_operator
+  filesize: Cards_Cards_Media_filesize_operator
+  width: Cards_Cards_Media_width_operator
+  height: Cards_Cards_Media_height_operator
+  id: Cards_Cards_Media_id_operator
+  AND: [Cards_Cards_Media_where_and]
+  OR: [Cards_Cards_Media_where_or]
+}
+
+type Cards_Cards_Link {
+  type: Cards_Cards_Link_type
+  newTab: Boolean
+  reference: Cards_Cards_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: Cards_Cards_Link_appearance
+}
+
+enum Cards_Cards_Link_type {
+  reference
+  custom
+}
+
+type Cards_Cards_Link_Reference_Relationship {
+  relationTo: Cards_Cards_Link_Reference_RelationTo
+  value: Cards_Cards_Link_Reference
+}
+
+enum Cards_Cards_Link_Reference_RelationTo {
+  pages
+}
+
+union Cards_Cards_Link_Reference = Page
+
+enum Cards_Cards_Link_appearance {
+  default
+  primary
+  secondary
+}
+
+union Post_PremiumContent = Cta | Content | MediaBlock | Archive | ProductBlock | Cards
 
 type Post_Meta {
   title: String
@@ -3253,7 +3669,7 @@ input PageVersion_Version_Hero_Media_where_or {
   OR: [PageVersion_Version_Hero_Media_where_or]
 }
 
-union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive
+union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | ProductBlock | Cards
 
 type PageVersion_Version_Meta {
   title: String
@@ -5205,9 +5621,9 @@ input PostVersion_Version_Hero_Media_where_or {
   OR: [PostVersion_Version_Hero_Media_where_or]
 }
 
-union PostVersion_Version_Layout = Cta | Content | MediaBlock | Archive
+union PostVersion_Version_Layout = Cta | Content | MediaBlock | Archive | ProductBlock | Cards
 
-union PostVersion_Version_PremiumContent = Cta | Content | MediaBlock | Archive
+union PostVersion_Version_PremiumContent = Cta | Content | MediaBlock | Archive | ProductBlock | Cards
 
 type PostVersion_Version_Meta {
   title: String

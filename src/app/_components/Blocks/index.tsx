@@ -3,9 +3,11 @@ import React, { Fragment } from 'react'
 import { Page } from '../../../payload/payload-types.js'
 import { ArchiveBlock } from '../../_blocks/ArchiveBlock'
 import { CallToActionBlock } from '../../_blocks/CallToAction'
+import { Cards } from '../../_blocks/Cards'
 import { CommentsBlock, type CommentsBlockProps } from '../../_blocks/Comments/index'
 import { ContentBlock } from '../../_blocks/Content'
 import { MediaBlock } from '../../_blocks/MediaBlock'
+import { ProductBlock } from '../../_blocks/ProductBlock'
 import { RelatedPosts, type RelatedPostsProps } from '../../_blocks/RelatedPosts'
 import { toKebabCase } from '../../_utilities/toKebabCase'
 import { BackgroundColor } from '../BackgroundColor'
@@ -18,6 +20,8 @@ const blockComponents = {
   archive: ArchiveBlock,
   relatedPosts: RelatedPosts,
   comments: CommentsBlock,
+  productBlock: ProductBlock,
+  cards: Cards,
 }
 
 export const Blocks: React.FC<{
@@ -27,6 +31,8 @@ export const Blocks: React.FC<{
   const { disableTopPadding, blocks } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
+
+  console.log('blocks', blocks)
 
   if (hasBlocks) {
     return (
@@ -66,7 +72,6 @@ export const Blocks: React.FC<{
               return (
                 <BackgroundColor key={index} invert={blockIsInverted}>
                   <VerticalPadding top={paddingTop} bottom={paddingBottom}>
-                    {/* @ts-expect-error */}
                     <Block id={toKebabCase(blockName)} {...block} />
                   </VerticalPadding>
                 </BackgroundColor>

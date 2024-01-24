@@ -9,6 +9,7 @@ import RichText from '../../_components/RichText'
 import classes from './index.module.scss'
 
 export const HighImpactHero: React.FC<Page['hero']> = ({ richText, media, links }) => {
+  console.log('media', media)
   return (
     <Gutter className={classes.hero}>
       <div className={classes.content}>

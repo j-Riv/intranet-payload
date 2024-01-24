@@ -1,4 +1,4 @@
-import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks'
+import { ARCHIVE_BLOCK, CALL_TO_ACTION, CARDS, CONTENT, MEDIA_BLOCK, PRODUCT_BLOCK } from './blocks'
 import { LINK_FIELDS } from './link'
 import { MEDIA } from './media'
 import { META } from './meta'
@@ -42,6 +42,8 @@ export const POST = `
           ${CONTENT}
           ${MEDIA_BLOCK}
           ${ARCHIVE_BLOCK}
+          ${PRODUCT_BLOCK}
+          ${CARDS}
         }
         enablePremiumContent
         relatedPosts {

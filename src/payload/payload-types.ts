@@ -170,6 +170,49 @@ export interface Page {
             blockName?: string | null;
             blockType: 'archive';
           }
+        | {
+            invertBackground?: boolean | null;
+            media: number | Media;
+            title: {
+              appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+              value: string;
+            };
+            sku: {
+              appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+              value: string;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productBlock';
+          }
+        | {
+            invertBackground?: boolean | null;
+            cards?:
+              | {
+                  size?: ('oneThird' | 'half' | 'twoThirds' | 'OneFourth' | 'full') | null;
+                  media: number | Media;
+                  richText: {
+                    [k: string]: unknown;
+                  }[];
+                  enableLink?: boolean | null;
+                  link?: {
+                    type?: ('reference' | 'custom') | null;
+                    newTab?: boolean | null;
+                    reference?: {
+                      relationTo: 'pages';
+                      value: number | Page;
+                    } | null;
+                    url?: string | null;
+                    label: string;
+                    appearance?: ('default' | 'primary' | 'secondary') | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cards';
+          }
       )[]
     | null;
   slug?: string | null;
@@ -363,6 +406,49 @@ export interface Post {
         blockName?: string | null;
         blockType: 'archive';
       }
+    | {
+        invertBackground?: boolean | null;
+        media: number | Media;
+        title: {
+          appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+          value: string;
+        };
+        sku: {
+          appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+          value: string;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'productBlock';
+      }
+    | {
+        invertBackground?: boolean | null;
+        cards?:
+          | {
+              size?: ('oneThird' | 'half' | 'twoThirds' | 'OneFourth' | 'full') | null;
+              media: number | Media;
+              richText: {
+                [k: string]: unknown;
+              }[];
+              enableLink?: boolean | null;
+              link?: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+                appearance?: ('default' | 'primary' | 'secondary') | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'cards';
+      }
   )[];
   enablePremiumContent?: boolean | null;
   premiumContent?:
@@ -479,6 +565,49 @@ export interface Post {
             id?: string | null;
             blockName?: string | null;
             blockType: 'archive';
+          }
+        | {
+            invertBackground?: boolean | null;
+            media: number | Media;
+            title: {
+              appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+              value: string;
+            };
+            sku: {
+              appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+              value: string;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productBlock';
+          }
+        | {
+            invertBackground?: boolean | null;
+            cards?:
+              | {
+                  size?: ('oneThird' | 'half' | 'twoThirds' | 'OneFourth' | 'full') | null;
+                  media: number | Media;
+                  richText: {
+                    [k: string]: unknown;
+                  }[];
+                  enableLink?: boolean | null;
+                  link?: {
+                    type?: ('reference' | 'custom') | null;
+                    newTab?: boolean | null;
+                    reference?: {
+                      relationTo: 'pages';
+                      value: number | Page;
+                    } | null;
+                    url?: string | null;
+                    label: string;
+                    appearance?: ('default' | 'primary' | 'secondary') | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cards';
           }
       )[]
     | null;
