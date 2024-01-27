@@ -3,7 +3,7 @@ import { LINK_FIELDS } from './link'
 import { MEDIA } from './media'
 import { META } from './meta'
 
-export const PAGES = `
+export const PAGES = `#graphql
   query Pages {
     Pages(limit: 300)  {
       docs {
@@ -13,7 +13,7 @@ export const PAGES = `
   }
 `
 
-export const PAGE = `
+export const PAGE = `#graphql
   query Page($slug: String, $draft: Boolean) {
     Pages(where: { slug: { equals: $slug }}, limit: 1, draft: $draft) {
       docs {

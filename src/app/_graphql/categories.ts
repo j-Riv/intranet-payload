@@ -1,8 +1,9 @@
-export const CATEGORIES = `categories {
-  title
-  id
-  breadcrumbs {
+export const CATEGORIES = `#graphql
+  categories {
+    title
     id
-    label
-  }
-}`
+    breadcrumbs {
+      id
+      label
+    }
+  }`

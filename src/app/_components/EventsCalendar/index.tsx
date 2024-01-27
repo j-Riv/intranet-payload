@@ -1,20 +1,20 @@
-'use client'
-import React, { useMemo } from 'react'
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import FullCalendar from '@fullcalendar/react'
-import moment from 'moment'
+'use client';
+import React, { useMemo } from 'react';
+import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
+import FullCalendar from '@fullcalendar/react';
+import moment from 'moment';
 
-import { Gutter } from '../../_components/Gutter'
+import { Gutter } from '../../_components/Gutter';
 
-import classes from './index.module.scss'
+import classes from './index.module.scss';
 
 // Setup the localizer by providing the moment (or globalize, or Luxon) Object
 // to the correct localizer.
-moment.locale('en-US') // or globalizeLocalizer
+moment.locale('en-US'); // or globalizeLocalizer
 
 export type Props = {
-  events: any[]
-}
+  events: any[];
+};
 
 export const EventsCalander: React.FC<Props> = ({ events }) => {
   return (
@@ -47,5 +47,5 @@ export const EventsCalander: React.FC<Props> = ({ events }) => {
         />
       </div>
     </Gutter>
-  )
-}
+  );
+};

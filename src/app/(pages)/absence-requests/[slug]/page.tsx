@@ -1,37 +1,37 @@
-import React from 'react'
-import { Metadata } from 'next'
-import { draftMode } from 'next/headers'
-import { notFound } from 'next/navigation'
+import React from 'react';
+import { Metadata } from 'next';
+import { draftMode } from 'next/headers';
+import { notFound } from 'next/navigation';
 
-import { AbsenceRequest, Comment, Post } from '../../../../payload/payload-types'
-import { fetchComments } from '../../../_api/fetchComments'
-import { fetchDoc } from '../../../_api/fetchDoc'
-import { fetchDocs } from '../../../_api/fetchDocs'
-import { Blocks } from '../../../_components/Blocks'
-import { PremiumContent } from '../../../_components/PremiumContent'
-import { PostHero } from '../../../_heros/PostHero'
-import { generateMeta } from '../../../_utilities/generateMeta'
+import { AbsenceRequest, Comment, Post } from '../../../../payload/payload-types';
+import { fetchComments } from '../../../_api/fetchComments';
+import { fetchDoc } from '../../../_api/fetchDoc';
+import { fetchDocs } from '../../../_api/fetchDocs';
+import { Blocks } from '../../../_components/Blocks';
+import { PremiumContent } from '../../../_components/PremiumContent';
+import { PostHero } from '../../../_heros/PostHero';
+import { generateMeta } from '../../../_utilities/generateMeta';
 
 // Force this page to be dynamic so that Next.js does not cache it
 // See the note in '../../../[slug]/page.tsx' about this
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 export default async function AbsenceRequests({ params: { slug } }) {
-  const { isEnabled: isDraftMode } = draftMode()
+  const { isEnabled: isDraftMode } = draftMode();
 
-  let absenceRequest: AbsenceRequest | null = null
+  let absenceRequest: AbsenceRequest | null = null;
 
   try {
     absenceRequest = await fetchDoc<AbsenceRequest>({
       collection: 'absence-requests',
       slug,
       // draft: isDraftMode,
-    })
+    });
   } catch (error) {
-    console.error(error) // eslint-disable-line no-console
+    console.error(error); // eslint-disable-line no-console
   }
   if (!absenceRequest) {
-    notFound()
+    notFound();
   }
 
   // const comments = await fetchComments({
@@ -124,30 +124,30 @@ export default async function AbsenceRequests({ params: { slug } }) {
         ]}
       /> */}
     </React.Fragment>
-  )
+  );
 }
 
 export async function generateStaticParams() {
   try {
-    const events = await fetchDocs<Post>('events')
-    return events?.map(({ slug }) => slug)
+    const events = await fetchDocs<Post>('events');
+    return events?.map(({ slug }) => slug);
   } catch (error) {
-    return []
+    return [];
   }
 }
 
 export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
-  const { isEnabled: isDraftMode } = draftMode()
+  const { isEnabled: isDraftMode } = draftMode();
 
-  let absenceRequest: AbsenceRequest | null = null
+  let absenceRequest: AbsenceRequest | null = null;
 
   try {
     absenceRequest = await fetchDoc<AbsenceRequest>({
       collection: 'absence-requests',
       slug,
       draft: isDraftMode,
-    })
+    });
   } catch (error) {}
-
-  return generateMeta({ doc: absenceRequest })
+  // @ts-expect-error
+  return generateMeta({ doc: absenceRequest });
 }
