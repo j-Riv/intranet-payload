@@ -1,18 +1,18 @@
-import React from 'react'
+import React from 'react';
 
-import { Page } from '../../../payload/payload-types'
-import { Gutter } from '../../_components/Gutter'
-import { Media } from '../../_components/Media'
-import RichText from '../../_components/RichText'
-import { VerticalPadding } from '../../_components/VerticalPadding'
+import { Page } from '../../../payload/payload-types';
+import { Gutter } from '../../_components/Gutter';
+import { Media } from '../../_components/Media';
+import RichText from '../../_components/RichText';
+import { VerticalPadding } from '../../_components/VerticalPadding';
 
-import classes from './index.module.scss'
+import classes from './index.module.scss';
 
-export type CardProps = Extract<Page['layout'][0], { blockType: 'cards' }>
+export type CardProps = Extract<Page['layout'][0], { blockType: 'cards' }>;
 
 export const Cards: React.FC<
   CardProps & {
-    id?: string
+    id?: string;
   }
 > = ({ invertBackground, cards }) => {
   return (
@@ -40,5 +40,5 @@ export const Cards: React.FC<
         </div>
       </VerticalPadding>
     </Gutter>
-  )
-}
+  );
+};

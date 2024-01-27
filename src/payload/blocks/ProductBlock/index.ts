@@ -1,7 +1,7 @@
-import type { Block } from 'payload/types'
+import type { Block } from 'payload/types';
 
-import { invertBackground } from '../../fields/invertBackground'
-import textField from '../../fields/text'
+import { invertBackground } from '../../fields/invertBackground';
+import textField from '../../fields/text';
 
 export const ProductBlock: Block = {
   slug: 'productBlock',
@@ -24,4 +24,4 @@ export const ProductBlock: Block = {
       required: true,
     }),
   ],
-}
+};

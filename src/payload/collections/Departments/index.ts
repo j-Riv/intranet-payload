@@ -1,10 +1,10 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload/types';
 
-import { admins } from '../../access/admins'
-import { anyone } from '../../access/anyone'
-import type { Comment } from '../../payload-types'
-import { populateUser } from './hooks/populateUser'
-import { revalidatePost } from './hooks/revalidatePost'
+import { admins } from '../../access/admins';
+import { anyone } from '../../access/anyone';
+import type { Comment } from '../../payload-types';
+import { populateUser } from './hooks/populateUser';
+import { revalidatePost } from './hooks/revalidatePost';
 
 const Departments: CollectionConfig = {
   slug: 'departments',
@@ -69,6 +69,6 @@ const Departments: CollectionConfig = {
       ],
     },
   ],
-}
+};
 
-export default Departments
+export default Departments;

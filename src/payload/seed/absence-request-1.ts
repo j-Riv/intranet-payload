@@ -1,6 +1,6 @@
-import moment from 'moment'
+import moment from 'moment';
 
-import type { AbsenceRequest } from '../payload-types'
+import type { AbsenceRequest } from '../payload-types';
 
 export const absenceRequest1: Partial<AbsenceRequest> = {
   title: 'Absence Request 1',
@@ -60,4 +60,4 @@ export const absenceRequest1: Partial<AbsenceRequest> = {
   dateTo: moment('2024-01-12').endOf('day').toISOString(),
   userComments: 'Going out of Town',
   adminComments: null,
-}
+};

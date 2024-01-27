@@ -1,8 +1,8 @@
-import type { Block, Field } from 'payload/types'
+import type { Block, Field } from 'payload/types';
 
-import { invertBackground } from '../../fields/invertBackground'
-import link from '../../fields/link'
-import richText from '../../fields/richText'
+import { invertBackground } from '../../fields/invertBackground';
+import link from '../../fields/link';
+import richText from '../../fields/richText';
 
 const cardFields: Field[] = [
   {
@@ -50,7 +50,7 @@ const cardFields: Field[] = [
       },
     },
   }),
-]
+];
 
 export const Cards: Block = {
   slug: 'cards',
@@ -62,4 +62,4 @@ export const Cards: Block = {
       fields: cardFields,
     },
   ],
-}
+};

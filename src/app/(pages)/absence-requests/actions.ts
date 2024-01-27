@@ -1,8 +1,8 @@
-'use server'
+'use server';
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath } from 'next/cache';
 
 export async function navigate(email: string): Promise<void> {
-  console.log('email', email)
-  revalidatePath('/absence-requests/pending')
+  console.log('email', email);
+  revalidatePath('/absence-requests/pending');
 }

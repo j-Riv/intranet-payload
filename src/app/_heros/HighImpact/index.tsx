@@ -1,15 +1,14 @@
-import React, { Fragment } from 'react'
+import React, { Fragment } from 'react';
 
-import { Page } from '../../../payload/payload-types'
-import { Gutter } from '../../_components/Gutter'
-import { CMSLink } from '../../_components/Link'
-import { Media } from '../../_components/Media'
-import RichText from '../../_components/RichText'
+import { Page } from '../../../payload/payload-types';
+import { Gutter } from '../../_components/Gutter';
+import { CMSLink } from '../../_components/Link';
+import { Media } from '../../_components/Media';
+import RichText from '../../_components/RichText';
 
-import classes from './index.module.scss'
+import classes from './index.module.scss';
 
 export const HighImpactHero: React.FC<Page['hero']> = ({ richText, media, links }) => {
-  console.log('media', media)
   return (
     <Gutter className={classes.hero}>
       <div className={classes.content}>
@@ -19,9 +18,10 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ richText, media, links 
             {links.map(({ link }, i) => {
               return (
                 <li key={i}>
+                  {/* @ts-expect-error */}
                   <CMSLink {...link} />
                 </li>
-              )
+              );
             })}
           </ul>
         )}
@@ -40,5 +40,5 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ richText, media, links 
         )}
       </div>
     </Gutter>
-  )
-}
+  );
+};

@@ -1,20 +1,20 @@
-import React, { Fragment } from 'react'
-import Link from 'next/link'
+import React, { Fragment } from 'react';
+import Link from 'next/link';
 
-import { Post, Project } from '../../../payload/payload-types'
-import { Media } from '../Media'
+import { Post, Project } from '../../../payload/payload-types';
+import { Media } from '../Media';
 
-import classes from './index.module.scss'
+import classes from './index.module.scss';
 
 export const Card: React.FC<{
-  alignItems?: 'center'
-  className?: string
-  showCategories?: boolean
-  hideImagesOnMobile?: boolean
-  title?: string
-  relationTo?: 'projects' | 'posts'
-  doc?: Project | Post
-  orientation?: 'horizontal' | 'vertical'
+  alignItems?: 'center';
+  className?: string;
+  showCategories?: boolean;
+  hideImagesOnMobile?: boolean;
+  title?: string;
+  relationTo?: 'projects' | 'posts';
+  doc?: Project | Post;
+  orientation?: 'horizontal' | 'vertical';
 }> = props => {
   const {
     relationTo,
@@ -23,15 +23,15 @@ export const Card: React.FC<{
     doc,
     className,
     orientation = 'vertical',
-  } = props
+  } = props;
 
-  const { slug, title, categories, meta } = doc || {}
-  const { description, image: metaImage } = meta || {}
+  const { slug, title, categories, meta } = doc || {};
+  const { description, image: metaImage } = meta || {};
 
-  const hasCategories = categories && Array.isArray(categories) && categories.length > 0
-  const titleToUse = titleFromProps || title
-  const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`
+  const hasCategories = categories && Array.isArray(categories) && categories.length > 0;
+  const titleToUse = titleFromProps || title;
+  const sanitizedDescription = description?.replace(/\s/g, ' '); // replace non-breaking space with white space
+  const href = `/${relationTo}/${slug}`;
 
   return (
     <div
@@ -42,6 +42,7 @@ export const Card: React.FC<{
       <Link href={href} className={classes.mediaWrapper}>
         {!metaImage && <div className={classes.placeholder}>No image</div>}
         {metaImage && typeof metaImage !== 'string' && (
+          // @ts-expect-error
           <Media imgClassName={classes.image} resource={metaImage} fill />
         )}
       </Link>
@@ -52,21 +53,21 @@ export const Card: React.FC<{
               <div>
                 {categories?.map((category, index) => {
                   if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
+                    const { title: titleFromCategory } = category;
 
-                    const categoryTitle = titleFromCategory || 'Untitled category'
+                    const categoryTitle = titleFromCategory || 'Untitled category';
 
-                    const isLast = index === categories.length - 1
+                    const isLast = index === categories.length - 1;
 
                     return (
                       <Fragment key={index}>
                         {categoryTitle}
                         {!isLast && <Fragment>, &nbsp;</Fragment>}
                       </Fragment>
-                    )
+                    );
                   }
 
-                  return null
+                  return null;
                 })}
               </div>
             )}
@@ -86,5 +87,5 @@ export const Card: React.FC<{
         )}
       </div>
     </div>
-  )
-}
+  );
+};

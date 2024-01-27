@@ -1,4 +1,4 @@
-import type { Field } from 'payload/types'
+import type { Field } from 'payload/types';
 
 export const appearanceOptions = {
   heading: {
@@ -21,11 +21,11 @@ export const appearanceOptions = {
     label: 'Default',
     value: 'default',
   },
-}
+};
 
-export type TextAppearances = 'Heading' | 'Lead' | 'Copy' | 'Fine' | 'Default'
+export type TextAppearances = 'Heading' | 'Lead' | 'Copy' | 'Fine' | 'Default';
 
-type TextType = (options?: { label: string; name: string; required?: boolean }) => Field
+type TextType = (options?: { label: string; name: string; required?: boolean }) => Field;
 
 const text: TextType = ({ label, name, required = false }) => {
   const appearanceOptionsToUse = [
@@ -34,7 +34,7 @@ const text: TextType = ({ label, name, required = false }) => {
     appearanceOptions.lead,
     appearanceOptions.copy,
     appearanceOptions.fine,
-  ]
+  ];
 
   const textResult: Field = {
     name: name,
@@ -59,9 +59,9 @@ const text: TextType = ({ label, name, required = false }) => {
         label: label,
       },
     ],
-  }
+  };
 
-  return textResult
-}
+  return textResult;
+};
 
-export default text
+export default text;

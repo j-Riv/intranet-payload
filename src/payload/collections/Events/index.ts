@@ -1,18 +1,18 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload/types';
 
-import { admins } from '../../access/admins'
-import { adminsOrEditors } from '../../access/adminsOrEditors'
-import { adminsOrPublished } from '../../access/adminsOrPublished'
+import { admins } from '../../access/admins';
+import { adminsOrEditors } from '../../access/adminsOrEditors';
+import { adminsOrPublished } from '../../access/adminsOrPublished';
 // import { Archive } from '../../blocks/ArchiveBlock'
 // import { CallToAction } from '../../blocks/CallToAction'
 // import { Content } from '../../blocks/Content'
 // import { MediaBlock } from '../../blocks/MediaBlock'
 // import { hero } from '../../fields/hero'
-import { slugField } from '../../fields/slug'
+import { slugField } from '../../fields/slug';
 // import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
-import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { populateAuthors } from './hooks/populateAuthors'
-import { revalidateEvent } from './hooks/revalidateEvent'
+import { populatePublishedAt } from '../../hooks/populatePublishedAt';
+import { populateAuthors } from './hooks/populateAuthors';
+import { revalidateEvent } from './hooks/revalidateEvent';
 
 export const Events: CollectionConfig = {
   slug: 'events',
@@ -22,7 +22,7 @@ export const Events: CollectionConfig = {
     preview: doc => {
       return `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(
         `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/events/${doc?.slug}`,
-      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`
+      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`;
     },
   },
   hooks: {
@@ -70,9 +70,9 @@ export const Events: CollectionConfig = {
         beforeChange: [
           ({ siblingData, value }) => {
             if (siblingData._status === 'published' && !value) {
-              return new Date()
+              return new Date();
             }
-            return value
+            return value;
           },
         ],
       },
@@ -140,7 +140,7 @@ export const Events: CollectionConfig = {
           id: {
             not_in: [id],
           },
-        }
+        };
       },
     },
     {
@@ -155,4 +155,4 @@ export const Events: CollectionConfig = {
     },
     slugField(),
   ],
-}
+};

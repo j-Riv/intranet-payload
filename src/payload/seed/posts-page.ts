@@ -1,4 +1,4 @@
-import type { Page } from '../payload-types'
+import type { Page } from '../payload-types';
 
 export const postsPage: Partial<Page> = {
   title: 'Posts',
@@ -60,4 +60,4 @@ export const postsPage: Partial<Page> = {
       categories: [],
     },
   ],
-}
+};

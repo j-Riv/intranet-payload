@@ -1,19 +1,19 @@
-import React from 'react'
-import ReactDatePicker from 'react-datepicker'
-import { Controller } from 'react-hook-form'
+import React from 'react';
+import ReactDatePicker from 'react-datepicker';
+import { Controller } from 'react-hook-form';
 
-import 'react-datepicker/dist/react-datepicker.css'
+import 'react-datepicker/dist/react-datepicker.css';
 
-import classes from './index.module.scss'
+import classes from './index.module.scss';
 
 export type Props = {
-  control: any
-  name: string
-  label: string
-  required: boolean
-  error: any
-  placeholder?: string
-}
+  control: any;
+  name: string;
+  label: string;
+  required: boolean;
+  error: any;
+  placeholder?: string;
+};
 
 export const DatePicker: React.FC<Props> = ({
   control,
@@ -24,9 +24,9 @@ export const DatePicker: React.FC<Props> = ({
   placeholder = 'Select Date',
 }) => {
   const isWeekday = (date: Date) => {
-    const day = date.getDay()
-    return day !== 0 && day !== 6
-  }
+    const day = date.getDay();
+    return day !== 0 && day !== 6;
+  };
 
   return (
     <div className={classes.inputWrap}>
@@ -55,5 +55,5 @@ export const DatePicker: React.FC<Props> = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};

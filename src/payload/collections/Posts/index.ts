@@ -1,20 +1,20 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload/types';
 
-import { admins } from '../../access/admins'
-import { adminsOrEditors } from '../../access/adminsOrEditors'
-import { adminsOrPublished } from '../../access/adminsOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock'
-import { CallToAction } from '../../blocks/CallToAction'
-import { Cards } from '../../blocks/Cards'
-import { Content } from '../../blocks/Content'
-import { MediaBlock } from '../../blocks/MediaBlock'
-import { ProductBlock } from '../../blocks/ProductBlock'
-import { hero } from '../../fields/hero'
-import { slugField } from '../../fields/slug'
-import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
-import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { populateAuthors } from './hooks/populateAuthors'
-import { revalidatePost } from './hooks/revalidatePost'
+import { admins } from '../../access/admins';
+import { adminsOrEditors } from '../../access/adminsOrEditors';
+import { adminsOrPublished } from '../../access/adminsOrPublished';
+import { Archive } from '../../blocks/ArchiveBlock';
+import { CallToAction } from '../../blocks/CallToAction';
+import { Cards } from '../../blocks/Cards';
+import { Content } from '../../blocks/Content';
+import { MediaBlock } from '../../blocks/MediaBlock';
+import { ProductBlock } from '../../blocks/ProductBlock';
+import { hero } from '../../fields/hero';
+import { slugField } from '../../fields/slug';
+import { populateArchiveBlock } from '../../hooks/populateArchiveBlock';
+import { populatePublishedAt } from '../../hooks/populatePublishedAt';
+import { populateAuthors } from './hooks/populateAuthors';
+import { revalidatePost } from './hooks/revalidatePost';
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -24,7 +24,7 @@ export const Posts: CollectionConfig = {
     preview: doc => {
       return `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(
         `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/posts/${doc?.slug}`,
-      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`
+      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`;
     },
   },
   hooks: {
@@ -69,9 +69,9 @@ export const Posts: CollectionConfig = {
         beforeChange: [
           ({ siblingData, value }) => {
             if (siblingData._status === 'published' && !value) {
-              return new Date()
+              return new Date();
             }
-            return value
+            return value;
           },
         ],
       },
@@ -152,9 +152,9 @@ export const Posts: CollectionConfig = {
           id: {
             not_in: [id],
           },
-        }
+        };
       },
     },
     slugField(),
   ],
-}
+};

@@ -1,43 +1,43 @@
-'use client'
-import React, { Fragment, useCallback, useRef } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+'use client';
+import React, { Fragment, useCallback, useRef } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { AbsenceRequest } from '../../../../../payload/payload-types'
-import { Button } from '../../../../_components/Button'
-import { DatePicker } from '../../../../_components/DatePicker'
-import { Gutter } from '../../../../_components/Gutter'
-import { Input } from '../../../../_components/Input'
-import { Message } from '../../../../_components/Message'
-import { useAuth } from '../../../../_providers/Auth'
-import { navigate } from '../../actions'
+import { AbsenceRequest } from '../../../../../payload/payload-types';
+import { Button } from '../../../../_components/Button';
+import { DatePicker } from '../../../../_components/DatePicker';
+import { Gutter } from '../../../../_components/Gutter';
+import { Input } from '../../../../_components/Input';
+import { Message } from '../../../../_components/Message';
+import { useAuth } from '../../../../_providers/Auth';
+import { navigate } from '../../actions';
 
-import classes from './index.module.scss'
+import classes from './index.module.scss';
 
 type Props = {
-  absenceRequest: AbsenceRequest
-}
+  absenceRequest: AbsenceRequest;
+};
 
 type FormData = {
-  username: string
-  email: string
-  startDate: string
-  endDate: string
-  reason: string
-  status: string
-}
+  username: string;
+  email: string;
+  startDate: string;
+  endDate: string;
+  reason: string;
+  status: string;
+};
 
 const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
-  const searchParams = useSearchParams()
-  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : ''
-  const redirect = useRef(searchParams.get('redirect'))
-  const router = useRouter()
-  const [error, setError] = React.useState<string | null>(null)
-  const [success, setSuccess] = React.useState<React.ReactNode | null>(null)
+  const searchParams = useSearchParams();
+  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : '';
+  const redirect = useRef(searchParams.get('redirect'));
+  const router = useRouter();
+  const [error, setError] = React.useState<string | null>(null);
+  const [success, setSuccess] = React.useState<React.ReactNode | null>(null);
 
   const { id, approved, slug, title, dateFrom, dateTo, populatedAuthors, userComments } =
-    absenceRequest
+    absenceRequest;
 
   const {
     control,
@@ -45,13 +45,13 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
     handleSubmit,
     formState: { errors, isLoading },
     reset,
-  } = useForm<FormData>()
+  } = useForm<FormData>();
 
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      if (!user) return
+      if (!user) return;
 
       try {
         const res = await fetch(
@@ -65,28 +65,28 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
               approved: data.status,
             }),
           },
-        )
+        );
 
         const json: AbsenceRequest & {
-          message?: string
-        } = await res.json()
+          message?: string;
+        } = await res.json();
 
-        if (!res.ok) throw new Error(json.message)
+        if (!res.ok) throw new Error(json.message);
 
-        setError(null)
+        setError(null);
 
-        setSuccess(<Fragment>{'Absence request was submitted successfully.'}</Fragment>)
+        setSuccess(<Fragment>{'Absence request was submitted successfully.'}</Fragment>);
 
-        navigate(data.email)
+        navigate(data.email);
 
         // reset()
         // revalidatePath('/absence-requests/pending')
       } catch (_) {
-        setError('There was an error with the credentials provided. Please try again.')
+        setError('There was an error with the credentials provided. Please try again.');
       }
     },
     [user, id],
-  )
+  );
 
   return (
     <Gutter>
@@ -173,7 +173,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
         />
       </form>
     </Gutter>
-  )
-}
+  );
+};
 
-export default AbsenceRequest
+export default AbsenceRequest;

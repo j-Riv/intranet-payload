@@ -1,4 +1,4 @@
-import type { Page } from '../payload-types'
+import type { Page } from '../payload-types';
 
 export const eventsPage: Partial<Page> = {
   title: 'Events',
@@ -60,4 +60,4 @@ export const eventsPage: Partial<Page> = {
   //     categories: [],
   //   },
   // ],
-}
+};

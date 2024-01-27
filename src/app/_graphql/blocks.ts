@@ -3,7 +3,7 @@ import { LINK_FIELDS } from './link'
 import { MEDIA } from './media'
 import { META } from './meta'
 
-export const CALL_TO_ACTION = `
+export const CALL_TO_ACTION = `#graphql
 ...on Cta {
   blockType
   invertBackground
@@ -14,7 +14,7 @@ export const CALL_TO_ACTION = `
 }
 `
 
-export const CONTENT = `
+export const CONTENT = `#graphql
 ...on Content {
   blockType
   invertBackground
@@ -27,7 +27,7 @@ export const CONTENT = `
 }
 `
 
-export const MEDIA_BLOCK = `
+export const MEDIA_BLOCK = `#graphql
 ...on MediaBlock {
   blockType
   invertBackground
@@ -36,7 +36,7 @@ export const MEDIA_BLOCK = `
 }
 `
 
-export const ARCHIVE_BLOCK = `
+export const ARCHIVE_BLOCK = `#graphql
 ...on Archive {
   blockType
   introContent
@@ -84,7 +84,7 @@ export const ARCHIVE_BLOCK = `
 }
 `
 
-export const PRODUCT_BLOCK = `
+export const PRODUCT_BLOCK = `#graphql
 ...on ProductBlock {
   blockType
   invertBackground
@@ -100,7 +100,7 @@ export const PRODUCT_BLOCK = `
 }
 `
 
-export const CARDS = `
+export const CARDS = `#graphql
 ...on Cards {
   blockType
   invertBackground

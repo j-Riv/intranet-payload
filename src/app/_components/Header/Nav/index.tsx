@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import React from 'react'
-import Link from 'next/link'
+import React from 'react';
+import Link from 'next/link';
 
-import { Header as HeaderType } from '../../../../payload/payload-types'
-import { useAuth } from '../../../_providers/Auth'
-import { CMSLink } from '../../Link'
+import { Header as HeaderType } from '../../../../payload/payload-types';
+import { useAuth } from '../../../_providers/Auth';
+import { CMSLink } from '../../Link';
 
-import classes from './index.module.scss'
+import classes from './index.module.scss';
 
 export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
-  const navItems = header?.navItems || []
-  const { user } = useAuth()
+  const navItems = header?.navItems || [];
+  const { user } = useAuth();
 
   return (
     <nav
@@ -26,7 +26,7 @@ export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
     >
       {navItems.map(({ link }, i) => {
         // @ts-expect-error
-        return <CMSLink key={i} {...link} appearance="none" />
+        return <CMSLink key={i} {...link} appearance="none" />;
       })}
       {user && <Link href="/absence-requests">Absence Requests</Link>}
       {user && <Link href="/account">Account</Link>}
@@ -39,5 +39,5 @@ export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
         </React.Fragment>
       )}
     </nav>
-  )
-}
+  );
+};
