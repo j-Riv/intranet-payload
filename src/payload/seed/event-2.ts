@@ -1,4 +1,7 @@
-import type { Event } from '../payload-types'
+import moment from 'moment';
+
+import type { Event } from '../payload-types';
+
 export const event2: Partial<Event> = {
   title: 'Event 2',
   slug: 'event-2',
@@ -50,6 +53,6 @@ export const event2: Partial<Event> = {
     },
   ],
   relatedEvents: [], // this is populated by the seed script
-  dateFrom: '1/22/2024',
-  dateTo: '1/22/2024',
-}
+  dateFrom: moment('2024-01-22').startOf('day').toISOString(),
+  dateTo: moment('2024-01-27').endOf('day').toISOString(),
+};

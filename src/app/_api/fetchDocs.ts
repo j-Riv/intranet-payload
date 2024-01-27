@@ -1,11 +1,13 @@
-import type { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies'
+import type { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
-import type { Config } from '../../payload/payload-types'
-import { PAGES } from '../_graphql/pages'
-import { POSTS } from '../_graphql/posts'
-import { PROJECTS } from '../_graphql/projects'
-import { GRAPHQL_API_URL } from './shared'
-import { payloadToken } from './token'
+import type { Config } from '../../payload/payload-types';
+import { ABSENCE_REQUESTS } from '../_graphql/absence-requests';
+import { EVENTS } from '../_graphql/events';
+import { PAGES } from '../_graphql/pages';
+import { POSTS } from '../_graphql/posts';
+import { PROJECTS } from '../_graphql/projects';
+import { GRAPHQL_API_URL } from './shared';
+import { payloadToken } from './token';
 
 const queryMap = {
   pages: {
@@ -20,20 +22,28 @@ const queryMap = {
     query: PROJECTS,
     key: 'Projects',
   },
-}
+  'absence-requests': {
+    query: ABSENCE_REQUESTS,
+    key: 'AbsenceRequests',
+  },
+  events: {
+    query: EVENTS,
+    key: 'Events',
+  },
+};
 
 export const fetchDocs = async <T>(
   collection: keyof Config['collections'],
   draft?: boolean,
   variables?: Record<string, unknown>,
 ): Promise<T[]> => {
-  if (!queryMap[collection]) throw new Error(`Collection ${collection} not found`)
+  if (!queryMap[collection]) throw new Error(`Collection ${collection} not found`);
 
-  let token: RequestCookie | undefined
+  let token: RequestCookie | undefined;
 
   if (draft) {
-    const { cookies } = await import('next/headers')
-    token = cookies().get(payloadToken)
+    const { cookies } = await import('next/headers');
+    token = cookies().get(payloadToken);
   }
 
   const docs: T[] = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
@@ -51,10 +61,10 @@ export const fetchDocs = async <T>(
   })
     ?.then(res => res.json())
     ?.then(res => {
-      if (res.errors) throw new Error(res?.errors?.[0]?.message ?? 'Error fetching docs')
+      if (res.errors) throw new Error(res?.errors?.[0]?.message ?? 'Error fetching docs');
 
-      return res?.data?.[queryMap[collection].key]?.docs
-    })
+      return res?.data?.[queryMap[collection].key]?.docs;
+    });
 
-  return docs
-}
+  return docs;
+};

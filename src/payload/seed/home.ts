@@ -1,4 +1,4 @@
-import type { Page } from '../payload-types'
+import type { Page } from '../payload-types';
 
 export const home: Partial<Page> = {
   title: 'Home',
@@ -548,4 +548,4 @@ export const home: Partial<Page> = {
       ],
     },
   ],
-}
+};

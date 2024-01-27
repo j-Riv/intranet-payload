@@ -170,6 +170,49 @@ export interface Page {
             blockName?: string | null;
             blockType: 'archive';
           }
+        | {
+            invertBackground?: boolean | null;
+            media: number | Media;
+            title: {
+              appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+              value: string;
+            };
+            sku: {
+              appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+              value: string;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productBlock';
+          }
+        | {
+            invertBackground?: boolean | null;
+            cards?:
+              | {
+                  size?: ('oneThird' | 'half' | 'twoThirds' | 'OneFourth' | 'full') | null;
+                  media: number | Media;
+                  richText: {
+                    [k: string]: unknown;
+                  }[];
+                  enableLink?: boolean | null;
+                  link?: {
+                    type?: ('reference' | 'custom') | null;
+                    newTab?: boolean | null;
+                    reference?: {
+                      relationTo: 'pages';
+                      value: number | Page;
+                    } | null;
+                    url?: string | null;
+                    label: string;
+                    appearance?: ('default' | 'primary' | 'secondary') | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cards';
+          }
       )[]
     | null;
   slug?: string | null;
@@ -363,6 +406,49 @@ export interface Post {
         blockName?: string | null;
         blockType: 'archive';
       }
+    | {
+        invertBackground?: boolean | null;
+        media: number | Media;
+        title: {
+          appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+          value: string;
+        };
+        sku: {
+          appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+          value: string;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'productBlock';
+      }
+    | {
+        invertBackground?: boolean | null;
+        cards?:
+          | {
+              size?: ('oneThird' | 'half' | 'twoThirds' | 'OneFourth' | 'full') | null;
+              media: number | Media;
+              richText: {
+                [k: string]: unknown;
+              }[];
+              enableLink?: boolean | null;
+              link?: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+                appearance?: ('default' | 'primary' | 'secondary') | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'cards';
+      }
   )[];
   enablePremiumContent?: boolean | null;
   premiumContent?:
@@ -479,6 +565,49 @@ export interface Post {
             id?: string | null;
             blockName?: string | null;
             blockType: 'archive';
+          }
+        | {
+            invertBackground?: boolean | null;
+            media: number | Media;
+            title: {
+              appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+              value: string;
+            };
+            sku: {
+              appearance?: ('default' | 'heading' | 'lead' | 'copy' | 'fine') | null;
+              value: string;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productBlock';
+          }
+        | {
+            invertBackground?: boolean | null;
+            cards?:
+              | {
+                  size?: ('oneThird' | 'half' | 'twoThirds' | 'OneFourth' | 'full') | null;
+                  media: number | Media;
+                  richText: {
+                    [k: string]: unknown;
+                  }[];
+                  enableLink?: boolean | null;
+                  link?: {
+                    type?: ('reference' | 'custom') | null;
+                    newTab?: boolean | null;
+                    reference?: {
+                      relationTo: 'pages';
+                      value: number | Page;
+                    } | null;
+                    url?: string | null;
+                    label: string;
+                    appearance?: ('default' | 'primary' | 'secondary') | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cards';
           }
       )[]
     | null;
@@ -689,144 +818,6 @@ export interface Event {
         name?: string | null;
       }[]
     | null;
-  hero: {
-    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
-    richText: {
-      [k: string]: unknown;
-    }[];
-    links?:
-      | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?: {
-              relationTo: 'pages';
-              value: number | Page;
-            } | null;
-            url?: string | null;
-            label: string;
-            appearance?: ('default' | 'primary' | 'secondary') | null;
-          };
-          id?: string | null;
-        }[]
-      | null;
-    media?: number | Media | null;
-  };
-  layout: (
-    | {
-        invertBackground?: boolean | null;
-        richText: {
-          [k: string]: unknown;
-        }[];
-        links?:
-          | {
-              link: {
-                type?: ('reference' | 'custom') | null;
-                newTab?: boolean | null;
-                reference?: {
-                  relationTo: 'pages';
-                  value: number | Page;
-                } | null;
-                url?: string | null;
-                label: string;
-                appearance?: ('primary' | 'secondary') | null;
-              };
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'cta';
-      }
-    | {
-        invertBackground?: boolean | null;
-        columns?:
-          | {
-              size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
-              richText: {
-                [k: string]: unknown;
-              }[];
-              enableLink?: boolean | null;
-              link?: {
-                type?: ('reference' | 'custom') | null;
-                newTab?: boolean | null;
-                reference?: {
-                  relationTo: 'pages';
-                  value: number | Page;
-                } | null;
-                url?: string | null;
-                label: string;
-                appearance?: ('default' | 'primary' | 'secondary') | null;
-              };
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'content';
-      }
-    | {
-        invertBackground?: boolean | null;
-        position?: ('default' | 'fullscreen') | null;
-        media: number | Media;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'mediaBlock';
-      }
-    | {
-        introContent: {
-          [k: string]: unknown;
-        }[];
-        populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects' | 'events' | 'absence-requests') | null;
-        categories?: (number | Category)[] | null;
-        limit?: number | null;
-        selectedDocs?:
-          | (
-              | {
-                  relationTo: 'posts';
-                  value: number | Post;
-                }
-              | {
-                  relationTo: 'projects';
-                  value: number | Project;
-                }
-              | {
-                  relationTo: 'events';
-                  value: number | Event;
-                }
-              | {
-                  relationTo: 'absence-requests';
-                  value: number | AbsenceRequest;
-                }
-            )[]
-          | null;
-        populatedDocs?:
-          | (
-              | {
-                  relationTo: 'posts';
-                  value: number | Post;
-                }
-              | {
-                  relationTo: 'projects';
-                  value: number | Project;
-                }
-              | {
-                  relationTo: 'events';
-                  value: number | Event;
-                }
-              | {
-                  relationTo: 'absence-requests';
-                  value: number | AbsenceRequest;
-                }
-            )[]
-          | null;
-        populatedDocsTotal?: number | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'archive';
-      }
-  )[];
   relatedEvents?: (number | Event)[] | null;
   dateFrom: string;
   dateTo: string;
@@ -842,6 +833,7 @@ export interface Event {
 }
 export interface AbsenceRequest {
   id: number;
+  approved?: ('pending' | 'approved' | 'denied') | null;
   title: string;
   categories?: (number | Category)[] | null;
   publishedAt?: string | null;
@@ -850,8 +842,10 @@ export interface AbsenceRequest {
     | {
         id?: string | null;
         name?: string | null;
+        email?: string | null;
       }[]
     | null;
+  approver?: (number | null) | User;
   dateFrom: string;
   dateTo: string;
   userComments?: string | null;

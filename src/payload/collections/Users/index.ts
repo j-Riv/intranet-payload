@@ -1,10 +1,10 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload/types';
 
-import { admins } from '../../access/admins'
-import adminsAndUser from './access/adminsAndUser'
-import { checkRole } from './checkRole'
-import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
-import { loginAfterCreate } from './hooks/loginAfterCreate'
+import { admins } from '../../access/admins';
+import adminsAndUser from './access/adminsAndUser';
+import { checkRole } from './checkRole';
+import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
+import { loginAfterCreate } from './hooks/loginAfterCreate';
 
 const Users: CollectionConfig = {
   slug: 'users',
@@ -69,6 +69,6 @@ const Users: CollectionConfig = {
     },
   ],
   timestamps: true,
-}
+};
 
-export default Users
+export default Users;

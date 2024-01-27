@@ -1,17 +1,18 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload/types';
 
-import { admins } from '../../access/admins'
-import { adminsOrPublished } from '../../access/adminsOrPublished'
+import { admins } from '../../access/admins';
+import { adminsOrManagers } from '../../access/adminsOrManagers';
+import { adminsOrPublished } from '../../access/adminsOrPublished';
 // import { Archive } from '../../blocks/ArchiveBlock'
 // import { CallToAction } from '../../blocks/CallToAction'
 // import { Content } from '../../blocks/Content'
 // import { MediaBlock } from '../../blocks/MediaBlock'
 // import { hero } from '../../fields/hero'
-import { slugField } from '../../fields/slug'
+import { slugField } from '../../fields/slug';
 // import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
-import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { populateAuthors } from './hooks/populateAuthors'
-import { revalidateAbsenceRequest } from './hooks/revalidateAbsenceRequest'
+import { populatePublishedAt } from '../../hooks/populatePublishedAt';
+import { populateAuthors } from './hooks/populateAuthors';
+import { revalidateAbsenceRequest } from './hooks/revalidateAbsenceRequest';
 
 export const AbsenceRequests: CollectionConfig = {
   slug: 'absence-requests',
@@ -21,7 +22,7 @@ export const AbsenceRequests: CollectionConfig = {
     preview: doc => {
       return `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(
         `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/absence-requests/${doc?.slug}`,
-      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`
+      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`;
     },
   },
   hooks: {
@@ -37,13 +38,32 @@ export const AbsenceRequests: CollectionConfig = {
   },
   access: {
     read: adminsOrPublished,
-    update: admins,
+    update: adminsOrManagers,
     create: ({ req: { user } }) => {
-      return Boolean(user)
+      return Boolean(user);
     },
     delete: admins,
   },
   fields: [
+    {
+      name: 'approved',
+      type: 'select',
+      options: [
+        {
+          label: 'Pending',
+          value: 'pending',
+        },
+        {
+          label: 'Approved',
+          value: 'approved',
+        },
+        {
+          label: 'Denied',
+          value: 'denied',
+        },
+      ],
+      defaultValue: 'pending',
+    },
     {
       name: 'title',
       type: 'text',
@@ -71,9 +91,9 @@ export const AbsenceRequests: CollectionConfig = {
         beforeChange: [
           ({ siblingData, value }) => {
             if (siblingData._status === 'published' && !value) {
-              return new Date()
+              return new Date();
             }
-            return value
+            return value;
           },
         ],
       },
@@ -109,41 +129,21 @@ export const AbsenceRequests: CollectionConfig = {
           name: 'name',
           type: 'text',
         },
+        {
+          name: 'email',
+          type: 'text',
+        },
       ],
     },
-    // {
-    //   type: 'tabs',
-    //   tabs: [
-    //     {
-    //       label: 'Hero',
-    //       fields: [hero],
-    //     },
-    //     {
-    //       label: 'Content',
-    //       fields: [
-    //         {
-    //           name: 'layout',
-    //           type: 'blocks',
-    //           required: true,
-    //           blocks: [CallToAction, Content, MediaBlock, Archive],
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'relatedAbsenceRequests',
-    //   type: 'relationship',
-    //   relationTo: 'absenceRequest',
-    //   hasMany: true,
-    //   filterOptions: ({ id }) => {
-    //     return {
-    //       id: {
-    //         not_in: [id],
-    //       },
-    //     }
-    //   },
-    // },
+    {
+      name: 'approver',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
     {
       name: 'dateFrom',
       type: 'date',
@@ -164,4 +164,4 @@ export const AbsenceRequests: CollectionConfig = {
     },
     slugField(),
   ],
-}
+};

@@ -1,4 +1,4 @@
-import type { Project } from '../payload-types'
+import type { Project } from '../payload-types';
 
 export const project2: Partial<Project> = {
   title: 'Project 2',
@@ -50,4 +50,4 @@ export const project2: Partial<Project> = {
     },
   ],
   relatedProjects: [], // this is populated by the seed script
-}
+};

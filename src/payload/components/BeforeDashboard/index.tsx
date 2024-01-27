@@ -1,11 +1,11 @@
-import React from 'react'
-import { Banner } from 'payload/components'
+import React from 'react';
+import { Banner } from 'payload/components';
 
-import { SeedButton } from './SeedButton'
+import { SeedButton } from './SeedButton';
 
-import './index.scss'
+import './index.scss';
 
-const baseClass = 'before-dashboard'
+const baseClass = 'before-dashboard';
 
 const BeforeDashboard: React.FC = () => {
   return (
@@ -67,7 +67,7 @@ const BeforeDashboard: React.FC = () => {
       </a>
       , you can remove it at any time by updating your <strong>payload.config</strong>.
     </div>
-  )
-}
+  );
+};
 
-export default BeforeDashboard
+export default BeforeDashboard;

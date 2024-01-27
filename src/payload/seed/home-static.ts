@@ -1,4 +1,4 @@
-import type { Page } from '../payload-types'
+import type { Page } from '../payload-types';
 
 export const staticHome: Page = {
   // @ts-expect-error
@@ -126,4 +126,4 @@ export const staticHome: Page = {
       blockType: 'cta',
     },
   ],
-}
+};

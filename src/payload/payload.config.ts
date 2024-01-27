@@ -1,39 +1,39 @@
-import { webpackBundler } from '@payloadcms/bundler-webpack'
-import { postgresAdapter } from '@payloadcms/db-postgres'
-import { payloadCloud } from '@payloadcms/plugin-cloud'
-import nestedDocs from '@payloadcms/plugin-nested-docs'
-import redirects from '@payloadcms/plugin-redirects'
-import seo from '@payloadcms/plugin-seo'
-import type { GenerateTitle } from '@payloadcms/plugin-seo/types'
-import { slateEditor } from '@payloadcms/richtext-slate'
-import dotenv from 'dotenv'
-import path from 'path'
-import { buildConfig } from 'payload/config'
+import { webpackBundler } from '@payloadcms/bundler-webpack';
+import { postgresAdapter } from '@payloadcms/db-postgres';
+import { payloadCloud } from '@payloadcms/plugin-cloud';
+import nestedDocs from '@payloadcms/plugin-nested-docs';
+import redirects from '@payloadcms/plugin-redirects';
+import seo from '@payloadcms/plugin-seo';
+import type { GenerateTitle } from '@payloadcms/plugin-seo/types';
+import { slateEditor } from '@payloadcms/richtext-slate';
+import dotenv from 'dotenv';
+import path from 'path';
+import { buildConfig } from 'payload/config';
 
-import { AbsenceRequests } from './collections/AbsenceRequests'
-import Categories from './collections/Categories'
-import Comments from './collections/Comments'
-import Departments from './collections/Departments'
-import { Events } from './collections/Events'
-import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
-import { Projects } from './collections/Projects'
-import Users from './collections/Users'
-import BeforeDashboard from './components/BeforeDashboard'
-import BeforeLogin from './components/BeforeLogin'
-import { seed } from './endpoints/seed'
-import { Footer } from './globals/Footer'
-import { Header } from './globals/Header'
-import { Settings } from './globals/Settings'
+import { AbsenceRequests } from './collections/AbsenceRequests';
+import Categories from './collections/Categories';
+import Comments from './collections/Comments';
+import Departments from './collections/Departments';
+import { Events } from './collections/Events';
+import { Media } from './collections/Media';
+import { Pages } from './collections/Pages';
+import { Posts } from './collections/Posts';
+import { Projects } from './collections/Projects';
+import Users from './collections/Users';
+import BeforeDashboard from './components/BeforeDashboard';
+import BeforeLogin from './components/BeforeLogin';
+import { seed } from './endpoints/seed';
+import { Footer } from './globals/Footer';
+import { Header } from './globals/Header';
+import { Settings } from './globals/Settings';
 
 const generateTitle: GenerateTitle = () => {
-  return 'My Website'
-}
+  return 'My Website';
+};
 
 dotenv.config({
   path: path.resolve(__dirname, '../../.env'),
-})
+});
 
 export default buildConfig({
   admin: {
@@ -113,4 +113,4 @@ export default buildConfig({
     }),
     payloadCloud(),
   ],
-})
+});

@@ -3,17 +3,24 @@ import { LINK_FIELDS } from './link'
 import { MEDIA } from './media'
 import { META } from './meta'
 
-export const EVENTS = `
+export const EVENTS = `#graphql
   query Events {
     Events(limit: 300) {
       docs {
+        id
         slug
+        title
+        dateFrom
+        dateTo
+        categories {
+          title
+        }
       }
     }
   }
 `
 
-export const EVENT = `
+export const EVENT = `#graphql
   query Event($slug: String, $draft: Boolean) {
     Events(where: { slug: { equals: $slug }}, limit: 1, draft: $draft) {
       docs {

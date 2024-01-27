@@ -1,4 +1,4 @@
-import type { Page } from '../payload-types'
+import type { Page } from '../payload-types';
 
 export const absenceRequestsPage: Partial<Page> = {
   title: 'Absence Requests',
@@ -32,4 +32,4 @@ export const absenceRequestsPage: Partial<Page> = {
     ],
     media: undefined,
   },
-}
+};

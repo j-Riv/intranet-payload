@@ -1,4 +1,4 @@
-const COMMENT = `
+const COMMENT = `#graphql
 id
 _status
 doc {
@@ -13,7 +13,7 @@ comment
 createdAt
 `
 
-export const COMMENTS_BY_DOC = `
+export const COMMENTS_BY_DOC = `#graphql
   query Comments($doc: JSON) {
     Comments(where: { doc: { equals: $doc } }) {
       docs {
@@ -23,7 +23,7 @@ export const COMMENTS_BY_DOC = `
   }
 `
 
-export const COMMENTS_BY_USER = `
+export const COMMENTS_BY_USER = `#graphql
   query Comments($user: JSON) {
     Comments(where: { user: { equals: $user } }) {
       docs {
