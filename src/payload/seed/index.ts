@@ -362,7 +362,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         categories: [eventCategory.id, absenceRequestCategory.id],
       })
         .replace(/"\{\{IMAGE\}\}"/g, image1ID)
-        .replace(/"\{\{AUTHOR\}\}"/g, demoAdminID)
+        .replace(/"\{\{USER\}\}"/g, demoAdminID)
         .replace(/"\{\{APPROVER\}\}"/g, demoAdminID),
     ),
   });

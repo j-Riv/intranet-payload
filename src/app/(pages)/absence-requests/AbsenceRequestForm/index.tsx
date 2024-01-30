@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Fragment, useCallback, useRef } from 'react';
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -24,12 +24,16 @@ type FormData = {
 };
 
 const AbsenceRequestForm: React.FC = () => {
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const allParams = searchParams.toString() ? `?${searchParams.toString()}` : '';
   const redirect = useRef(searchParams.get('redirect'));
   const router = useRouter();
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<React.ReactNode | null>(null);
+
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
   const {
     control,
@@ -38,8 +42,6 @@ const AbsenceRequestForm: React.FC = () => {
     formState: { errors, isLoading },
     reset,
   } = useForm<FormData>();
-
-  const { user } = useAuth();
 
   const onSubmit = useCallback(
     async (data: FormData) => {
@@ -87,6 +89,11 @@ const AbsenceRequestForm: React.FC = () => {
     [user, reset],
   );
 
+  useEffect(() => {
+    setUserName(user?.name);
+    setUserEmail(user?.email);
+  }, [user]);
+
   return (
     <Gutter>
       <form onSubmit={handleSubmit(onSubmit)} className={classes.absenceRequestForm}>
@@ -99,7 +106,7 @@ const AbsenceRequestForm: React.FC = () => {
           register={register}
           error={errors.username}
           type="text"
-          value={user?.name}
+          defaultValue={userName}
           readOnly
         />
         <Input
@@ -109,7 +116,7 @@ const AbsenceRequestForm: React.FC = () => {
           register={register}
           error={errors.email}
           type="email"
-          value={user?.email}
+          defaultValue={userEmail}
           readOnly
         />
         <div className={classes.dateContainer}>

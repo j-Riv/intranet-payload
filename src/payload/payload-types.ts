@@ -837,14 +837,12 @@ export interface AbsenceRequest {
   title: string;
   categories?: (number | Category)[] | null;
   publishedAt?: string | null;
-  authors?: (number | User)[] | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-        email?: string | null;
-      }[]
-    | null;
+  user?: (number | null) | User;
+  populatedUser?: {
+    id?: string | null;
+    name?: string | null;
+    email?: string | null;
+  };
   approver?: (number | null) | User;
   dateFrom: string;
   dateTo: string;

@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { User } from 'payload/dist/auth';
 
 import { Page } from '../../../payload/payload-types';
 import { staticHome } from '../../../payload/seed/home-static';

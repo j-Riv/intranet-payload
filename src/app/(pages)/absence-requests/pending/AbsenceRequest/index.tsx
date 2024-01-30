@@ -36,7 +36,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<React.ReactNode | null>(null);
 
-  const { id, approved, slug, title, dateFrom, dateTo, populatedAuthors, userComments } =
+  const { id, approved, slug, title, dateFrom, dateTo, populatedUser, userComments } =
     absenceRequest;
 
   const {
@@ -100,7 +100,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
           register={register}
           error={errors.username}
           type="text"
-          value={populatedAuthors[0]?.name}
+          defaultValue={populatedUser?.name}
           readOnly
         />
         <Input
@@ -110,7 +110,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
           register={register}
           error={errors.email}
           type="email"
-          value={populatedAuthors[0]?.email}
+          defaultValue={populatedUser?.email}
           readOnly
         />
         <div className={classes.dateContainer}>
@@ -121,7 +121,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
             register={register}
             error={errors.startDate}
             type="text"
-            value={dateFrom}
+            defaultValue={dateFrom}
             readOnly
           />
           <Input
@@ -131,7 +131,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
             register={register}
             error={errors.endDate}
             type="text"
-            value={dateTo}
+            defaultValue={dateTo}
             readOnly
           />
         </div>
@@ -141,7 +141,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
           register={register}
           error={errors.reason}
           type="text"
-          value={userComments}
+          defaultValue={userComments}
           readOnly
         />
         <label htmlFor="approve">

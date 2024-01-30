@@ -1,7 +1,7 @@
-import { CATEGORIES } from './categories'
-import { LINK_FIELDS } from './link'
-import { MEDIA } from './media'
-import { META } from './meta'
+import { CATEGORIES } from './categories';
+import { LINK_FIELDS } from './link';
+import { MEDIA } from './media';
+import { META } from './meta';
 
 export const CALL_TO_ACTION = `#graphql
 ...on Cta {
@@ -12,7 +12,7 @@ export const CALL_TO_ACTION = `#graphql
     link ${LINK_FIELDS()}
   }
 }
-`
+`;
 
 export const CONTENT = `#graphql
 ...on Content {
@@ -25,7 +25,7 @@ export const CONTENT = `#graphql
     link ${LINK_FIELDS()}
   }
 }
-`
+`;
 
 export const MEDIA_BLOCK = `#graphql
 ...on MediaBlock {
@@ -34,7 +34,7 @@ export const MEDIA_BLOCK = `#graphql
   position
   ${MEDIA}
 }
-`
+`;
 
 export const ARCHIVE_BLOCK = `#graphql
 ...on Archive {
@@ -82,7 +82,7 @@ export const ARCHIVE_BLOCK = `#graphql
   }
   populatedDocsTotal
 }
-`
+`;
 
 export const PRODUCT_BLOCK = `#graphql
 ...on ProductBlock {
@@ -98,7 +98,7 @@ export const PRODUCT_BLOCK = `#graphql
     value
   }
 }
-`
+`;
 
 export const CARDS = `#graphql
 ...on Cards {
@@ -112,4 +112,4 @@ export const CARDS = `#graphql
     link ${LINK_FIELDS()}
   }
 }
-`
+`;

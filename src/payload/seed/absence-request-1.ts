@@ -13,7 +13,7 @@ export const absenceRequest1: Partial<AbsenceRequest> = {
     image: '{{IMAGE}}',
   },
   // @ts-expect-error
-  authors: ['{{AUTHOR}}'],
+  user: '{{USER}}',
   // @ts-expect-error
   approver: '{{APPROVER}}',
   hero: {

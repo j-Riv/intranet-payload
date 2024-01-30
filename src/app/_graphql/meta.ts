@@ -1,4 +1,4 @@
-import { MEDIA_FIELDS } from './media'
+import { MEDIA_FIELDS } from './media';
 
 export const META = `#graphql
   meta {
@@ -7,4 +7,4 @@ export const META = `#graphql
       ${MEDIA_FIELDS}
     }
     description
-  }`
+  }`;

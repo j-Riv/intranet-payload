@@ -11,7 +11,7 @@ import { adminsOrPublished } from '../../access/adminsOrPublished';
 import { slugField } from '../../fields/slug';
 // import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt';
-import { populateAuthors } from './hooks/populateAuthors';
+import { populateUser } from './hooks/populateUser';
 import { revalidateAbsenceRequest } from './hooks/revalidateAbsenceRequest';
 
 export const AbsenceRequests: CollectionConfig = {
@@ -30,7 +30,7 @@ export const AbsenceRequests: CollectionConfig = {
     afterChange: [revalidateAbsenceRequest],
     afterRead: [
       // populateArchiveBlock,
-      populateAuthors,
+      populateUser,
     ],
   },
   versions: {
@@ -99,20 +99,17 @@ export const AbsenceRequests: CollectionConfig = {
       },
     },
     {
-      name: 'authors',
+      name: 'user',
       type: 'relationship',
       relationTo: 'users',
-      hasMany: true,
-      admin: {
-        position: 'sidebar',
-      },
+      hasMany: false,
     },
-    // This field is only used to populate the user data via the `populateAuthors` hook
+    // This field is only used to populate the user data via the `populateUser` hook
     // This is because the `user` collection has access control locked to protect user privacy
     // GraphQL will also not return mutated user data that differs from the underlying schema
     {
-      name: 'populatedAuthors',
-      type: 'array',
+      name: 'populatedUser',
+      type: 'group',
       admin: {
         readOnly: true,
         disabled: true,

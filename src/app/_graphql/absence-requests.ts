@@ -1,7 +1,7 @@
-import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks'
-import { LINK_FIELDS } from './link'
-import { MEDIA } from './media'
-import { META } from './meta'
+import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks';
+import { LINK_FIELDS } from './link';
+import { MEDIA } from './media';
+import { META } from './meta';
 
 // export const ABSENCE_REQUESTS = `#graphql
 //   query AbsenceRequests {
@@ -31,7 +31,7 @@ export const ABSENCE_REQUEST = `#graphql
         }
         createdAt
         publishedAt
-        populatedAuthors {
+        populatedUser {
           id
           name
         }
@@ -54,7 +54,7 @@ export const ABSENCE_REQUEST = `#graphql
       }
     }
   }
-`
+`;
 
 export const ABSENCE_REQUESTS = `#graphql
   query AbsenceRequests($status: AbsenceRequest_approved_Input) {
@@ -66,7 +66,7 @@ export const ABSENCE_REQUESTS = `#graphql
         title
         dateFrom
         dateTo
-        populatedAuthors {
+        populatedUser {
           name
           id
           email
@@ -78,4 +78,75 @@ export const ABSENCE_REQUESTS = `#graphql
       }
     }
   }
-`
+`;
+
+// export const ABSENCE_REQUESTS_BY_USER = `#graphql
+//   query AbsenceRequests($user: JSON) {
+//     AbsenceRequests(where: { user: { equals: $user } }) {
+//       docs {
+//         id
+//         slug
+//         title
+//         dateFrom
+//         dateTo
+//         categories {
+//           title
+//         }
+//       }
+//     }
+//   }
+// `;
+
+export const ABSENCE_REQUESTS_BY_USER = `#graphql
+  query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input) {
+    AbsenceRequests(where: { and: [
+      { user: { equals: $user } },
+      { approved: { equals: $status } }
+    ]}) {
+      docs {
+        id
+        slug
+        title
+        dateFrom
+        dateTo
+        categories {
+          title
+        }
+      }
+    }
+  }
+`;
+
+export const ABSENCE_REQUESTS_BY_MONTH = `#graphql
+  query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input, $firstDay: DateTime, $lastDay: DateTime) {
+    AbsenceRequests(where: { and: [
+      { user: { equals: $user } },
+      { approved: { equals: $status } },
+      { dateFrom: { gte: $firstDay } },
+      { dateTo: { lte: $lastDay } }
+    ]}) {
+      docs {
+        id
+        slug
+        title
+        dateFrom
+        dateTo
+        categories {
+          title
+        }
+      }
+    }
+  }
+`;
+
+export const ALL_USERS = `#graphql
+  query Users {
+    Users(limit: 300) {
+      docs {
+        id
+        name
+        email
+      }
+    }
+  }
+`;
