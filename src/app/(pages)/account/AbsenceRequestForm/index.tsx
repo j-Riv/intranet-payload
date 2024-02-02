@@ -2,12 +2,10 @@
 
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSearchParams } from 'next/navigation';
 
 import { AbsenceRequest } from '../../../../payload/payload-types';
 import { Button } from '../../../_components/Button';
 import { DatePicker } from '../../../_components/DatePicker';
-import { Gutter } from '../../../_components/Gutter';
 import { Input } from '../../../_components/Input';
 import { Message } from '../../../_components/Message';
 import { useAuth } from '../../../_providers/Auth';
@@ -24,7 +22,6 @@ type FormData = {
 
 const AbsenceRequestForm: React.FC = () => {
   const { user } = useAuth();
-  const searchParams = useSearchParams();
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<React.ReactNode | null>(null);
 
@@ -50,9 +47,9 @@ const AbsenceRequestForm: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            // status: 'draft',
-            title: `Absence Request:  ${user.name}`,
-            author: user.id,
+            _status: 'published',
+            title: `Absence Request: ${user.name} - ${data.startDate} to ${data.endDate}`,
+            user: user.id,
             dateFrom: new Date(data.startDate).toISOString(),
             dateTo: new Date(data.endDate).toISOString(),
             // dateFrom: startDate,
@@ -89,58 +86,55 @@ const AbsenceRequestForm: React.FC = () => {
   }, [user]);
 
   return (
-    <Gutter>
-      <form onSubmit={handleSubmit(onSubmit)} className={classes.absenceRequestForm}>
-        <p>{`Fill out the form below to submit an absence request.`}</p>
-        <Message error={error} success={success} className={classes.message} />
-        <Input
-          name="username"
-          label="Name"
-          required
-          register={register}
-          error={errors.username}
-          type="text"
-          defaultValue={userName}
-          readOnly
+    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+      <Message error={error} success={success} className={classes.message} />
+      <Input
+        name="username"
+        label="Name"
+        // required
+        register={register}
+        error={errors.username}
+        type="text"
+        defaultValue={userName}
+        readOnly
+      />
+      <Input
+        name="email"
+        label="Email Address"
+        // required
+        register={register}
+        error={errors.email}
+        type="email"
+        defaultValue={userEmail}
+        readOnly
+      />
+      <div className={classes.dateContainer}>
+        <DatePicker
+          control={control}
+          name="startDate"
+          label="Start Date"
+          placeholder="Select Date"
+          required={true}
+          error={errors.startDate}
         />
-        <Input
-          name="email"
-          label="Email Address"
-          required
-          register={register}
-          error={errors.email}
-          type="email"
-          defaultValue={userEmail}
-          readOnly
+        <DatePicker
+          control={control}
+          name="endDate"
+          label="End Date"
+          placeholder="Select Date"
+          required={true}
+          error={errors.endDate}
         />
-        <div className={classes.dateContainer}>
-          <DatePicker
-            control={control}
-            name="startDate"
-            label="Start Date"
-            placeholder="Select Date"
-            required={true}
-            error={errors.startDate}
-          />
-          <DatePicker
-            control={control}
-            name="endDate"
-            label="End Date"
-            placeholder="Select Date"
-            required={true}
-            error={errors.endDate}
-          />
-        </div>
-        <Input name="reason" label="Reason" register={register} error={errors.reason} />
-        <Button
-          type="submit"
-          appearance="primary"
-          label={isLoading ? 'Processing' : 'Submit'}
-          disabled={isLoading}
-          className={classes.submit}
-        />
-      </form>
-    </Gutter>
+      </div>
+      <Input name="reason" label="Reason" register={register} error={errors.reason} />
+      <Button
+        type="submit"
+        appearance="primary"
+        label={isLoading ? 'Processing' : 'Submit'}
+        disabled={isLoading}
+        className={classes.submit}
+      />
+    </form>
   );
 };
 

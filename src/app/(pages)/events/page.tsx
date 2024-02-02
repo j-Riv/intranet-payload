@@ -4,10 +4,8 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 import { AbsenceRequest, Event, Page } from '../../../payload/payload-types';
-import { staticHome } from '../../../payload/seed/home-static';
 import { fetchDoc } from '../../_api/fetchDoc';
 import { fetchDocs } from '../../_api/fetchDocs';
-import { Blocks } from '../../_components/Blocks';
 import { EventsCalander } from '../../_components/EventsCalendar';
 import { Hero } from '../../_components/Hero';
 import { generateMeta } from '../../_utilities/generateMeta';
@@ -51,13 +49,6 @@ export default async function Page({ params: { slug = 'events' } }) {
     // console.error(error)
   }
 
-  // if no `home` page exists, render a static one using dummy content
-  // you should delete this code once you have a home page in the CMS
-  // this is really only useful for those who are demoing this template
-  if (!page && slug === 'home') {
-    page = staticHome;
-  }
-
   if (!page) {
     return notFound();
   }
@@ -90,10 +81,6 @@ export default async function Page({ params: { slug = 'events' } }) {
     <React.Fragment>
       <Hero {...hero} />
       <EventsCalander events={allEvents} />
-      {/* <Blocks
-        blocks={layout}
-        disableTopPadding={!hero || hero?.type === 'none' || hero?.type === 'lowImpact'}
-      /> */}
     </React.Fragment>
   );
 }
@@ -123,10 +110,6 @@ export async function generateMetadata({ params: { slug = 'events' } }): Promise
     // this is so that we can render static fallback pages for the demo
     // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
     // in production you may want to redirect to a 404  page or at least log the error somewhere
-  }
-
-  if (!page) {
-    if (slug === 'home') page = staticHome;
   }
 
   return generateMeta({ doc: page });

@@ -1,12 +1,46 @@
 import type { AbsenceRequest, User } from '../../payload/payload-types';
-import { ABSENCE_REQUESTS_BY_USER } from '../_graphql/absence-requests';
+import {
+  ABSENCE_REQUESTS,
+  ABSENCE_REQUESTS_BY_MONTH,
+  ABSENCE_REQUESTS_BY_USER,
+} from '../_graphql/absence-requests';
 import { GRAPHQL_API_URL } from './shared';
 
-export const fetchAbsenceRequests = async (args: {
-  user: User['id'];
+const queryMap = {
+  'absence-requests-user': {
+    query: ABSENCE_REQUESTS_BY_USER,
+    key: 'UserAbsenceRequests',
+  },
+  'absence-requests': {
+    query: ABSENCE_REQUESTS,
+    key: 'AbsenceRequests',
+  },
+  'absence-requests-by-month': {
+    query: ABSENCE_REQUESTS_BY_MONTH,
+    key: 'AbsenceRequestsByMonth',
+  },
+};
+
+interface Args {
+  user?: User['id'];
   status?: string;
-}): Promise<AbsenceRequest[]> => {
-  const { user, status = 'pending' } = args || {};
+  firstDay?: string;
+  lastDay?: string;
+}
+
+export const fetchAbsenceRequests = async (
+  query: keyof typeof queryMap,
+  args: Args,
+): Promise<AbsenceRequest[]> => {
+  if (!queryMap[query]) throw new Error(`Query ${query} not found`);
+  const { user, status = 'pending', firstDay, lastDay } = args || {};
+
+  let variables: Args = {};
+
+  if (user) variables.user = user;
+  if (status) variables.status = status;
+  if (firstDay) variables.firstDay = firstDay;
+  if (lastDay) variables.lastDay = lastDay;
 
   const docs: AbsenceRequest[] = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
     method: 'POST',
@@ -15,11 +49,8 @@ export const fetchAbsenceRequests = async (args: {
     },
     cache: 'no-store',
     body: JSON.stringify({
-      query: ABSENCE_REQUESTS_BY_USER,
-      variables: {
-        user,
-        status,
-      },
+      query: queryMap[query].query,
+      variables,
     }),
   })
     ?.then(res => res.json())

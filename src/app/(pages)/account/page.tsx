@@ -11,6 +11,7 @@ import { LowImpactHero } from '../../_heros/LowImpact';
 import { formatDateTime } from '../../_utilities/formatDateTime';
 import { getMeUser } from '../../_utilities/getMeUser';
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph';
+import AbsenceRequestForm from './AbsenceRequestForm';
 import AccountForm from './AccountForm';
 
 import classes from './index.module.scss';
@@ -64,6 +65,14 @@ export default async function Account() {
       />
       <Gutter className={classes.account}>
         <AccountForm />
+        <HR />
+        <h2>Absence Request</h2>
+        <p>
+          If you need to request time off, please submit an absence request. This will be sent to an
+          admin for approval.
+        </p>
+        <AbsenceRequestForm />
+
         <HR />
         <h2>Comments</h2>
         <p>

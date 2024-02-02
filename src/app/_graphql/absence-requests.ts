@@ -1,7 +1,7 @@
-import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks';
-import { LINK_FIELDS } from './link';
-import { MEDIA } from './media';
-import { META } from './meta';
+// import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks';
+// import { LINK_FIELDS } from './link';
+// import { MEDIA } from './media';
+// import { META } from './meta';
 
 // export const ABSENCE_REQUESTS = `#graphql
 //   query AbsenceRequests {
@@ -35,22 +35,6 @@ export const ABSENCE_REQUEST = `#graphql
           id
           name
         }
-        hero {
-          type
-          richText
-          links {
-            link ${LINK_FIELDS()}
-          }
-          ${MEDIA}
-        }
-        layout {
-          ${CONTENT}
-          ${CALL_TO_ACTION}
-          ${CONTENT}
-          ${MEDIA_BLOCK}
-          ${ARCHIVE_BLOCK}
-        }
-        ${META}
       }
     }
   }
@@ -99,10 +83,10 @@ export const ABSENCE_REQUESTS = `#graphql
 
 export const ABSENCE_REQUESTS_BY_USER = `#graphql
   query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input) {
-    AbsenceRequests(where: { and: [
+    AbsenceRequests(where: { 
       { user: { equals: $user } },
       { approved: { equals: $status } }
-    ]}) {
+    }) {
       docs {
         id
         slug
@@ -112,19 +96,23 @@ export const ABSENCE_REQUESTS_BY_USER = `#graphql
         categories {
           title
         }
+        populatedUser {
+          name
+          id
+          email
+        }
+        userComments
       }
     }
   }
 `;
 
 export const ABSENCE_REQUESTS_BY_MONTH = `#graphql
-  query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input, $firstDay: DateTime, $lastDay: DateTime) {
-    AbsenceRequests(where: { and: [
-      { user: { equals: $user } },
-      { approved: { equals: $status } },
-      { dateFrom: { gte: $firstDay } },
-      { dateTo: { lte: $lastDay } }
-    ]}) {
+  query AbsenceRequests($status: AbsenceRequest_approved_Input, $firstDay: DateTime, $lastDay: DateTime) {
+    AbsenceRequests(where: {
+      approved: { equals: $status },
+      dateFrom: { greater_than_equal: $firstDay }, 
+      dateTo: { less_than_equal: $lastDay }}) {
       docs {
         id
         slug
@@ -134,6 +122,12 @@ export const ABSENCE_REQUESTS_BY_MONTH = `#graphql
         categories {
           title
         }
+        populatedUser {
+          name
+          id
+          email
+        }
+        userComments
       }
     }
   }
