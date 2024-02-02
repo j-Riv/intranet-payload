@@ -23,6 +23,7 @@ type FormData = {
   endDate: string;
   reason: string;
   status: string;
+  comments: string;
 };
 
 const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
@@ -31,8 +32,6 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
 
   const { id, approved, slug, title, dateFrom, dateTo, populatedUser, userComments } =
     absenceRequest;
-
-  console.log('abse request', absenceRequest);
 
   const {
     control,
@@ -58,6 +57,8 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
             },
             body: JSON.stringify({
               approved: data.status,
+              approver: user.id,
+              adminComments: data.comments,
             }),
           },
         );
@@ -154,6 +155,13 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
         />{' '}
         Deny
       </label>
+      <Input
+        name="comments"
+        label="Comments"
+        register={register}
+        error={errors.comments}
+        type="text"
+      />
       <Button
         type="submit"
         appearance="primary"

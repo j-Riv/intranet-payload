@@ -70,6 +70,21 @@ export const AbsenceRequests: CollectionConfig = {
       required: true,
     },
     {
+      name: 'type',
+      type: 'select',
+      options: [
+        {
+          label: 'Vacation',
+          value: 'vacation',
+        },
+        {
+          label: 'Sick Leave',
+          value: 'sick-leave',
+        },
+      ],
+      defaultValue: 'vacation',
+    },
+    {
       name: 'categories',
       type: 'relationship',
       relationTo: 'categories',
@@ -130,6 +145,10 @@ export const AbsenceRequests: CollectionConfig = {
           name: 'email',
           type: 'text',
         },
+        {
+          name: 'department',
+          type: 'text',
+        },
       ],
     },
     {
@@ -140,6 +159,35 @@ export const AbsenceRequests: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
+    },
+    {
+      name: 'populatedApprover',
+      type: 'group',
+      admin: {
+        readOnly: true,
+        disabled: true,
+      },
+      access: {
+        update: () => false,
+      },
+      fields: [
+        {
+          name: 'id',
+          type: 'text',
+        },
+        {
+          name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'email',
+          type: 'text',
+        },
+        {
+          name: 'department',
+          type: 'text',
+        },
+      ],
     },
     {
       name: 'dateFrom',

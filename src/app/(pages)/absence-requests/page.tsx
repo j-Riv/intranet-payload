@@ -3,14 +3,16 @@ import { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
-import { AbsenceRequest, Page } from '../../../payload/payload-types';
+import { AbsenceRequest, Page, User } from '../../../payload/payload-types';
 import { fetchAbsenceRequests } from '../../_api/fetchAbsenceRequests';
 import { fetchDoc } from '../../_api/fetchDoc';
 import { fetchDocs } from '../../_api/fetchDocs';
+import { fetchUsers } from '../../_api/fetchUsers';
 import { Gutter } from '../../_components/Gutter';
 import { Hero } from '../../_components/Hero';
 import { generateMeta } from '../../_utilities/generateMeta';
 import { getMeUser } from '../../_utilities/getMeUser';
+import AbsenceRequests from './AbsenceRequests';
 
 // Payload Cloud caches all files through Cloudflare, so we don't need Next.js to cache them as well
 // This means that we can turn off Next.js data caching and instead rely solely on the Cloudflare CDN
@@ -31,6 +33,7 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
 
   let page: Page | null = null;
   let absenceRequests: AbsenceRequest[] | null = null;
+  let users: User[] | null = null;
 
   try {
     page = await fetchDoc<Page>({
@@ -42,6 +45,8 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
     absenceRequests = await fetchAbsenceRequests('absence-requests', {
       status: 'approved',
     });
+
+    users = await fetchUsers();
   } catch (error) {
     // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
     // so swallow the error here and simply render the page with fallback data where necessary
@@ -62,19 +67,7 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
     <React.Fragment>
       <Hero {...hero} />
       <Gutter>
-        <label htmlFor="month">Month: </label>
-        <select>
-          {Array.from(new Array(12), (x, i) => i + 1).map(month => (
-            <option key={month} value={month}>
-              {month}
-            </option>
-          ))}
-        </select>
-        <p>Approved Absence Requests: {absenceRequests.length}</p>
-        {/* TODO: add absence LOG */}
-        {absenceRequests.map(absenceRequest => (
-          <p>{JSON.stringify(absenceRequest)}</p>
-        ))}
+        <AbsenceRequests absenceRequests={absenceRequests} users={users} />
       </Gutter>
     </React.Fragment>
   );

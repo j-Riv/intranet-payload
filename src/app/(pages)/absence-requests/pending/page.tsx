@@ -18,10 +18,13 @@ export default async function PendingAbsenceRequests({ params: { slug } }) {
   const firstDay = new Date('2/01/2024').toISOString();
   const lastDay = new Date('2/31/2024').toISOString();
   try {
-    absenceRequests = await fetchAbsenceRequests('absence-requests-by-month', {
+    // absenceRequests = await fetchAbsenceRequests('absence-requests-by-month', {
+    //   status: 'pending',
+    //   firstDay: firstDay,
+    //   lastDay: lastDay,
+    // });
+    absenceRequests = await fetchAbsenceRequests('absence-requests', {
       status: 'pending',
-      firstDay: firstDay,
-      lastDay: lastDay,
     });
   } catch (error) {
     console.error(error); // eslint-disable-line no-console

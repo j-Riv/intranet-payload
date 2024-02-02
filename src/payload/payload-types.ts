@@ -835,6 +835,7 @@ export interface AbsenceRequest {
   id: number;
   approved?: ('pending' | 'approved' | 'denied') | null;
   title: string;
+  type?: ('vacation' | 'sick-leave') | null;
   categories?: (number | Category)[] | null;
   publishedAt?: string | null;
   user?: (number | null) | User;
@@ -842,8 +843,15 @@ export interface AbsenceRequest {
     id?: string | null;
     name?: string | null;
     email?: string | null;
+    department?: string | null;
   };
   approver?: (number | null) | User;
+  populatedApprover?: {
+    id?: string | null;
+    name?: string | null;
+    email?: string | null;
+    department?: string | null;
+  };
   dateFrom: string;
   dateTo: string;
   userComments?: string | null;

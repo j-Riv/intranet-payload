@@ -34,7 +34,16 @@ export const ABSENCE_REQUEST = `#graphql
         populatedUser {
           id
           name
+          email
+          department
         }
+        populatedApprover {
+          name
+          id
+          email
+          department
+        }
+        type
       }
     }
   }
@@ -42,7 +51,7 @@ export const ABSENCE_REQUEST = `#graphql
 
 export const ABSENCE_REQUESTS = `#graphql
   query AbsenceRequests($status: AbsenceRequest_approved_Input) {
-    AbsenceRequests(where: { approved: { equals: $status }}, limit: 300) {
+    AbsenceRequests(where: { approved: { equals: $status }}, limit: 300, sort: "dateFrom") {
       docs {
         id
         approved
@@ -54,39 +63,32 @@ export const ABSENCE_REQUESTS = `#graphql
           name
           id
           email
+          department
+        }
+        populatedApprover {
+          name
+          id
+          email
+          department
         }
         categories {
           title
         }
+        type
         userComments
+        adminComments
       }
     }
   }
 `;
 
-// export const ABSENCE_REQUESTS_BY_USER = `#graphql
-//   query AbsenceRequests($user: JSON) {
-//     AbsenceRequests(where: { user: { equals: $user } }) {
-//       docs {
-//         id
-//         slug
-//         title
-//         dateFrom
-//         dateTo
-//         categories {
-//           title
-//         }
-//       }
-//     }
-//   }
-// `;
-
 export const ABSENCE_REQUESTS_BY_USER = `#graphql
   query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input) {
-    AbsenceRequests(where: { 
-      { user: { equals: $user } },
-      { approved: { equals: $status } }
-    }) {
+    AbsenceRequests(where: {
+      user: { equals: $user },
+      approved: { equals: $status }
+    }
+    , sort: "dateFrom") {
       docs {
         id
         slug
@@ -100,8 +102,17 @@ export const ABSENCE_REQUESTS_BY_USER = `#graphql
           name
           id
           email
+          department
         }
+        populatedApprover {
+          name
+          id
+          email
+          department
+        }
+        type
         userComments
+        adminComments
       }
     }
   }
@@ -127,7 +138,50 @@ export const ABSENCE_REQUESTS_BY_MONTH = `#graphql
           id
           email
         }
+        populatedApprover {
+          name
+          id
+          email
+          department
+        }
+        type
         userComments
+        adminComments
+      }
+    }
+  }
+`;
+
+export const ABSENCE_REQUESTS_BY_MONTH_USER = `#graphql
+  query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input, $firstDay: DateTime, $lastDay: DateTime) {
+    AbsenceRequests(where: {
+      user: { equals: $user },
+      approved: { equals: $status },
+      dateFrom: { greater_than_equal: $firstDay }, 
+      dateTo: { less_than_equal: $lastDay }}) {
+      docs {
+        id
+        slug
+        title
+        dateFrom
+        dateTo
+        categories {
+          title
+        }
+        populatedUser {
+          name
+          id
+          email
+        }
+        populatedApprover {
+          name
+          id
+          email
+          department
+        }
+        type
+        userComments
+        adminComments
       }
     }
   }

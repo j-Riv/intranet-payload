@@ -16,6 +16,22 @@ export const populateUser: AfterReadHook = async ({ doc, req: { payload } }) => 
       id: userDoc.id,
       name: userDoc.name,
       email: userDoc.email,
+      department: userDoc.department,
+    };
+  }
+
+  if (doc?.approver) {
+    const userDoc = await payload.findByID({
+      collection: 'users',
+      id: typeof doc.approver === 'object' ? doc?.approver?.id : doc?.approver,
+      depth: 0,
+    });
+
+    doc.populatedApprover = {
+      id: userDoc.id,
+      name: userDoc.name,
+      email: userDoc.email,
+      department: userDoc.department,
     };
   }
 

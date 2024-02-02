@@ -2,14 +2,15 @@ import type { AbsenceRequest, User } from '../../payload/payload-types';
 import {
   ABSENCE_REQUESTS,
   ABSENCE_REQUESTS_BY_MONTH,
+  ABSENCE_REQUESTS_BY_MONTH_USER,
   ABSENCE_REQUESTS_BY_USER,
 } from '../_graphql/absence-requests';
 import { GRAPHQL_API_URL } from './shared';
 
 const queryMap = {
-  'absence-requests-user': {
+  'absence-requests-by-user': {
     query: ABSENCE_REQUESTS_BY_USER,
-    key: 'UserAbsenceRequests',
+    key: 'AbsenceRequestsByUser',
   },
   'absence-requests': {
     query: ABSENCE_REQUESTS,
@@ -18,6 +19,10 @@ const queryMap = {
   'absence-requests-by-month': {
     query: ABSENCE_REQUESTS_BY_MONTH,
     key: 'AbsenceRequestsByMonth',
+  },
+  'absence-requests-by-month-user': {
+    query: ABSENCE_REQUESTS_BY_MONTH_USER,
+    key: 'AbsenceRequestsByMonthUser',
   },
 };
 

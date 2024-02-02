@@ -2,6 +2,7 @@
 
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import moment from 'moment';
 
 import { AbsenceRequest } from '../../../../payload/payload-types';
 import { Button } from '../../../_components/Button';
@@ -48,7 +49,9 @@ const AbsenceRequestForm: React.FC = () => {
           },
           body: JSON.stringify({
             _status: 'published',
-            title: `Absence Request: ${user.name} - ${data.startDate} to ${data.endDate}`,
+            title: `Absence Request: ${user.name} - ${moment(data.startDate).format(
+              'MM-DD-YYYY',
+            )} to ${moment(data.endDate).format('MM-DD-YYYY')}`,
             user: user.id,
             dateFrom: new Date(data.startDate).toISOString(),
             dateTo: new Date(data.endDate).toISOString(),
