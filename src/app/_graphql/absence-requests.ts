@@ -3,6 +3,8 @@
 // import { MEDIA } from './media';
 // import { META } from './meta';
 
+import { META } from './meta';
+
 // export const ABSENCE_REQUESTS = `#graphql
 //   query AbsenceRequests {
 //     AbsenceRequests(limit: 300) {
@@ -44,6 +46,9 @@ export const ABSENCE_REQUEST = `#graphql
           department
         }
         type
+        userComments
+        adminComments
+        ${META}
       }
     }
   }
@@ -59,6 +64,7 @@ export const ABSENCE_REQUESTS = `#graphql
         title
         dateFrom
         dateTo
+        decisionDate
         populatedUser {
           name
           id
@@ -77,6 +83,7 @@ export const ABSENCE_REQUESTS = `#graphql
         type
         userComments
         adminComments
+        ${META}
       }
     }
   }
@@ -95,6 +102,7 @@ export const ABSENCE_REQUESTS_BY_USER = `#graphql
         title
         dateFrom
         dateTo
+        decisionDate
         categories {
           title
         }
@@ -130,6 +138,7 @@ export const ABSENCE_REQUESTS_BY_MONTH = `#graphql
         title
         dateFrom
         dateTo
+        decisionDate
         categories {
           title
         }
@@ -178,6 +187,46 @@ export const ABSENCE_REQUESTS_BY_MONTH_USER = `#graphql
           id
           email
           department
+        }
+        type
+        userComments
+        adminComments
+      }
+    }
+  }
+`;
+
+export const ABSENCE_REQUESTS_BY_DEPARTMENT = `#graphql
+  query AbsenceRequestsDepartment($department: JSON, $status: AbsenceRequest_approved_Input) {
+    AbsenceRequests(where: {
+        department: { equals: $department },
+        approved: { equals: $status }
+      }) {
+      docs {
+        id
+        slug
+        title
+        dateFrom
+        dateTo
+        decisionDate
+        categories {
+          title
+        }
+        populatedUser {
+          name
+          id
+          email
+        }
+        populatedApprover {
+          name
+          id
+          email
+          department
+        }
+        populatedDepartment {
+          name
+          id
+          email
         }
         type
         userComments

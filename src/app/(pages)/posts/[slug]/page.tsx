@@ -69,19 +69,7 @@ export default async function Post({ params: { slug } }) {
                 type: 'p',
                 children: [
                   {
-                    text: 'Authenticated users can leave comments on this post. All new comments are given the status "draft" until they are approved by an admin. Draft comments are not accessible to the public and will not show up on this page until it is marked as "published". To manage all comments, ',
-                  },
-                  {
-                    type: 'link',
-                    url: '/admin/collections/comments',
-                    children: [
-                      {
-                        text: 'navigate to the admin dashboard',
-                      },
-                    ],
-                  },
-                  {
-                    text: '.',
+                    text: 'Authenticated users can leave comments on this post. All new comments are given the status "draft" until they are approved by an admin. Draft comments are not accessible to the public and will not show up on this page until it is marked as "published".',
                   },
                 ],
               },
@@ -102,26 +90,25 @@ export default async function Post({ params: { slug } }) {
                   },
                 ],
               },
-              {
-                type: 'p',
-                children: [
-                  {
-                    text: 'The posts displayed here are individually selected for this page. Admins can select any number of related posts to display here and the layout will adjust accordingly. Alternatively, you could swap this out for the "Archive" block to automatically populate posts by category complete with pagination. To manage related posts, ',
-                  },
-                  {
-                    type: 'link',
-                    url: `/admin/collections/posts/${post.id}`,
-                    children: [
-                      {
-                        text: 'navigate to the admin dashboard',
-                      },
-                    ],
-                  },
-                  {
-                    text: '.',
-                  },
-                ],
-              },
+              // {
+              //   type: 'p',
+              //   children: [
+              //     // {
+              //     //   text: 'The posts displayed here are individually selected for this page. Admins can select any number of related posts to display here and the layout will adjust accordingly. Alternatively, you could swap this out for the "Archive" block to automatically populate posts by category complete with pagination. To manage related posts, ',
+              //     // },
+              //     {
+              //       type: 'link',
+              //       children: [
+              //         {
+              //           text: 'navigate to the admin dashboard',
+              //         },
+              //       ],
+              //     },
+              //     {
+              //       text: '.',
+              //     },
+              //   ],
+              // },
             ],
             // @ts-expect-error
             docs: relatedPosts,

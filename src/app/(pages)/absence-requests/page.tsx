@@ -1,10 +1,12 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { notFound, redirect } from 'next/navigation';
 
-import { AbsenceRequest, Page, User } from '../../../payload/payload-types';
+import { AbsenceRequest, Department, Page, User } from '../../../payload/payload-types';
 import { fetchAbsenceRequests } from '../../_api/fetchAbsenceRequests';
+import { fetchDepartments } from '../../_api/fetchDepartments';
 import { fetchDoc } from '../../_api/fetchDoc';
 import { fetchDocs } from '../../_api/fetchDocs';
 import { fetchUsers } from '../../_api/fetchUsers';
@@ -23,17 +25,20 @@ import AbsenceRequests from './AbsenceRequests';
 export const dynamic = 'force-dynamic';
 
 export default async function Page({ params: { slug = 'absence-requests' } }) {
-  await getMeUser({
+  const userData = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to access absence requests.',
     )}&redirect=${encodeURIComponent('/absence-requests')}`,
   });
+
+  const { user } = userData;
 
   const { isEnabled: isDraftMode } = draftMode();
 
   let page: Page | null = null;
   let absenceRequests: AbsenceRequest[] | null = null;
   let users: User[] | null = null;
+  let departments: Department[] | null = null;
 
   try {
     page = await fetchDoc<Page>({
@@ -47,6 +52,8 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
     });
 
     users = await fetchUsers();
+
+    departments = await fetchDepartments();
   } catch (error) {
     // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
     // so swallow the error here and simply render the page with fallback data where necessary
@@ -58,6 +65,10 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
     return notFound();
   }
 
+  if (!user.isManager) {
+    redirect('/account');
+  }
+
   const { hero } = page;
 
   // TODO: use this server component to fetch initial data then pass it to the client.
@@ -67,7 +78,12 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
     <React.Fragment>
       <Hero {...hero} />
       <Gutter>
-        <AbsenceRequests absenceRequests={absenceRequests} users={users} />
+        <Link href="/absence-requests/pending">View Pending Absence Requests</Link>
+        <AbsenceRequests
+          absenceRequests={absenceRequests}
+          users={users}
+          departments={departments}
+        />
       </Gutter>
     </React.Fragment>
   );

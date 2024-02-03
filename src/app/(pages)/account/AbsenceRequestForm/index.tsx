@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import moment from 'moment';
 
@@ -21,13 +21,29 @@ type FormData = {
   reason: string;
 };
 
-const AbsenceRequestForm: React.FC = () => {
+type Day = {
+  date?: string;
+  id?: string;
+};
+
+type Props = {
+  blackOutDays: Day[];
+  paidHolidays: Day[];
+};
+
+const AbsenceRequestForm: React.FC<Props> = ({ blackOutDays, paidHolidays }) => {
   const { user } = useAuth();
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<React.ReactNode | null>(null);
 
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+
+  const excludedDates = useMemo(() => {
+    const holidays = paidHolidays.map(holiday => new Date(holiday.date));
+    const blackOuts = blackOutDays.map(blackOut => new Date(blackOut.date));
+    return [...holidays, ...blackOuts];
+  }, [blackOutDays, paidHolidays]);
 
   const {
     control,
@@ -41,7 +57,15 @@ const AbsenceRequestForm: React.FC = () => {
     async (data: FormData) => {
       if (!user) return;
 
+      // compare dates
+      const date1 = new Date(data.startDate).getTime();
+      const date2 = new Date(data.endDate).getTime();
+
       try {
+        if (date1 > date2) {
+          throw new Error('End date must be after start date');
+        }
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/absence-requests`, {
           method: 'POST',
           headers: {
@@ -49,9 +73,9 @@ const AbsenceRequestForm: React.FC = () => {
           },
           body: JSON.stringify({
             _status: 'published',
-            title: `Absence Request: ${user.name} - ${moment(data.startDate).format(
-              'MM-DD-YYYY',
-            )} to ${moment(data.endDate).format('MM-DD-YYYY')}`,
+            title: `${user.name} - OFF | ${moment(data.startDate).format('MM-DD-YYYY')} to ${moment(
+              data.endDate,
+            ).format('MM-DD-YYYY')}`,
             user: user.id,
             dateFrom: new Date(data.startDate).toISOString(),
             dateTo: new Date(data.endDate).toISOString(),
@@ -71,13 +95,16 @@ const AbsenceRequestForm: React.FC = () => {
 
         setError(null);
 
-        setSuccess(
-          <Fragment>{'Your absence request was submitted successfully. To approve it, '}</Fragment>,
-        );
+        setSuccess(<Fragment>{'Your absence request was submitted successfully.'}</Fragment>);
 
         reset();
-      } catch (_) {
-        setError('There was an error with the credentials provided. Please try again.');
+      } catch (err: any) {
+        let message = 'There was an error. Please try again.';
+        if (err.message === 'End date must be after start date') {
+          message = 'End date must be after start date';
+        }
+
+        setError(message);
       }
     },
     [user, reset],
@@ -119,6 +146,7 @@ const AbsenceRequestForm: React.FC = () => {
           placeholder="Select Date"
           required={true}
           error={errors.startDate}
+          excludedDates={excludedDates}
         />
         <DatePicker
           control={control}
@@ -127,6 +155,7 @@ const AbsenceRequestForm: React.FC = () => {
           placeholder="Select Date"
           required={true}
           error={errors.endDate}
+          excludedDates={excludedDates}
         />
       </div>
       <Input name="reason" label="Reason" register={register} error={errors.reason} />

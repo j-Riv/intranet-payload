@@ -59,6 +59,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
               approved: data.status,
               approver: user.id,
               adminComments: data.comments,
+              decisionDate: new Date().toISOString(),
             }),
           },
         );

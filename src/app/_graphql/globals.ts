@@ -33,14 +33,22 @@ export const SETTINGS = `#graphql
     postsPage {
       slug
     }
-    eventsPage {
-      slug
-    }
-    absenceRequestsPage {
-      slug
-    }
+    # eventsPage {
+    #   slug
+    # }
+    # absenceRequestsPage {
+    #   slug
+    # }
     projectsPage {
       slug
+    }
+    paidHolidays {
+      id
+      date
+    }
+    blackOutDays {
+      id
+      date
     }
   }
 `;
@@ -48,5 +56,20 @@ export const SETTINGS = `#graphql
 export const SETTINGS_QUERY = `#graphql
   query Settings {
     ${SETTINGS}
+  }
+`;
+
+export const SETTINGS_DATES_QUERY = `#graphql
+  query SettingsDates {
+    Settings {
+      paidHolidays {
+        id
+        date
+      }
+      blackOutDays {
+        id
+        date
+      }
+    }
   }
 `;

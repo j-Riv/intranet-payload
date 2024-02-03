@@ -28,10 +28,7 @@ export const AbsenceRequests: CollectionConfig = {
   hooks: {
     beforeChange: [populatePublishedAt],
     afterChange: [revalidateAbsenceRequest],
-    afterRead: [
-      // populateArchiveBlock,
-      populateUser,
-    ],
+    afterRead: [populateUser],
   },
   versions: {
     drafts: true,
@@ -63,6 +60,15 @@ export const AbsenceRequests: CollectionConfig = {
         },
       ],
       defaultValue: 'pending',
+    },
+    {
+      name: 'department',
+      type: 'relationship',
+      relationTo: 'departments',
+      hasMany: false,
+      access: {
+        read: () => true,
+      },
     },
     {
       name: 'title',
@@ -190,6 +196,13 @@ export const AbsenceRequests: CollectionConfig = {
       ],
     },
     {
+      name: 'decisionDate',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'dateFrom',
       type: 'date',
       required: true,
@@ -206,6 +219,31 @@ export const AbsenceRequests: CollectionConfig = {
     {
       name: 'adminComments',
       type: 'textarea',
+    },
+    {
+      name: 'populatedDepartment',
+      type: 'group',
+      admin: {
+        readOnly: true,
+        disabled: true,
+      },
+      access: {
+        update: () => false,
+      },
+      fields: [
+        {
+          name: 'id',
+          type: 'text',
+        },
+        {
+          name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'email',
+          type: 'text',
+        },
+      ],
     },
     slugField(),
   ],

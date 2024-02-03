@@ -834,6 +834,7 @@ export interface Event {
 export interface AbsenceRequest {
   id: number;
   approved?: ('pending' | 'approved' | 'denied') | null;
+  department?: (number | null) | Department;
   title: string;
   type?: ('vacation' | 'sick-leave') | null;
   categories?: (number | Category)[] | null;
@@ -852,10 +853,16 @@ export interface AbsenceRequest {
     email?: string | null;
     department?: string | null;
   };
+  decisionDate?: string | null;
   dateFrom: string;
   dateTo: string;
   userComments?: string | null;
   adminComments?: string | null;
+  populatedDepartment?: {
+    id?: string | null;
+    name?: string | null;
+    email?: string | null;
+  };
   slug?: string | null;
   meta?: {
     title?: string | null;
@@ -927,9 +934,19 @@ export interface PayloadMigration {
 export interface Settings {
   id: number;
   postsPage?: (number | null) | Page;
-  eventsPage?: (number | null) | Page;
-  absenceRequestsPage?: (number | null) | Page;
   projectsPage?: (number | null) | Page;
+  paidHolidays?:
+    | {
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  blackOutDays?:
+    | {
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

@@ -1,10 +1,11 @@
 'use client';
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 
-import { AbsenceRequest, User } from '../../../../payload/payload-types';
+import { AbsenceRequest, Department, User } from '../../../../payload/payload-types';
 import { fetchAbsenceRequests } from '../../../_api/fetchAbsenceRequests';
 import { getTotalDays } from '../../../_utilities/getTotalDays';
+import { matchDepartment } from '../../../_utilities/matchDepartment';
 
 import classes from './index.module.scss';
 
@@ -66,30 +67,40 @@ const months = [
 type AbsenceRequestProps = {
   absenceRequest: AbsenceRequest;
   odd: boolean;
+  departments: Department[];
 };
 
-const AbsenceRequest: React.FC<AbsenceRequestProps> = ({ absenceRequest, odd }) => {
-  const { dateFrom, dateTo, userComments, populatedUser, type, populatedApprover, adminComments } =
-    absenceRequest;
+const AbsenceRequest: React.FC<AbsenceRequestProps> = ({ absenceRequest, odd, departments }) => {
+  const {
+    dateFrom,
+    dateTo,
+    userComments,
+    populatedUser,
+    type,
+    populatedApprover,
+    adminComments,
+    decisionDate,
+  } = absenceRequest;
 
   return (
     <React.Fragment>
       <tr className={odd ? classes.odd : ''}>
         <td>{populatedUser.name}</td>
-        <td>{populatedUser.department}</td>
-        <td>{type}</td>
+        <td>{matchDepartment(departments, Number(populatedUser.department))}</td>
+        <td className={classes.textCapitalize}>{type}</td>
         <td>{moment(dateFrom).format('MM-DD-YYYY')}</td>
         <td>{moment(dateTo).format('MM-DD-YYYY')}</td>
         <td>
           {getTotalDays(moment(dateFrom).format('YYYY-MM-DD'), moment(dateTo).format('YYYY-MM-DD'))}
         </td>
         <td>{populatedApprover.name}</td>
+        <td>{moment(decisionDate).format('MM-DD-YYYY')}</td>
       </tr>
       <tr className={odd ? classes.odd : ''}>
-        <td colSpan={7}>User Comments: {userComments}</td>
+        <td colSpan={8}>User Comments: {userComments}</td>
       </tr>
       <tr className={odd ? classes.odd : ''}>
-        <td colSpan={7}>Manager Comments: {adminComments}</td>
+        <td colSpan={8}>Manager Comments: {adminComments}</td>
       </tr>
     </React.Fragment>
   );
@@ -98,9 +109,10 @@ const AbsenceRequest: React.FC<AbsenceRequestProps> = ({ absenceRequest, odd }) 
 type ListProps = {
   absenceRequests: AbsenceRequest[];
   users: User[];
+  departments: Department[];
 };
 
-const List: React.FC<ListProps> = ({ absenceRequests, users }) => {
+const List: React.FC<ListProps> = ({ absenceRequests, users, departments }) => {
   const [data, setData] = useState<AbsenceRequest[]>(absenceRequests);
 
   const [month, setMonth] = useState<number>(0);
@@ -153,24 +165,29 @@ const List: React.FC<ListProps> = ({ absenceRequests, users }) => {
 
   return (
     <div>
-      <label htmlFor="month">Month: </label>
-      <select value={month} onChange={e => getAbsenceRequests(Number(e.target.value))}>
-        {months.map(month => (
-          <option key={month.name} value={month.value}>
-            {month.name}
-          </option>
-        ))}
-      </select>
-
-      <label htmlFor="user">User: </label>
-      <select value={user} onChange={e => getAbsenceRequests(month, e.target.value)}>
-        <option value="all">All</option>
-        {users.map(user => (
-          <option key={user.id} value={user.id}>
-            {user.name}
-          </option>
-        ))}
-      </select>
+      <div className={classes.selections}>
+        <div>
+          <label htmlFor="month">Month: </label>
+          <select value={month} onChange={e => getAbsenceRequests(Number(e.target.value))}>
+            {months.map(month => (
+              <option key={month.name} value={month.value}>
+                {month.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="user">Employee: </label>
+          <select value={user} onChange={e => getAbsenceRequests(month, e.target.value)}>
+            <option value="all">All</option>
+            {users.map(user => (
+              <option key={user.id} value={user.id}>
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       <table className={classes.table}>
         <thead>
@@ -182,16 +199,20 @@ const List: React.FC<ListProps> = ({ absenceRequests, users }) => {
             <th>End Date</th>
             <th>Days</th>
             <th>Approved By</th>
+            <th>Approved Date</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((absenceRequest, i) => (
-            <AbsenceRequest
-              key={absenceRequest.id}
-              absenceRequest={absenceRequest}
-              odd={i % 2 === 0}
-            />
-          ))}
+          {data.map((absenceRequest, i) => {
+            return (
+              <AbsenceRequest
+                key={absenceRequest.id}
+                absenceRequest={absenceRequest}
+                odd={i % 2 === 0}
+                departments={departments}
+              />
+            );
+          })}
         </tbody>
       </table>
     </div>

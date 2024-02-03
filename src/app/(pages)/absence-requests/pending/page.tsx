@@ -1,31 +1,38 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
-import { AbsenceRequest, Post } from '../../../../payload/payload-types';
+import type { AbsenceRequest, Department } from '../../../../payload/payload-types';
 import { fetchAbsenceRequests } from '../../../_api/fetchAbsenceRequests';
-import { fetchDocs } from '../../../_api/fetchDocs';
+import { fetchDepartments } from '../../../_api/fetchDepartments';
 import { Gutter } from '../../../_components/Gutter';
+import { getMeUser } from '../../../_utilities/getMeUser';
 import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph';
-import PendingAbsenceRequest from './AbsenceRequest';
+import AbsenceRequests from './AbsenceRequests';
 
 // Force this page to be dynamic so that Next.js does not cache it
 // See the note in '../../../[slug]/page.tsx' about this
 export const dynamic = 'force-dynamic';
 
 export default async function PendingAbsenceRequests({ params: { slug } }) {
+  const userData = await getMeUser({
+    nullUserRedirect: `/login?error=${encodeURIComponent(
+      'You must be logged in to access absence requests.',
+    )}&redirect=${encodeURIComponent('/absence-requests')}`,
+  });
+
+  const { user } = userData;
+
   let absenceRequests: AbsenceRequest[] | null = null;
-  const firstDay = new Date('2/01/2024').toISOString();
-  const lastDay = new Date('2/31/2024').toISOString();
+  let departments: Department[] | null = null;
+
   try {
-    // absenceRequests = await fetchAbsenceRequests('absence-requests-by-month', {
-    //   status: 'pending',
-    //   firstDay: firstDay,
-    //   lastDay: lastDay,
-    // });
-    absenceRequests = await fetchAbsenceRequests('absence-requests', {
+    absenceRequests = await fetchAbsenceRequests('absence-requests-by-department', {
       status: 'pending',
+      department: user.department,
     });
+
+    departments = await fetchDepartments();
   } catch (error) {
     console.error(error); // eslint-disable-line no-console
   }
@@ -33,14 +40,19 @@ export default async function PendingAbsenceRequests({ params: { slug } }) {
     notFound();
   }
 
+  if (!user.isManager) {
+    redirect('/account');
+  }
+
   return (
     <Gutter>
-      <React.Fragment>
-        <p>Pending Absence Requests: {absenceRequests.length}</p>
-        {absenceRequests.map(absenceRequest => (
-          <PendingAbsenceRequest key={absenceRequest.id} absenceRequest={absenceRequest} />
-        ))}
-      </React.Fragment>
+      <h1>Pending Absence Requests</h1>
+      <AbsenceRequests
+        absenceRequests={absenceRequests}
+        // @ts-expect-error
+        defaultDepartment={user.department?.id.toString()}
+        departments={departments}
+      />
     </Gutter>
   );
 }

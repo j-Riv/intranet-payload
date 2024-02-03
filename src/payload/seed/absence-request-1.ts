@@ -3,11 +3,11 @@ import moment from 'moment';
 import type { AbsenceRequest } from '../payload-types';
 
 export const absenceRequest1: Partial<AbsenceRequest> = {
-  title: 'Absence Request 1',
-  slug: 'absence-request-1',
+  title: 'Demo Admin - OFF | 01-12-2024 to 01-12-2024',
+  slug: 'demo-admin-off-01-12-2024-to-01-12-2024',
   _status: 'published',
   meta: {
-    title: 'Absence Request 1',
+    title: 'Demo Admin - OFF | 01-12-2024 to 01-12-2024',
     description: 'This is the first absence request.',
     // @ts-expect-error
     image: '{{IMAGE}}',
@@ -60,4 +60,5 @@ export const absenceRequest1: Partial<AbsenceRequest> = {
   dateTo: moment('2024-01-12').endOf('day').toISOString(),
   userComments: 'Going out of Town',
   adminComments: null,
+  // department: '{{ DEPARMTMENT }}',
 };

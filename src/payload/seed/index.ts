@@ -6,10 +6,13 @@ import { absenceRequest1 } from './absence-request-1';
 import { absenceRequestsPage } from './absence-requests-page';
 import { event1 } from './event-1';
 import { event2 } from './event-2';
+import { eventImage } from './event-image';
 import { eventsPage } from './events-page';
-import { home } from './home';
+// import { home } from './home';
+import { home } from './home-default';
 import { image1 } from './image-1';
 import { image2 } from './image-2';
+import { macbookImage } from './macbook-image';
 import { post1 } from './post-1';
 import { post2 } from './post-2';
 import { post3 } from './post-3';
@@ -18,6 +21,7 @@ import { project1 } from './project-1';
 import { project2 } from './project-2';
 import { project3 } from './project-3';
 import { projectsPage } from './projects-page';
+import { vacationImage } from './vacation-image';
 
 const collections = [
   'categories',
@@ -154,18 +158,34 @@ export const seed = async (payload: Payload): Promise<void> => {
 
   payload.logger.info(`— Seeding media...`);
 
-  const [image1Doc, image2Doc] = await Promise.all([
-    await payload.create({
-      collection: 'media',
-      filePath: path.resolve(__dirname, 'image-1.jpg'),
-      data: image1,
-    }),
-    await payload.create({
-      collection: 'media',
-      filePath: path.resolve(__dirname, 'image-2.jpg'),
-      data: image2,
-    }),
-  ]);
+  const [image1Doc, image2Doc, vacationImageDoc, eventImageDoc, macbookImageDoc] =
+    await Promise.all([
+      await payload.create({
+        collection: 'media',
+        filePath: path.resolve(__dirname, 'image-1.jpg'),
+        data: image1,
+      }),
+      await payload.create({
+        collection: 'media',
+        filePath: path.resolve(__dirname, 'image-2.jpg'),
+        data: image2,
+      }),
+      await payload.create({
+        collection: 'media',
+        filePath: path.resolve(__dirname, 'vacation.jpg'),
+        data: vacationImage,
+      }),
+      await payload.create({
+        collection: 'media',
+        filePath: path.resolve(__dirname, 'event.jpg'),
+        data: eventImage,
+      }),
+      await payload.create({
+        collection: 'media',
+        filePath: path.resolve(__dirname, 'macbook-desk.jpg'),
+        data: macbookImage,
+      }),
+    ]);
 
   payload.logger.info(`— Seeding categories...`);
 
@@ -177,6 +197,7 @@ export const seed = async (payload: Payload): Promise<void> => {
     softwareCat,
     engineeringCat,
     eventCategory,
+    productReleaseCategory,
     paidHolidayCategory,
     absenceRequestCategory,
   ] = await Promise.all([
@@ -225,6 +246,12 @@ export const seed = async (payload: Payload): Promise<void> => {
     await payload.create({
       collection: 'categories',
       data: {
+        title: 'Product Release',
+      },
+    }),
+    await payload.create({
+      collection: 'categories',
+      data: {
         title: 'Paid Holiday',
       },
     }),
@@ -239,6 +266,9 @@ export const seed = async (payload: Payload): Promise<void> => {
   // we are using postgres our ids are strings
   let image1ID = image1Doc.id.toString();
   let image2ID = image2Doc.id.toString();
+  let vacationImageID = vacationImageDoc.id.toString();
+  let eventImageID = eventImageDoc.id.toString();
+  let macbookImageID = macbookImageDoc.id.toString();
   let demoAdminID = demoAdminId.toString();
 
   // if (payload.db.defaultIDType === 'text') {
@@ -254,7 +284,7 @@ export const seed = async (payload: Payload): Promise<void> => {
   const post1Doc = await payload.create({
     collection: 'posts',
     data: JSON.parse(
-      JSON.stringify({ ...post1, categories: [technologyCategory.id] })
+      JSON.stringify({ ...post1, categories: [productReleaseCategory.id] })
         .replace(/"\{\{IMAGE\}\}"/g, image1ID)
         .replace(/"\{\{AUTHOR\}\}"/g, demoAdminID),
     ),
@@ -263,8 +293,8 @@ export const seed = async (payload: Payload): Promise<void> => {
   const post2Doc = await payload.create({
     collection: 'posts',
     data: JSON.parse(
-      JSON.stringify({ ...post2, categories: [newsCategory.id] })
-        .replace(/"\{\{IMAGE\}\}"/g, image1ID)
+      JSON.stringify({ ...post2, categories: [productReleaseCategory.id] })
+        .replace(/"\{\{IMAGE\}\}"/g, image2ID)
         .replace(/"\{\{AUTHOR\}\}"/g, demoAdminID),
     ),
   });
@@ -272,8 +302,8 @@ export const seed = async (payload: Payload): Promise<void> => {
   const post3Doc = await payload.create({
     collection: 'posts',
     data: JSON.parse(
-      JSON.stringify({ ...post3, categories: [financeCategory.id] })
-        .replace(/"\{\{IMAGE\}\}"/g, image1ID)
+      JSON.stringify({ ...post3, categories: [productReleaseCategory.id] })
+        .replace(/"\{\{IMAGE\}\}"/g, eventImageID)
         .replace(/"\{\{AUTHOR\}\}"/g, demoAdminID),
     ),
   });
@@ -314,7 +344,7 @@ export const seed = async (payload: Payload): Promise<void> => {
     collection: 'events',
     data: JSON.parse(
       JSON.stringify({ ...event1, categories: [eventCategory.id, paidHolidayCategory.id] })
-        .replace(/"\{\{IMAGE\}\}"/g, image1ID)
+        .replace(/"\{\{IMAGE\}\}"/g, eventImageID)
         .replace(/"\{\{AUTHOR\}\}"/g, demoAdminID),
     ),
   });
@@ -323,7 +353,7 @@ export const seed = async (payload: Payload): Promise<void> => {
     collection: 'events',
     data: JSON.parse(
       JSON.stringify({ ...event2, categories: [eventCategory.id, paidHolidayCategory.id] })
-        .replace(/"\{\{IMAGE\}\}"/g, image1ID)
+        .replace(/"\{\{IMAGE\}\}"/g, eventImageID)
         .replace(/"\{\{AUTHOR\}\}"/g, demoAdminID),
     ),
   });
@@ -361,7 +391,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         ...absenceRequest1,
         categories: [eventCategory.id, absenceRequestCategory.id],
       })
-        .replace(/"\{\{IMAGE\}\}"/g, image1ID)
+        .replace(/"\{\{IMAGE\}\}"/g, vacationImageID)
         .replace(/"\{\{USER\}\}"/g, demoAdminID)
         .replace(/"\{\{APPROVER\}\}"/g, demoAdminID),
     ),
@@ -503,12 +533,24 @@ export const seed = async (payload: Payload): Promise<void> => {
 
   payload.logger.info(`— Seeding home page...`);
 
+  // await payload.create({
+  //   collection: 'pages',
+  //   data: JSON.parse(
+  //     JSON.stringify(home)
+  //       .replace(/"\{\{IMAGE_1\}\}"/g, macbookImageID)
+  //       .replace(/"\{\{IMAGE_2\}\}"/g, image2ID)
+  //       .replace(/"\{\{POSTS_PAGE_ID\}\}"/g, postsPageID)
+  //       .replace(/"\{\{EVENTS_PAGE_ID\}\}"/g, eventsPageID)
+  //       .replace(/"\{\{ABSENCE_REQUESTS_PAGE_ID\}\}"/g, absenceRequestsPageID)
+  //       .replace(/"\{\{PROJECTS_PAGE_ID\}\}"/g, projectsPageID),
+  //   ),
+  // });
+
   await payload.create({
     collection: 'pages',
     data: JSON.parse(
       JSON.stringify(home)
-        .replace(/"\{\{IMAGE_1\}\}"/g, image1ID)
-        .replace(/"\{\{IMAGE_2\}\}"/g, image2ID)
+        .replace(/"\{\{IMAGE_1\}\}"/g, macbookImageID)
         .replace(/"\{\{POSTS_PAGE_ID\}\}"/g, postsPageID)
         .replace(/"\{\{EVENTS_PAGE_ID\}\}"/g, eventsPageID)
         .replace(/"\{\{ABSENCE_REQUESTS_PAGE_ID\}\}"/g, absenceRequestsPageID)
@@ -522,8 +564,8 @@ export const seed = async (payload: Payload): Promise<void> => {
     slug: 'settings',
     data: {
       postsPage: postsPageDoc.id,
-      eventsPage: eventsPageDoc.id,
-      absenceRequestsPage: absenceRequestsPageDoc.id,
+      // eventsPage: eventsPageDoc.id,
+      // absenceRequestsPage: absenceRequestsPageDoc.id,
       projectsPage: projectsPageDoc.id,
     },
   });

@@ -61,6 +61,7 @@ export default async function Page({ params: { slug = 'events' } }) {
         title: event.title,
         start: new Date(event.dateFrom),
         end: new Date(event.dateTo),
+        url: `/events/${event.slug}`,
         // allDay: true,
       };
     }) ?? [];
@@ -68,9 +69,11 @@ export default async function Page({ params: { slug = 'events' } }) {
   const absenceRequestList =
     absenceRequests?.map(event => {
       return {
-        title: event.title,
+        // title: event.title,
+        title: event.title.split(' | ')[0],
         start: new Date(event.dateFrom),
         end: new Date(event.dateTo),
+        url: `/absence-requests/${event.slug}`,
         // allDay: true,
       };
     }) ?? [];

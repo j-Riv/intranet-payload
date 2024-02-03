@@ -1,25 +1,20 @@
 import React, { Fragment } from 'react';
-import Link from 'next/link';
 
-import { Post } from '../../../payload/payload-types';
+import { AbsenceRequest } from '../../../payload/payload-types';
 import { Gutter } from '../../_components/Gutter';
 import { Media } from '../../_components/Media';
 import RichText from '../../_components/RichText';
-import { formatDateTime } from '../../_utilities/formatDateTime';
 
 import classes from './index.module.scss';
 
-export const PostHero: React.FC<{
-  post: Post;
-}> = ({ post }) => {
-  const {
-    id,
-    title,
-    categories,
-    meta: { image: metaImage, description } = {},
-    publishedAt,
-    populatedAuthors,
-  } = post;
+export const AbsenceRequestHero: React.FC<{
+  absenceRequest: AbsenceRequest;
+}> = ({ absenceRequest }) => {
+  const { title, categories, meta: { image: metaImage } = {}, populatedApprover } = absenceRequest;
+
+  const split = title.split(' | ');
+  const titleToUse = split[0];
+  const subtitle = split[1];
 
   return (
     <Fragment>
@@ -46,38 +41,9 @@ export const PostHero: React.FC<{
               })}
             </div>
           </div>
-          <h1 className={classes.title}>{title}</h1>
-          <p className={classes.meta}>
-            {populatedAuthors && (
-              <Fragment>
-                {'By '}
-                {populatedAuthors.map((author, index) => {
-                  const { name } = author;
-
-                  const isLast = index === populatedAuthors.length - 1;
-                  const secondToLast = index === populatedAuthors.length - 2;
-
-                  return (
-                    <Fragment key={index}>
-                      {name}
-                      {secondToLast && populatedAuthors.length > 2 && <Fragment>, </Fragment>}
-                      {secondToLast && populatedAuthors.length === 2 && <Fragment> </Fragment>}
-                      {!isLast && populatedAuthors.length > 1 && <Fragment>and </Fragment>}
-                    </Fragment>
-                  );
-                })}
-              </Fragment>
-            )}
-            {publishedAt && (
-              <Fragment>
-                {' on '}
-                {formatDateTime(publishedAt)}
-              </Fragment>
-            )}
-          </p>
-          <div>
-            <p className={classes.description}>{`${description ? `${description} ` : ''}`}</p>
-          </div>
+          <h1 className={classes.title}>{titleToUse}</h1>
+          <p className={classes.meta}>{subtitle}</p>
+          <p className={classes.meta}>Approved by: {populatedApprover.name}</p>
         </div>
         <div className={classes.media}>
           <div className={classes.mediaWrapper}>

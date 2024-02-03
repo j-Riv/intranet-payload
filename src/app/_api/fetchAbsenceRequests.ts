@@ -1,6 +1,7 @@
-import type { AbsenceRequest, User } from '../../payload/payload-types';
+import type { AbsenceRequest, Department, User } from '../../payload/payload-types';
 import {
   ABSENCE_REQUESTS,
+  ABSENCE_REQUESTS_BY_DEPARTMENT,
   ABSENCE_REQUESTS_BY_MONTH,
   ABSENCE_REQUESTS_BY_MONTH_USER,
   ABSENCE_REQUESTS_BY_USER,
@@ -24,6 +25,10 @@ const queryMap = {
     query: ABSENCE_REQUESTS_BY_MONTH_USER,
     key: 'AbsenceRequestsByMonthUser',
   },
+  'absence-requests-by-department': {
+    query: ABSENCE_REQUESTS_BY_DEPARTMENT,
+    key: 'AbsenceRequestsByDepartment',
+  },
 };
 
 interface Args {
@@ -31,6 +36,7 @@ interface Args {
   status?: string;
   firstDay?: string;
   lastDay?: string;
+  department?: User['department'];
 }
 
 export const fetchAbsenceRequests = async (
@@ -38,7 +44,7 @@ export const fetchAbsenceRequests = async (
   args: Args,
 ): Promise<AbsenceRequest[]> => {
   if (!queryMap[query]) throw new Error(`Query ${query} not found`);
-  const { user, status = 'pending', firstDay, lastDay } = args || {};
+  const { user, status = 'pending', firstDay, lastDay, department } = args || {};
 
   let variables: Args = {};
 
@@ -46,6 +52,7 @@ export const fetchAbsenceRequests = async (
   if (status) variables.status = status;
   if (firstDay) variables.firstDay = firstDay;
   if (lastDay) variables.lastDay = lastDay;
+  if (department) variables.department = (department as Department).id;
 
   const docs: AbsenceRequest[] = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
     method: 'POST',
