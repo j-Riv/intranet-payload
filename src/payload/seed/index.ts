@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from 'fs';
 import path from 'path';
 import type { Payload } from 'payload';
@@ -131,6 +132,7 @@ export const seed = async (payload: Payload): Promise<void> => {
         password: 'password',
         roles: ['admin'],
         department: mediaDepartment.id,
+        isManager: true,
       },
     }),
     await payload.create({
