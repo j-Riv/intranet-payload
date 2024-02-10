@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload/types';
 
 import { admins } from '../../access/admins';
-import { anyone } from '../../access/anyone';
+// import { anyone } from '../../access/anyone';
 import type { Comment } from '../../payload-types';
 import { populateUser } from './hooks/populateUser';
 import { revalidatePost } from './hooks/revalidatePost';
@@ -20,7 +20,7 @@ const Departments: CollectionConfig = {
     afterRead: [populateUser],
   },
   access: {
-    read: anyone,
+    read: () => true,
     create: admins,
     update: admins,
     delete: admins,
@@ -39,6 +39,9 @@ const Departments: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       hasMany: false,
+      access: {
+        read: () => true,
+      },
     },
     // This field is only used to populate the user data via the `populateUser` hook
     // This is because the `user` collection has access control locked to protect user privacy

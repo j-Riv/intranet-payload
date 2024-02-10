@@ -11,7 +11,7 @@ populatedUser {
 }
 comment
 createdAt
-`
+`;
 
 export const COMMENTS_BY_DOC = `#graphql
   query Comments($doc: JSON) {
@@ -21,7 +21,7 @@ export const COMMENTS_BY_DOC = `#graphql
       }
     }
   }
-`
+`;
 
 export const COMMENTS_BY_USER = `#graphql
   query Comments($user: JSON) {
@@ -31,4 +31,4 @@ export const COMMENTS_BY_USER = `#graphql
       }
     }
   }
-`
+`;

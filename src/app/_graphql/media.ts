@@ -5,9 +5,9 @@ export const MEDIA_FIELDS = `
   height
   alt
   caption
-`
+`;
 
 export const MEDIA = `#graphql
   media {
     ${MEDIA_FIELDS}
-  }`
+  }`;

@@ -13,7 +13,7 @@ type Props = {
   validate?: (value: string) => boolean | string;
   placeholder?: string;
   disabled?: boolean;
-  value?: string;
+  defaultValue?: string;
   readOnly?: boolean;
 };
 
@@ -27,7 +27,7 @@ export const Input: React.FC<Props> = ({
   validate,
   placeholder,
   disabled,
-  value,
+  defaultValue,
   readOnly = false,
 }) => {
   return (
@@ -67,7 +67,8 @@ export const Input: React.FC<Props> = ({
               : {}),
           })}
           disabled={disabled}
-          value={value}
+          // value={value}
+          defaultValue={defaultValue}
           readOnly={readOnly}
         />
       )}

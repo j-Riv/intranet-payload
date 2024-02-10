@@ -1,5 +1,10 @@
 import type { Footer, Header, Settings } from '../../payload/payload-types';
-import { FOOTER_QUERY, HEADER_QUERY, SETTINGS_QUERY } from '../_graphql/globals';
+import {
+  FOOTER_QUERY,
+  HEADER_QUERY,
+  SETTINGS_DATES_QUERY,
+  SETTINGS_QUERY,
+} from '../_graphql/globals';
 import { GRAPHQL_API_URL } from './shared';
 
 export async function fetchSettings(): Promise<Settings> {
@@ -13,6 +18,31 @@ export async function fetchSettings(): Promise<Settings> {
     cache: 'no-store',
     body: JSON.stringify({
       query: SETTINGS_QUERY,
+    }),
+  })
+    ?.then(res => {
+      if (!res.ok) throw new Error('Error fetching doc');
+      return res.json();
+    })
+    ?.then(res => {
+      if (res?.errors) throw new Error(res?.errors[0]?.message || 'Error fetching settings');
+      return res.data?.Settings;
+    });
+
+  return settings;
+}
+
+export async function fetchDateSettings(): Promise<Settings> {
+  if (!GRAPHQL_API_URL) throw new Error('NEXT_PUBLIC_SERVER_URL not found');
+
+  const settings = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+    body: JSON.stringify({
+      query: SETTINGS_DATES_QUERY,
     }),
   })
     ?.then(res => {

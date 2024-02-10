@@ -17,7 +17,7 @@ export const absenceRequestsPage: Partial<Page> = {
         type: 'h1',
         children: [
           {
-            text: 'Absence Request Form',
+            text: 'Absence Requests',
           },
         ],
       },
