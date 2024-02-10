@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import type { AbsenceRequest, Department } from '../../../../../payload/payload-types';
 import { fetchAbsenceRequests } from '../../../../_api/fetchAbsenceRequests';
-import { useAuth } from '../../../../_providers/Auth';
 import PendingAbsenceRequest from '../AbsenceRequest';
 
 type Props = {
@@ -14,9 +13,8 @@ type Props = {
 };
 
 const AbsenceRequests: React.FC<Props> = ({ absenceRequests, defaultDepartment, departments }) => {
-  const { user } = useAuth();
   const [department, setDepartment] = useState(defaultDepartment);
-  const [data, setData] = useState<AbsenceRequest[]>(absenceRequests);
+  const [data, setData] = useState<AbsenceRequest[]>([]);
 
   const getAbsenceRequests = async (dep: string) => {
     let requests: AbsenceRequest[] | null = null;
@@ -38,6 +36,10 @@ const AbsenceRequests: React.FC<Props> = ({ absenceRequests, defaultDepartment, 
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    setData(absenceRequests);
+  }, [absenceRequests]);
 
   return (
     <React.Fragment>

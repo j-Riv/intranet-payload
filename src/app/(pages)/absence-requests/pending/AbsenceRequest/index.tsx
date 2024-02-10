@@ -8,7 +8,7 @@ import { Button } from '../../../../_components/Button';
 import { Input } from '../../../../_components/Input';
 import { Message } from '../../../../_components/Message';
 import { useAuth } from '../../../../_providers/Auth';
-import { navigate } from '../../actions';
+import { revalidate } from '../../actions';
 
 import classes from './index.module.scss';
 
@@ -74,7 +74,7 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
 
         setSuccess(<Fragment>{'Absence request was submitted successfully.'}</Fragment>);
 
-        navigate(data.email);
+        revalidate(data.email);
       } catch (_) {
         setError('There was an error with the credentials provided. Please try again.');
       }

@@ -10,7 +10,7 @@ import { fetchDocs } from '../../../_api/fetchDocs';
 import { Blocks } from '../../../_components/Blocks';
 import { Hero } from '../../../_components/Hero';
 import { PremiumContent } from '../../../_components/PremiumContent';
-import { PostHero } from '../../../_heros/PostHero';
+// import { PostHero } from '../../../_heros/PostHero';
 import { generateMeta } from '../../../_utilities/generateMeta';
 
 // Force this page to be dynamic so that Next.js does not cache it
@@ -44,9 +44,8 @@ export default async function Post({ params: { slug } }) {
 
   return (
     <React.Fragment>
-      {/* <Hero {...hero} /> */}
-
-      <PostHero post={post} />
+      <Hero {...hero} />
+      {/* <PostHero post={post} /> */}
       <Blocks blocks={layout} />
       {enablePremiumContent && <PremiumContent postSlug={slug as string} disableTopPadding />}
       <Blocks

@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-export async function navigate(email: string): Promise<void> {
-  console.log('email', email);
+// TODO: fix this function
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function revalidate(email: string): Promise<void> {
   revalidatePath('/absence-requests/pending');
 }
