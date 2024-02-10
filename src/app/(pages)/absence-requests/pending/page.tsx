@@ -1,28 +1,38 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
-import { AbsenceRequest, Comment, Post } from '../../../../payload/payload-types';
-import { fetchDoc } from '../../../_api/fetchDoc';
-import { fetchDocs } from '../../../_api/fetchDocs';
+import type { AbsenceRequest, Department } from '../../../../payload/payload-types';
+import { fetchAbsenceRequests } from '../../../_api/fetchAbsenceRequests';
+import { fetchDepartments } from '../../../_api/fetchDepartments';
 import { Gutter } from '../../../_components/Gutter';
-import { generateMeta } from '../../../_utilities/generateMeta';
-import PendingAbsenceRequest from './AbsenceRequest';
+import { getMeUser } from '../../../_utilities/getMeUser';
+import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph';
+import AbsenceRequests from './AbsenceRequests';
 
 // Force this page to be dynamic so that Next.js does not cache it
 // See the note in '../../../[slug]/page.tsx' about this
 export const dynamic = 'force-dynamic';
 
 export default async function PendingAbsenceRequests({ params: { slug } }) {
-  const { isEnabled: isDraftMode } = draftMode();
+  const userData = await getMeUser({
+    nullUserRedirect: `/login?error=${encodeURIComponent(
+      'You must be logged in to access absence requests.',
+    )}&redirect=${encodeURIComponent('/absence-requests')}`,
+  });
+
+  const { user } = userData;
 
   let absenceRequests: AbsenceRequest[] | null = null;
+  let departments: Department[] | null = null;
 
   try {
-    absenceRequests = await fetchDocs<AbsenceRequest>('absence-requests', false, {
+    absenceRequests = await fetchAbsenceRequests('absence-requests-by-department', {
       status: 'pending',
+      department: user.department,
     });
+
+    departments = await fetchDepartments();
   } catch (error) {
     console.error(error); // eslint-disable-line no-console
   }
@@ -30,45 +40,39 @@ export default async function PendingAbsenceRequests({ params: { slug } }) {
     notFound();
   }
 
-  // const comments = await fetchComments({
-  //   doc: event?.id,
-  // })
-
-  // const { layout } = absenceRequest
+  if (!user.isManager) {
+    redirect('/account');
+  }
 
   return (
     <Gutter>
-      <React.Fragment>
-        <p>Pending Absence Requests: {absenceRequests.length}</p>
-        {absenceRequests.map(absenceRequest => (
-          <PendingAbsenceRequest key={absenceRequest.id} absenceRequest={absenceRequest} />
-        ))}
-      </React.Fragment>
+      <h1>Pending Absence Requests</h1>
+      <AbsenceRequests
+        absenceRequests={absenceRequests}
+        // @ts-expect-error
+        defaultDepartment={user.department?.id.toString()}
+        departments={departments}
+      />
     </Gutter>
   );
 }
 
 export async function generateStaticParams() {
   try {
-    const absenceRequests = await fetchDocs<Post>('absence-requests', false);
+    const absenceRequests = await fetchAbsenceRequests('absence-requests', {
+      status: 'pending',
+    });
     return absenceRequests?.map(({ slug }) => slug);
   } catch (error) {
     return [];
   }
 }
 
-export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
-  const { isEnabled: isDraftMode } = draftMode();
-
-  let absenceRequest: AbsenceRequest | null = null;
-
-  try {
-    absenceRequest = await fetchDoc<AbsenceRequest>({
-      collection: 'absence-requests',
-      slug,
-      draft: isDraftMode,
-    });
-  } catch (error) {}
-  // @ts-expect-error
-  return generateMeta({ doc: absenceRequest });
-}
+export const metadata: Metadata = {
+  title: 'Pending Absence Requests',
+  description: 'Pending Absence Requests',
+  openGraph: mergeOpenGraph({
+    title: 'Pending Absence Requests',
+    url: '/absence-requests/pending',
+  }),
+};

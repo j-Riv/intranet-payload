@@ -9,4 +9,4 @@ export const ME_QUERY = `#graphql
       }
       exp
     }
-  }`
+  }`;

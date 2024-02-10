@@ -3,8 +3,10 @@
 }
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
+import logo from '../../../../public/intranet-logo.svg';
 import { Header } from '../../../payload/payload-types';
 import { fetchHeader } from '../../_api/fetchGlobals';
 import { Gutter } from '../Gutter';
@@ -34,11 +36,12 @@ export async function Header() {
               And so `@media (prefers-color-scheme: dark)` will not work
               Instead, we just use CSS to invert the color via `filter: invert(1)` based on `[data-theme="dark"]`
             */}
-            <img
+            {/* <img
               className={classes.logo}
               alt="Payload Logo"
               src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/payload/src/admin/assets/images/payload-logo-light.svg"
-            />
+            /> */}
+            <Image src={logo} alt="Payload Logo" width={150} />
           </Link>
           <HeaderNav header={header} />
         </Gutter>

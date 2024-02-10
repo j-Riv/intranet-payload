@@ -34,6 +34,7 @@ export const EventsCalander: React.FC<Props> = ({ events }) => {
           eventBorderColor="gray"
           buttonIcons={false}
           themeSystem="standard"
+          // eventClick={event => console.log('event', event)}
           // eventContent={function (arg) {
           //   return (
           //     <div className={classes.eventContent}>

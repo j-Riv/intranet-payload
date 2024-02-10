@@ -1,7 +1,14 @@
-import { ARCHIVE_BLOCK, CALL_TO_ACTION, CARDS, CONTENT, MEDIA_BLOCK, PRODUCT_BLOCK } from './blocks'
-import { LINK_FIELDS } from './link'
-import { MEDIA } from './media'
-import { META } from './meta'
+import {
+  ARCHIVE_BLOCK,
+  CALL_TO_ACTION,
+  CARDS,
+  CONTENT,
+  MEDIA_BLOCK,
+  PRODUCT_BLOCK,
+} from './blocks';
+import { LINK_FIELDS } from './link';
+import { MEDIA } from './media';
+import { META } from './meta';
 
 export const POSTS = `#graphql
   query Posts {
@@ -11,7 +18,7 @@ export const POSTS = `#graphql
       }
     }
   }
-`
+`;
 
 export const POST = `#graphql
   query Post($slug: String, $draft: Boolean) {
@@ -56,7 +63,7 @@ export const POST = `#graphql
       }
     }
   }
-`
+`;
 
 export const POST_PREMIUM_CONTENT = `#graphql
   query Post($slug: String, $draft: Boolean) {
@@ -71,4 +78,4 @@ export const POST_PREMIUM_CONTENT = `#graphql
       }
     }
   }
-`
+`;

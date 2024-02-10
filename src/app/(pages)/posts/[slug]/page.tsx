@@ -10,7 +10,7 @@ import { fetchDocs } from '../../../_api/fetchDocs';
 import { Blocks } from '../../../_components/Blocks';
 import { Hero } from '../../../_components/Hero';
 import { PremiumContent } from '../../../_components/PremiumContent';
-import { PostHero } from '../../../_heros/PostHero';
+// import { PostHero } from '../../../_heros/PostHero';
 import { generateMeta } from '../../../_utilities/generateMeta';
 
 // Force this page to be dynamic so that Next.js does not cache it
@@ -44,9 +44,8 @@ export default async function Post({ params: { slug } }) {
 
   return (
     <React.Fragment>
-      {/* <Hero {...hero} /> */}
-
-      <PostHero post={post} />
+      <Hero {...hero} />
+      {/* <PostHero post={post} /> */}
       <Blocks blocks={layout} />
       {enablePremiumContent && <PremiumContent postSlug={slug as string} disableTopPadding />}
       <Blocks
@@ -69,19 +68,7 @@ export default async function Post({ params: { slug } }) {
                 type: 'p',
                 children: [
                   {
-                    text: 'Authenticated users can leave comments on this post. All new comments are given the status "draft" until they are approved by an admin. Draft comments are not accessible to the public and will not show up on this page until it is marked as "published". To manage all comments, ',
-                  },
-                  {
-                    type: 'link',
-                    url: '/admin/collections/comments',
-                    children: [
-                      {
-                        text: 'navigate to the admin dashboard',
-                      },
-                    ],
-                  },
-                  {
-                    text: '.',
+                    text: 'Authenticated users can leave comments on this post. All new comments are given the status "draft" until they are approved by an admin. Draft comments are not accessible to the public and will not show up on this page until it is marked as "published".',
                   },
                 ],
               },
@@ -102,26 +89,25 @@ export default async function Post({ params: { slug } }) {
                   },
                 ],
               },
-              {
-                type: 'p',
-                children: [
-                  {
-                    text: 'The posts displayed here are individually selected for this page. Admins can select any number of related posts to display here and the layout will adjust accordingly. Alternatively, you could swap this out for the "Archive" block to automatically populate posts by category complete with pagination. To manage related posts, ',
-                  },
-                  {
-                    type: 'link',
-                    url: `/admin/collections/posts/${post.id}`,
-                    children: [
-                      {
-                        text: 'navigate to the admin dashboard',
-                      },
-                    ],
-                  },
-                  {
-                    text: '.',
-                  },
-                ],
-              },
+              // {
+              //   type: 'p',
+              //   children: [
+              //     // {
+              //     //   text: 'The posts displayed here are individually selected for this page. Admins can select any number of related posts to display here and the layout will adjust accordingly. Alternatively, you could swap this out for the "Archive" block to automatically populate posts by category complete with pagination. To manage related posts, ',
+              //     // },
+              //     {
+              //       type: 'link',
+              //       children: [
+              //         {
+              //           text: 'navigate to the admin dashboard',
+              //         },
+              //       ],
+              //     },
+              //     {
+              //       text: '.',
+              //     },
+              //   ],
+              // },
             ],
             // @ts-expect-error
             docs: relatedPosts,

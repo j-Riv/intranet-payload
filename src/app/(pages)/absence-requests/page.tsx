@@ -1,17 +1,20 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { notFound, redirect } from 'next/navigation';
 
-import { Page } from '../../../payload/payload-types';
-import { staticHome } from '../../../payload/seed/home-static';
+import { AbsenceRequest, Department, Page, User } from '../../../payload/payload-types';
+import { fetchAbsenceRequests } from '../../_api/fetchAbsenceRequests';
+import { fetchDepartments } from '../../_api/fetchDepartments';
 import { fetchDoc } from '../../_api/fetchDoc';
 import { fetchDocs } from '../../_api/fetchDocs';
-import { Blocks } from '../../_components/Blocks';
+import { fetchUsers } from '../../_api/fetchUsers';
+import { Gutter } from '../../_components/Gutter';
 import { Hero } from '../../_components/Hero';
 import { generateMeta } from '../../_utilities/generateMeta';
 import { getMeUser } from '../../_utilities/getMeUser';
-import AbsenceRequestForm from './AbsenceRequestForm';
+import AbsenceRequests from './AbsenceRequests';
 
 // Payload Cloud caches all files through Cloudflare, so we don't need Next.js to cache them as well
 // This means that we can turn off Next.js data caching and instead rely solely on the Cloudflare CDN
@@ -22,15 +25,20 @@ import AbsenceRequestForm from './AbsenceRequestForm';
 export const dynamic = 'force-dynamic';
 
 export default async function Page({ params: { slug = 'absence-requests' } }) {
-  await getMeUser({
+  const userData = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to access absence requests.',
     )}&redirect=${encodeURIComponent('/absence-requests')}`,
   });
 
+  const { user } = userData;
+
   const { isEnabled: isDraftMode } = draftMode();
 
   let page: Page | null = null;
+  let absenceRequests: AbsenceRequest[] | null = null;
+  let users: User[] | null = null;
+  let departments: Department[] | null = null;
 
   try {
     page = await fetchDoc<Page>({
@@ -38,6 +46,14 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
       slug,
       draft: isDraftMode,
     });
+
+    absenceRequests = await fetchAbsenceRequests('absence-requests', {
+      status: 'approved',
+    });
+
+    users = await fetchUsers();
+
+    departments = await fetchDepartments();
   } catch (error) {
     // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
     // so swallow the error here and simply render the page with fallback data where necessary
@@ -45,27 +61,30 @@ export default async function Page({ params: { slug = 'absence-requests' } }) {
     // console.error(error)
   }
 
-  // if no `home` page exists, render a static one using dummy content
-  // you should delete this code once you have a home page in the CMS
-  // this is really only useful for those who are demoing this template
-  if (!page && slug === 'home') {
-    page = staticHome;
-  }
-
   if (!page) {
     return notFound();
   }
 
-  const { hero, layout } = page;
+  if (!user.isManager) {
+    redirect('/account');
+  }
+
+  const { hero } = page;
+
+  // TODO: use this server component to fetch initial data then pass it to the client.
+  // create client component to refetch on select change use state to hold current month selection
 
   return (
     <React.Fragment>
       <Hero {...hero} />
-      <AbsenceRequestForm />
-      {/* <Blocks
-        blocks={layout}
-        disableTopPadding={!hero || hero?.type === 'none' || hero?.type === 'lowImpact'}
-      /> */}
+      <Gutter>
+        <Link href="/absence-requests/pending">View Pending Absence Requests</Link>
+        <AbsenceRequests
+          absenceRequests={absenceRequests}
+          users={users}
+          departments={departments}
+        />
+      </Gutter>
     </React.Fragment>
   );
 }
@@ -97,10 +116,6 @@ export async function generateMetadata({
     // this is so that we can render static fallback pages for the demo
     // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
     // in production you may want to redirect to a 404  page or at least log the error somewhere
-  }
-
-  if (!page) {
-    if (slug === 'home') page = staticHome;
   }
 
   return generateMeta({ doc: page });

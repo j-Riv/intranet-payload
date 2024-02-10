@@ -1,17 +1,14 @@
 'use client';
-import React, { Fragment, useCallback, useRef } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { Fragment, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import moment from 'moment';
 
 import { AbsenceRequest } from '../../../../../payload/payload-types';
 import { Button } from '../../../../_components/Button';
-import { DatePicker } from '../../../../_components/DatePicker';
-import { Gutter } from '../../../../_components/Gutter';
 import { Input } from '../../../../_components/Input';
 import { Message } from '../../../../_components/Message';
 import { useAuth } from '../../../../_providers/Auth';
-import { navigate } from '../../actions';
+import { revalidate } from '../../actions';
 
 import classes from './index.module.scss';
 
@@ -26,17 +23,14 @@ type FormData = {
   endDate: string;
   reason: string;
   status: string;
+  comments: string;
 };
 
 const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
-  const searchParams = useSearchParams();
-  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : '';
-  const redirect = useRef(searchParams.get('redirect'));
-  const router = useRouter();
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<React.ReactNode | null>(null);
 
-  const { id, approved, slug, title, dateFrom, dateTo, populatedAuthors, userComments } =
+  const { id, approved, slug, title, dateFrom, dateTo, populatedUser, userComments } =
     absenceRequest;
 
   const {
@@ -63,6 +57,9 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
             },
             body: JSON.stringify({
               approved: data.status,
+              approver: user.id,
+              adminComments: data.comments,
+              decisionDate: new Date().toISOString(),
             }),
           },
         );
@@ -77,10 +74,9 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
 
         setSuccess(<Fragment>{'Absence request was submitted successfully.'}</Fragment>);
 
-        navigate(data.email);
-
-        // reset()
-        // revalidatePath('/absence-requests/pending')
+        setTimeout(() => {
+          revalidate(data.email);
+        }, 1000);
       } catch (_) {
         setError('There was an error with the credentials provided. Please try again.');
       }
@@ -89,90 +85,94 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
   );
 
   return (
-    <Gutter>
-      <form onSubmit={handleSubmit(onSubmit)} className={classes.absenceRequestForm}>
-        <Message error={error} success={success} className={classes.message} />
-        <p>{JSON.stringify(absenceRequest)}</p>
+    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+      <Message error={error} success={success} className={classes.message} />
+      <Input
+        name="username"
+        label="Name"
+        required
+        register={register}
+        error={errors.username}
+        type="text"
+        defaultValue={populatedUser?.name}
+        readOnly
+      />
+      <Input
+        name="email"
+        label="Email Address"
+        required
+        register={register}
+        error={errors.email}
+        type="email"
+        defaultValue={populatedUser?.email}
+        readOnly
+      />
+      <div className={classes.dateContainer}>
         <Input
-          name="username"
-          label="Name"
+          name="startDate"
+          label="Start Date"
           required
           register={register}
-          error={errors.username}
+          error={errors.startDate}
           type="text"
-          value={populatedAuthors[0]?.name}
+          defaultValue={moment(dateFrom).format('MM-DD-YYYY')}
           readOnly
         />
         <Input
-          name="email"
-          label="Email Address"
+          name="endDate"
+          label="End Date"
           required
           register={register}
-          error={errors.email}
-          type="email"
-          value={populatedAuthors[0]?.email}
-          readOnly
-        />
-        <div className={classes.dateContainer}>
-          <Input
-            name="startDate"
-            label="Start Date"
-            required
-            register={register}
-            error={errors.startDate}
-            type="text"
-            value={dateFrom}
-            readOnly
-          />
-          <Input
-            name="endDate"
-            label="End Date"
-            required
-            register={register}
-            error={errors.endDate}
-            type="text"
-            value={dateTo}
-            readOnly
-          />
-        </div>
-        <Input
-          name="reason"
-          label="Reason"
-          register={register}
-          error={errors.reason}
+          error={errors.endDate}
           type="text"
-          value={userComments}
+          defaultValue={moment(dateTo).format('MM-DD-YYYY')}
           readOnly
         />
-        <label htmlFor="approve">
-          <input
-            {...register('status', { required: true, value: 'approved' })}
-            type="radio"
-            value="approved"
-            id="approve"
-          />{' '}
-          Approve
-        </label>
-        <label htmlFor="deny">
-          <input
-            {...register('status', {
-              required: true,
-            })}
-            type="radio"
-            value="denied"
-            id="deny"
-          />{' '}
-          Deny
-        </label>
-        <Button
-          type="submit"
-          appearance="primary"
-          label={isLoading ? 'Processing' : 'Submit'}
-          disabled={isLoading}
-          className={classes.submit}
-        />
-      </form>
-    </Gutter>
+      </div>
+      <Input
+        name="reason"
+        label="Reason"
+        register={register}
+        error={errors.reason}
+        type="text"
+        defaultValue={userComments}
+        readOnly
+      />
+      <label htmlFor="approve">
+        <input
+          {...register('status', { required: true, value: 'approved' })}
+          type="radio"
+          value="approved"
+          id="approve"
+        />{' '}
+        Approve
+      </label>
+      <label htmlFor="deny">
+        <input
+          {...register('status', {
+            required: true,
+          })}
+          type="radio"
+          value="denied"
+          id="deny"
+        />{' '}
+        Deny
+      </label>
+      <Input
+        name="comments"
+        label="Comments"
+        register={register}
+        error={errors.comments}
+        type="text"
+      />
+      <Button
+        type="submit"
+        appearance="primary"
+        label={isLoading ? 'Processing' : 'Submit'}
+        disabled={isLoading}
+        className={classes.submit}
+      />
+    </form>
   );
 };
 
