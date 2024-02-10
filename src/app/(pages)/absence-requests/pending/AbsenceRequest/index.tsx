@@ -74,7 +74,9 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
 
         setSuccess(<Fragment>{'Absence request was submitted successfully.'}</Fragment>);
 
-        revalidate(data.email);
+        setTimeout(() => {
+          revalidate(data.email);
+        }, 1000);
       } catch (_) {
         setError('There was an error with the credentials provided. Please try again.');
       }
