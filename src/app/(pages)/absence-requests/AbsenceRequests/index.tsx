@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 
-import { AbsenceRequest, Department, User } from '../../../../payload/payload-types';
+import type { AbsenceRequest, Department, User } from '../../../../payload/payload-types';
 import { fetchAbsenceRequests } from '../../../_api/fetchAbsenceRequests';
 import { getTotalDays } from '../../../_utilities/getTotalDays';
 import { matchDepartment } from '../../../_utilities/matchDepartment';

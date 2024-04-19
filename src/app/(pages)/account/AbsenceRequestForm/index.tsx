@@ -10,6 +10,7 @@ import { DatePicker } from '../../../_components/DatePicker';
 import { Input } from '../../../_components/Input';
 import { Message } from '../../../_components/Message';
 import { useAuth } from '../../../_providers/Auth';
+import { sendEmail } from '../../../_utilities/sendEmail';
 
 import classes from './index.module.scss';
 
@@ -96,6 +97,29 @@ const AbsenceRequestForm: React.FC<Props> = ({ blackOutDays, paidHolidays }) => 
         setError(null);
 
         setSuccess(<Fragment>{'Your absence request was submitted successfully.'}</Fragment>);
+        // send email on success
+        const dF = moment(data.startDate).format('MM-DD-YYYY');
+        const dT = moment(data.endDate).format('MM-DD-YYYY');
+        // @ts-ignore
+        const departmentManagerEmail = user.department?.manager?.email;
+        // @ts-ignore
+        const departmentName = user.department?.name;
+        const args = {
+          to: user.email,
+          cc: [departmentManagerEmail],
+          subject: `Absence Request Submitted for ${user.name}`,
+          html: `
+            <p style="margin-bottom: 20px;">This is an automated message, please do not reply.</p>
+            <p><strong>Name:</strong> ${user.name}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Department:</strong> ${departmentName}</p>
+            <p><strong>Type of Absence:</strong> Vacation</p>
+            <p><strong>Absence Dates:</strong> ${dF} - ${dT}</p>
+            <p><strong>Reason:</strong> ${data.reason}</p>
+          `,
+        };
+
+        const emailResponse = await sendEmail(args);
 
         reset();
       } catch (err: any) {

@@ -3,11 +3,12 @@ import React, { Fragment, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import moment from 'moment';
 
-import { AbsenceRequest } from '../../../../../payload/payload-types';
+import type { AbsenceRequest } from '../../../../../payload/payload-types';
 import { Button } from '../../../../_components/Button';
 import { Input } from '../../../../_components/Input';
 import { Message } from '../../../../_components/Message';
 import { useAuth } from '../../../../_providers/Auth';
+import { sendEmail } from '../../../../_utilities/sendEmail';
 import { revalidate } from '../../actions';
 
 import classes from './index.module.scss';
@@ -73,6 +74,24 @@ const AbsenceRequest: React.FC<Props> = ({ absenceRequest }) => {
         setError(null);
 
         setSuccess(<Fragment>{'Absence request was submitted successfully.'}</Fragment>);
+
+        // send email on success
+        const args = {
+          to: populatedUser?.email,
+          cc: [],
+          subject: `Absence Reques for ${populatedUser?.name} ${data.status}`,
+          html: `
+            <p style="margin-bottom: 20px;">This is an automated message, please do not reply.</p>
+            <p>Hello ${populatedUser.name},</p>
+            <p>Your absence request from ${moment(dateFrom).format('MM-DD-YYYY')} to ${moment(
+            dateTo,
+          ).format('MM-DD-YYYY')} has been ${data.status}.</p>
+            <p>If you have any questions or concerns please contact ${user.name}</p>
+            <p><strong>Comments:</strong> ${data.comments}</p>
+          `,
+        };
+
+        await sendEmail(args);
 
         setTimeout(() => {
           revalidate(data.email);

@@ -127,11 +127,11 @@ export const ABSENCE_REQUESTS_BY_USER = `#graphql
 `;
 
 export const ABSENCE_REQUESTS_BY_MONTH = `#graphql
-  query AbsenceRequests($status: AbsenceRequest_approved_Input, $firstDay: DateTime, $lastDay: DateTime) {
+  query AbsenceRequests($status: AbsenceRequest_approved_Input, $firstDay: DateTime) {
     AbsenceRequests(where: {
       approved: { equals: $status },
       dateFrom: { greater_than_equal: $firstDay }, 
-      dateTo: { less_than_equal: $lastDay }}) {
+      }) {
       docs {
         id
         slug
@@ -161,13 +161,47 @@ export const ABSENCE_REQUESTS_BY_MONTH = `#graphql
   }
 `;
 
+// export const ABSENCE_REQUESTS_BY_MONTH = `#graphql
+//   query AbsenceRequests($status: AbsenceRequest_approved_Input, $firstDay: DateTime, $lastDay: DateTime) {
+//     AbsenceRequests(where: {
+//       approved: { equals: $status },
+//       dateFrom: { greater_than_equal: $firstDay },
+//       dateTo: { less_than_equal: $lastDay }}) {
+//       docs {
+//         id
+//         slug
+//         title
+//         dateFrom
+//         dateTo
+//         decisionDate
+//         categories {
+//           title
+//         }
+//         populatedUser {
+//           name
+//           id
+//           email
+//         }
+//         populatedApprover {
+//           name
+//           id
+//           email
+//           department
+//         }
+//         type
+//         userComments
+//         adminComments
+//       }
+//     }
+//   }
+// `;
+
 export const ABSENCE_REQUESTS_BY_MONTH_USER = `#graphql
-  query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input, $firstDay: DateTime, $lastDay: DateTime) {
+  query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input, $firstDay: DateTime) {
     AbsenceRequests(where: {
       user: { equals: $user },
       approved: { equals: $status },
-      dateFrom: { greater_than_equal: $firstDay }, 
-      dateTo: { less_than_equal: $lastDay }}) {
+      dateFrom: { greater_than_equal: $firstDay }}) {
       docs {
         id
         slug
@@ -195,6 +229,41 @@ export const ABSENCE_REQUESTS_BY_MONTH_USER = `#graphql
     }
   }
 `;
+
+// export const ABSENCE_REQUESTS_BY_MONTH_USER = `#graphql
+//   query AbsenceRequests($user: JSON, $status: AbsenceRequest_approved_Input, $firstDay: DateTime, $lastDay: DateTime) {
+//     AbsenceRequests(where: {
+//       user: { equals: $user },
+//       approved: { equals: $status },
+//       dateFrom: { greater_than_equal: $firstDay },
+//       dateTo: { less_than_equal: $lastDay }}) {
+//       docs {
+//         id
+//         slug
+//         title
+//         dateFrom
+//         dateTo
+//         categories {
+//           title
+//         }
+//         populatedUser {
+//           name
+//           id
+//           email
+//         }
+//         populatedApprover {
+//           name
+//           id
+//           email
+//           department
+//         }
+//         type
+//         userComments
+//         adminComments
+//       }
+//     }
+//   }
+// `;
 
 export const ABSENCE_REQUESTS_BY_DEPARTMENT = `#graphql
   query AbsenceRequestsDepartment($department: JSON, $status: AbsenceRequest_approved_Input) {
