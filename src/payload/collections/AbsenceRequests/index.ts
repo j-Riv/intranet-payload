@@ -3,15 +3,10 @@ import type { CollectionConfig } from 'payload/types';
 import { admins } from '../../access/admins';
 import { adminsOrManagers } from '../../access/adminsOrManagers';
 import { adminsOrPublished } from '../../access/adminsOrPublished';
-// import { Archive } from '../../blocks/ArchiveBlock'
-// import { CallToAction } from '../../blocks/CallToAction'
-// import { Content } from '../../blocks/Content'
-// import { MediaBlock } from '../../blocks/MediaBlock'
-// import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug';
-// import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt';
-import { populateAuthors } from './hooks/populateAuthors';
+import { populateDepartment } from './hooks/populateDepartment';
+import { populateUser } from './hooks/populateUser';
 import { revalidateAbsenceRequest } from './hooks/revalidateAbsenceRequest';
 
 export const AbsenceRequests: CollectionConfig = {
@@ -26,12 +21,9 @@ export const AbsenceRequests: CollectionConfig = {
     },
   },
   hooks: {
-    beforeChange: [populatePublishedAt],
-    afterChange: [revalidateAbsenceRequest],
-    afterRead: [
-      // populateArchiveBlock,
-      populateAuthors,
-    ],
+    beforeChange: [populatePublishedAt, populateDepartment],
+    afterChange: [revalidateAbsenceRequest, populateUser],
+    afterRead: [populateUser],
   },
   versions: {
     drafts: true,
@@ -65,9 +57,33 @@ export const AbsenceRequests: CollectionConfig = {
       defaultValue: 'pending',
     },
     {
+      name: 'department',
+      type: 'relationship',
+      relationTo: 'departments',
+      hasMany: false,
+      access: {
+        read: () => true,
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'type',
+      type: 'select',
+      options: [
+        {
+          label: 'Vacation',
+          value: 'vacation',
+        },
+        {
+          label: 'Sick Leave',
+          value: 'sick-leave',
+        },
+      ],
+      defaultValue: 'vacation',
     },
     {
       name: 'categories',
@@ -99,20 +115,17 @@ export const AbsenceRequests: CollectionConfig = {
       },
     },
     {
-      name: 'authors',
+      name: 'user',
       type: 'relationship',
       relationTo: 'users',
-      hasMany: true,
-      admin: {
-        position: 'sidebar',
-      },
+      hasMany: false,
     },
-    // This field is only used to populate the user data via the `populateAuthors` hook
+    // This field is only used to populate the user data via the `populateUser` hook
     // This is because the `user` collection has access control locked to protect user privacy
     // GraphQL will also not return mutated user data that differs from the underlying schema
     {
-      name: 'populatedAuthors',
-      type: 'array',
+      name: 'populatedUser',
+      type: 'group',
       admin: {
         readOnly: true,
         disabled: true,
@@ -133,6 +146,10 @@ export const AbsenceRequests: CollectionConfig = {
           name: 'email',
           type: 'text',
         },
+        {
+          name: 'department',
+          type: 'text',
+        },
       ],
     },
     {
@@ -140,6 +157,42 @@ export const AbsenceRequests: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       hasMany: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'populatedApprover',
+      type: 'group',
+      admin: {
+        readOnly: true,
+        disabled: true,
+      },
+      access: {
+        update: () => false,
+      },
+      fields: [
+        {
+          name: 'id',
+          type: 'text',
+        },
+        {
+          name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'email',
+          type: 'text',
+        },
+        {
+          name: 'department',
+          type: 'text',
+        },
+      ],
+    },
+    {
+      name: 'decisionDate',
+      type: 'date',
       admin: {
         position: 'sidebar',
       },
@@ -161,6 +214,31 @@ export const AbsenceRequests: CollectionConfig = {
     {
       name: 'adminComments',
       type: 'textarea',
+    },
+    {
+      name: 'populatedDepartment',
+      type: 'group',
+      admin: {
+        readOnly: true,
+        disabled: true,
+      },
+      access: {
+        update: () => false,
+      },
+      fields: [
+        {
+          name: 'id',
+          type: 'text',
+        },
+        {
+          name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'email',
+          type: 'text',
+        },
+      ],
     },
     slugField(),
   ],

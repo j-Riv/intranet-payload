@@ -13,6 +13,7 @@ export type Props = {
   required: boolean;
   error: any;
   placeholder?: string;
+  excludedDates?: Date[];
 };
 
 export const DatePicker: React.FC<Props> = ({
@@ -22,6 +23,7 @@ export const DatePicker: React.FC<Props> = ({
   required,
   error,
   placeholder = 'Select Date',
+  excludedDates = [],
 }) => {
   const isWeekday = (date: Date) => {
     const day = date.getDay();
@@ -44,6 +46,7 @@ export const DatePicker: React.FC<Props> = ({
             onChange={date => field.onChange(date)}
             filterDate={isWeekday}
             placeholderText={placeholder}
+            excludeDates={excludedDates}
           />
         )}
       />

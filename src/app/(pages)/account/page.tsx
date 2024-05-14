@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 import { fetchComments } from '../../_api/fetchComments';
+import { fetchDateSettings } from '../../_api/fetchGlobals';
 import { Button } from '../../_components/Button';
 import { Gutter } from '../../_components/Gutter';
 import { HR } from '../../_components/HR';
@@ -11,6 +12,7 @@ import { LowImpactHero } from '../../_heros/LowImpact';
 import { formatDateTime } from '../../_utilities/formatDateTime';
 import { getMeUser } from '../../_utilities/getMeUser';
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph';
+import AbsenceRequestForm from './AbsenceRequestForm';
 import AccountForm from './AccountForm';
 
 import classes from './index.module.scss';
@@ -25,6 +27,8 @@ export default async function Account() {
   const comments = await fetchComments({
     user: user?.id,
   });
+
+  const settings = await fetchDateSettings();
 
   return (
     <Fragment>
@@ -64,6 +68,17 @@ export default async function Account() {
       />
       <Gutter className={classes.account}>
         <AccountForm />
+        <HR />
+        <h2>Absence Request</h2>
+        <p>
+          If you need to request time off, please submit an absence request. This will be sent to an
+          admin for approval.
+        </p>
+        <AbsenceRequestForm
+          blackOutDays={settings.blackOutDays}
+          paidHolidays={settings.paidHolidays}
+        />
+
         <HR />
         <h2>Comments</h2>
         <p>

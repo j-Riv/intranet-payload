@@ -19,7 +19,10 @@ export const PostHero: React.FC<{
     meta: { image: metaImage, description } = {},
     publishedAt,
     populatedAuthors,
+    hero,
   } = post;
+
+  const hasPopulatedAuthors = populatedAuthors && populatedAuthors.length > 0;
 
   return (
     <Fragment>
@@ -48,7 +51,7 @@ export const PostHero: React.FC<{
           </div>
           <h1 className={classes.title}>{title}</h1>
           <p className={classes.meta}>
-            {populatedAuthors && (
+            {hasPopulatedAuthors && (
               <Fragment>
                 {'By '}
                 {populatedAuthors.map((author, index) => {
@@ -70,19 +73,14 @@ export const PostHero: React.FC<{
             )}
             {publishedAt && (
               <Fragment>
-                {' on '}
+                {hasPopulatedAuthors && ' on '}
                 {formatDateTime(publishedAt)}
               </Fragment>
             )}
           </p>
+          <RichText content={hero.richText} />
           <div>
-            <p className={classes.description}>
-              {`${description ? `${description} ` : ''}To edit this post, `}
-              <Link href={`${process.env.NEXT_PUBLIC_SERVER_URL}/admin/collections/posts/${id}`}>
-                navigate to the admin dashboard
-              </Link>
-              {'.'}
-            </p>
+            <p className={classes.description}>{`${description ? `${description} ` : ''}`}</p>
           </div>
         </div>
         <div className={classes.media}>

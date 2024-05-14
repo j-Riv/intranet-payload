@@ -2120,16 +2120,21 @@ enum Event__status {
 type AbsenceRequest {
   id: Int
   approved: AbsenceRequest_approved
+  department: Department
   title: String
+  type: AbsenceRequest_type
   categories: [Category!]
   publishedAt: DateTime
-  authors: [User!]
-  populatedAuthors: [AbsenceRequest_PopulatedAuthors!]
+  user: User
+  populatedUser: AbsenceRequest_PopulatedUser
   approver: User
+  populatedApprover: AbsenceRequest_PopulatedApprover
+  decisionDate: DateTime
   dateFrom: DateTime
   dateTo: DateTime
   userComments: String
   adminComments: String
+  populatedDepartment: AbsenceRequest_PopulatedDepartment
   slug: String
   meta: AbsenceRequest_Meta
   updatedAt: DateTime
@@ -2143,7 +2148,26 @@ enum AbsenceRequest_approved {
   denied
 }
 
-type AbsenceRequest_PopulatedAuthors {
+enum AbsenceRequest_type {
+  vacation
+  sick_leave
+}
+
+type AbsenceRequest_PopulatedUser {
+  id: String
+  name: String
+  email: String
+  department: String
+}
+
+type AbsenceRequest_PopulatedApprover {
+  id: String
+  name: String
+  email: String
+  department: String
+}
+
+type AbsenceRequest_PopulatedDepartment {
   id: String
   name: String
   email: String
@@ -11750,18 +11774,29 @@ type AbsenceRequests {
 
 input AbsenceRequest_where {
   approved: AbsenceRequest_approved_operator
+  department: AbsenceRequest_department_operator
   title: AbsenceRequest_title_operator
+  type: AbsenceRequest_type_operator
   categories: AbsenceRequest_categories_operator
   publishedAt: AbsenceRequest_publishedAt_operator
-  authors: AbsenceRequest_authors_operator
-  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
-  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
-  populatedAuthors__email: AbsenceRequest_populatedAuthors__email_operator
+  user: AbsenceRequest_user_operator
+  populatedUser__id: AbsenceRequest_populatedUser__id_operator
+  populatedUser__name: AbsenceRequest_populatedUser__name_operator
+  populatedUser__email: AbsenceRequest_populatedUser__email_operator
+  populatedUser__department: AbsenceRequest_populatedUser__department_operator
   approver: AbsenceRequest_approver_operator
+  populatedApprover__id: AbsenceRequest_populatedApprover__id_operator
+  populatedApprover__name: AbsenceRequest_populatedApprover__name_operator
+  populatedApprover__email: AbsenceRequest_populatedApprover__email_operator
+  populatedApprover__department: AbsenceRequest_populatedApprover__department_operator
+  decisionDate: AbsenceRequest_decisionDate_operator
   dateFrom: AbsenceRequest_dateFrom_operator
   dateTo: AbsenceRequest_dateTo_operator
   userComments: AbsenceRequest_userComments_operator
   adminComments: AbsenceRequest_adminComments_operator
+  populatedDepartment__id: AbsenceRequest_populatedDepartment__id_operator
+  populatedDepartment__name: AbsenceRequest_populatedDepartment__name_operator
+  populatedDepartment__email: AbsenceRequest_populatedDepartment__email_operator
   slug: AbsenceRequest_slug_operator
   meta__title: AbsenceRequest_meta__title_operator
   meta__description: AbsenceRequest_meta__description_operator
@@ -11789,6 +11824,15 @@ enum AbsenceRequest_approved_Input {
   denied
 }
 
+input AbsenceRequest_department_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
 input AbsenceRequest_title_operator {
   equals: String
   not_equals: String
@@ -11797,6 +11841,20 @@ input AbsenceRequest_title_operator {
   in: [String]
   not_in: [String]
   all: [String]
+}
+
+input AbsenceRequest_type_operator {
+  equals: AbsenceRequest_type_Input
+  not_equals: AbsenceRequest_type_Input
+  in: [AbsenceRequest_type_Input]
+  not_in: [AbsenceRequest_type_Input]
+  all: [AbsenceRequest_type_Input]
+  exists: Boolean
+}
+
+enum AbsenceRequest_type_Input {
+  vacation
+  sick_leave
 }
 
 input AbsenceRequest_categories_operator {
@@ -11819,7 +11877,7 @@ input AbsenceRequest_publishedAt_operator {
   exists: Boolean
 }
 
-input AbsenceRequest_authors_operator {
+input AbsenceRequest_user_operator {
   equals: JSON
   not_equals: JSON
   in: [JSON]
@@ -11828,7 +11886,7 @@ input AbsenceRequest_authors_operator {
   exists: Boolean
 }
 
-input AbsenceRequest_populatedAuthors__id_operator {
+input AbsenceRequest_populatedUser__id_operator {
   equals: String
   not_equals: String
   like: String
@@ -11839,7 +11897,7 @@ input AbsenceRequest_populatedAuthors__id_operator {
   exists: Boolean
 }
 
-input AbsenceRequest_populatedAuthors__name_operator {
+input AbsenceRequest_populatedUser__name_operator {
   equals: String
   not_equals: String
   like: String
@@ -11850,7 +11908,18 @@ input AbsenceRequest_populatedAuthors__name_operator {
   exists: Boolean
 }
 
-input AbsenceRequest_populatedAuthors__email_operator {
+input AbsenceRequest_populatedUser__email_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedUser__department_operator {
   equals: String
   not_equals: String
   like: String
@@ -11867,6 +11936,61 @@ input AbsenceRequest_approver_operator {
   in: [JSON]
   not_in: [JSON]
   all: [JSON]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedApprover__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedApprover__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedApprover__email_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedApprover__department_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_decisionDate_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
   exists: Boolean
 }
 
@@ -11903,6 +12027,39 @@ input AbsenceRequest_adminComments_operator {
   not_equals: String
   like: String
   contains: String
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedDepartment__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedDepartment__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input AbsenceRequest_populatedDepartment__email_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
   exists: Boolean
 }
 
@@ -11990,18 +12147,29 @@ input AbsenceRequest_id_operator {
 
 input AbsenceRequest_where_and {
   approved: AbsenceRequest_approved_operator
+  department: AbsenceRequest_department_operator
   title: AbsenceRequest_title_operator
+  type: AbsenceRequest_type_operator
   categories: AbsenceRequest_categories_operator
   publishedAt: AbsenceRequest_publishedAt_operator
-  authors: AbsenceRequest_authors_operator
-  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
-  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
-  populatedAuthors__email: AbsenceRequest_populatedAuthors__email_operator
+  user: AbsenceRequest_user_operator
+  populatedUser__id: AbsenceRequest_populatedUser__id_operator
+  populatedUser__name: AbsenceRequest_populatedUser__name_operator
+  populatedUser__email: AbsenceRequest_populatedUser__email_operator
+  populatedUser__department: AbsenceRequest_populatedUser__department_operator
   approver: AbsenceRequest_approver_operator
+  populatedApprover__id: AbsenceRequest_populatedApprover__id_operator
+  populatedApprover__name: AbsenceRequest_populatedApprover__name_operator
+  populatedApprover__email: AbsenceRequest_populatedApprover__email_operator
+  populatedApprover__department: AbsenceRequest_populatedApprover__department_operator
+  decisionDate: AbsenceRequest_decisionDate_operator
   dateFrom: AbsenceRequest_dateFrom_operator
   dateTo: AbsenceRequest_dateTo_operator
   userComments: AbsenceRequest_userComments_operator
   adminComments: AbsenceRequest_adminComments_operator
+  populatedDepartment__id: AbsenceRequest_populatedDepartment__id_operator
+  populatedDepartment__name: AbsenceRequest_populatedDepartment__name_operator
+  populatedDepartment__email: AbsenceRequest_populatedDepartment__email_operator
   slug: AbsenceRequest_slug_operator
   meta__title: AbsenceRequest_meta__title_operator
   meta__description: AbsenceRequest_meta__description_operator
@@ -12016,18 +12184,29 @@ input AbsenceRequest_where_and {
 
 input AbsenceRequest_where_or {
   approved: AbsenceRequest_approved_operator
+  department: AbsenceRequest_department_operator
   title: AbsenceRequest_title_operator
+  type: AbsenceRequest_type_operator
   categories: AbsenceRequest_categories_operator
   publishedAt: AbsenceRequest_publishedAt_operator
-  authors: AbsenceRequest_authors_operator
-  populatedAuthors__id: AbsenceRequest_populatedAuthors__id_operator
-  populatedAuthors__name: AbsenceRequest_populatedAuthors__name_operator
-  populatedAuthors__email: AbsenceRequest_populatedAuthors__email_operator
+  user: AbsenceRequest_user_operator
+  populatedUser__id: AbsenceRequest_populatedUser__id_operator
+  populatedUser__name: AbsenceRequest_populatedUser__name_operator
+  populatedUser__email: AbsenceRequest_populatedUser__email_operator
+  populatedUser__department: AbsenceRequest_populatedUser__department_operator
   approver: AbsenceRequest_approver_operator
+  populatedApprover__id: AbsenceRequest_populatedApprover__id_operator
+  populatedApprover__name: AbsenceRequest_populatedApprover__name_operator
+  populatedApprover__email: AbsenceRequest_populatedApprover__email_operator
+  populatedApprover__department: AbsenceRequest_populatedApprover__department_operator
+  decisionDate: AbsenceRequest_decisionDate_operator
   dateFrom: AbsenceRequest_dateFrom_operator
   dateTo: AbsenceRequest_dateTo_operator
   userComments: AbsenceRequest_userComments_operator
   adminComments: AbsenceRequest_adminComments_operator
+  populatedDepartment__id: AbsenceRequest_populatedDepartment__id_operator
+  populatedDepartment__name: AbsenceRequest_populatedDepartment__name_operator
+  populatedDepartment__email: AbsenceRequest_populatedDepartment__email_operator
   slug: AbsenceRequest_slug_operator
   meta__title: AbsenceRequest_meta__title_operator
   meta__description: AbsenceRequest_meta__description_operator
@@ -12051,16 +12230,21 @@ type absence_requestsDocAccess {
 
 type AbsenceRequestsDocAccessFields {
   approved: AbsenceRequestsDocAccessFields_approved
+  department: AbsenceRequestsDocAccessFields_department
   title: AbsenceRequestsDocAccessFields_title
+  type: AbsenceRequestsDocAccessFields_type
   categories: AbsenceRequestsDocAccessFields_categories
   publishedAt: AbsenceRequestsDocAccessFields_publishedAt
-  authors: AbsenceRequestsDocAccessFields_authors
-  populatedAuthors: AbsenceRequestsDocAccessFields_populatedAuthors
+  user: AbsenceRequestsDocAccessFields_user
+  populatedUser: AbsenceRequestsDocAccessFields_populatedUser
   approver: AbsenceRequestsDocAccessFields_approver
+  populatedApprover: AbsenceRequestsDocAccessFields_populatedApprover
+  decisionDate: AbsenceRequestsDocAccessFields_decisionDate
   dateFrom: AbsenceRequestsDocAccessFields_dateFrom
   dateTo: AbsenceRequestsDocAccessFields_dateTo
   userComments: AbsenceRequestsDocAccessFields_userComments
   adminComments: AbsenceRequestsDocAccessFields_adminComments
+  populatedDepartment: AbsenceRequestsDocAccessFields_populatedDepartment
   slug: AbsenceRequestsDocAccessFields_slug
   meta: AbsenceRequestsDocAccessFields_meta
   updatedAt: AbsenceRequestsDocAccessFields_updatedAt
@@ -12091,6 +12275,29 @@ type AbsenceRequestsDocAccessFields_approved_Delete {
   permission: Boolean!
 }
 
+type AbsenceRequestsDocAccessFields_department {
+  create: AbsenceRequestsDocAccessFields_department_Create
+  read: AbsenceRequestsDocAccessFields_department_Read
+  update: AbsenceRequestsDocAccessFields_department_Update
+  delete: AbsenceRequestsDocAccessFields_department_Delete
+}
+
+type AbsenceRequestsDocAccessFields_department_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_department_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_department_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_department_Delete {
+  permission: Boolean!
+}
+
 type AbsenceRequestsDocAccessFields_title {
   create: AbsenceRequestsDocAccessFields_title_Create
   read: AbsenceRequestsDocAccessFields_title_Read
@@ -12111,6 +12318,29 @@ type AbsenceRequestsDocAccessFields_title_Update {
 }
 
 type AbsenceRequestsDocAccessFields_title_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_type {
+  create: AbsenceRequestsDocAccessFields_type_Create
+  read: AbsenceRequestsDocAccessFields_type_Read
+  update: AbsenceRequestsDocAccessFields_type_Update
+  delete: AbsenceRequestsDocAccessFields_type_Delete
+}
+
+type AbsenceRequestsDocAccessFields_type_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_type_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_type_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_type_Delete {
   permission: Boolean!
 }
 
@@ -12160,125 +12390,149 @@ type AbsenceRequestsDocAccessFields_publishedAt_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_authors {
-  create: AbsenceRequestsDocAccessFields_authors_Create
-  read: AbsenceRequestsDocAccessFields_authors_Read
-  update: AbsenceRequestsDocAccessFields_authors_Update
-  delete: AbsenceRequestsDocAccessFields_authors_Delete
+type AbsenceRequestsDocAccessFields_user {
+  create: AbsenceRequestsDocAccessFields_user_Create
+  read: AbsenceRequestsDocAccessFields_user_Read
+  update: AbsenceRequestsDocAccessFields_user_Update
+  delete: AbsenceRequestsDocAccessFields_user_Delete
 }
 
-type AbsenceRequestsDocAccessFields_authors_Create {
+type AbsenceRequestsDocAccessFields_user_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_authors_Read {
+type AbsenceRequestsDocAccessFields_user_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_authors_Update {
+type AbsenceRequestsDocAccessFields_user_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_authors_Delete {
+type AbsenceRequestsDocAccessFields_user_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors {
-  create: AbsenceRequestsDocAccessFields_populatedAuthors_Create
-  read: AbsenceRequestsDocAccessFields_populatedAuthors_Read
-  update: AbsenceRequestsDocAccessFields_populatedAuthors_Update
-  delete: AbsenceRequestsDocAccessFields_populatedAuthors_Delete
-  fields: AbsenceRequestsDocAccessFields_populatedAuthors_Fields
+type AbsenceRequestsDocAccessFields_populatedUser {
+  create: AbsenceRequestsDocAccessFields_populatedUser_Create
+  read: AbsenceRequestsDocAccessFields_populatedUser_Read
+  update: AbsenceRequestsDocAccessFields_populatedUser_Update
+  delete: AbsenceRequestsDocAccessFields_populatedUser_Delete
+  fields: AbsenceRequestsDocAccessFields_populatedUser_Fields
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Create {
+type AbsenceRequestsDocAccessFields_populatedUser_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Read {
+type AbsenceRequestsDocAccessFields_populatedUser_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Update {
+type AbsenceRequestsDocAccessFields_populatedUser_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Delete {
+type AbsenceRequestsDocAccessFields_populatedUser_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_Fields {
-  id: AbsenceRequestsDocAccessFields_populatedAuthors_id
-  name: AbsenceRequestsDocAccessFields_populatedAuthors_name
-  email: AbsenceRequestsDocAccessFields_populatedAuthors_email
+type AbsenceRequestsDocAccessFields_populatedUser_Fields {
+  id: AbsenceRequestsDocAccessFields_populatedUser_id
+  name: AbsenceRequestsDocAccessFields_populatedUser_name
+  email: AbsenceRequestsDocAccessFields_populatedUser_email
+  department: AbsenceRequestsDocAccessFields_populatedUser_department
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_id {
-  create: AbsenceRequestsDocAccessFields_populatedAuthors_id_Create
-  read: AbsenceRequestsDocAccessFields_populatedAuthors_id_Read
-  update: AbsenceRequestsDocAccessFields_populatedAuthors_id_Update
-  delete: AbsenceRequestsDocAccessFields_populatedAuthors_id_Delete
+type AbsenceRequestsDocAccessFields_populatedUser_id {
+  create: AbsenceRequestsDocAccessFields_populatedUser_id_Create
+  read: AbsenceRequestsDocAccessFields_populatedUser_id_Read
+  update: AbsenceRequestsDocAccessFields_populatedUser_id_Update
+  delete: AbsenceRequestsDocAccessFields_populatedUser_id_Delete
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_id_Create {
+type AbsenceRequestsDocAccessFields_populatedUser_id_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_id_Read {
+type AbsenceRequestsDocAccessFields_populatedUser_id_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_id_Update {
+type AbsenceRequestsDocAccessFields_populatedUser_id_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_id_Delete {
+type AbsenceRequestsDocAccessFields_populatedUser_id_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_name {
-  create: AbsenceRequestsDocAccessFields_populatedAuthors_name_Create
-  read: AbsenceRequestsDocAccessFields_populatedAuthors_name_Read
-  update: AbsenceRequestsDocAccessFields_populatedAuthors_name_Update
-  delete: AbsenceRequestsDocAccessFields_populatedAuthors_name_Delete
+type AbsenceRequestsDocAccessFields_populatedUser_name {
+  create: AbsenceRequestsDocAccessFields_populatedUser_name_Create
+  read: AbsenceRequestsDocAccessFields_populatedUser_name_Read
+  update: AbsenceRequestsDocAccessFields_populatedUser_name_Update
+  delete: AbsenceRequestsDocAccessFields_populatedUser_name_Delete
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_name_Create {
+type AbsenceRequestsDocAccessFields_populatedUser_name_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_name_Read {
+type AbsenceRequestsDocAccessFields_populatedUser_name_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_name_Update {
+type AbsenceRequestsDocAccessFields_populatedUser_name_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_name_Delete {
+type AbsenceRequestsDocAccessFields_populatedUser_name_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_email {
-  create: AbsenceRequestsDocAccessFields_populatedAuthors_email_Create
-  read: AbsenceRequestsDocAccessFields_populatedAuthors_email_Read
-  update: AbsenceRequestsDocAccessFields_populatedAuthors_email_Update
-  delete: AbsenceRequestsDocAccessFields_populatedAuthors_email_Delete
+type AbsenceRequestsDocAccessFields_populatedUser_email {
+  create: AbsenceRequestsDocAccessFields_populatedUser_email_Create
+  read: AbsenceRequestsDocAccessFields_populatedUser_email_Read
+  update: AbsenceRequestsDocAccessFields_populatedUser_email_Update
+  delete: AbsenceRequestsDocAccessFields_populatedUser_email_Delete
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_email_Create {
+type AbsenceRequestsDocAccessFields_populatedUser_email_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_email_Read {
+type AbsenceRequestsDocAccessFields_populatedUser_email_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_email_Update {
+type AbsenceRequestsDocAccessFields_populatedUser_email_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsDocAccessFields_populatedAuthors_email_Delete {
+type AbsenceRequestsDocAccessFields_populatedUser_email_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedUser_department {
+  create: AbsenceRequestsDocAccessFields_populatedUser_department_Create
+  read: AbsenceRequestsDocAccessFields_populatedUser_department_Read
+  update: AbsenceRequestsDocAccessFields_populatedUser_department_Update
+  delete: AbsenceRequestsDocAccessFields_populatedUser_department_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedUser_department_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedUser_department_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedUser_department_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedUser_department_Delete {
   permission: Boolean!
 }
 
@@ -12302,6 +12556,152 @@ type AbsenceRequestsDocAccessFields_approver_Update {
 }
 
 type AbsenceRequestsDocAccessFields_approver_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover {
+  create: AbsenceRequestsDocAccessFields_populatedApprover_Create
+  read: AbsenceRequestsDocAccessFields_populatedApprover_Read
+  update: AbsenceRequestsDocAccessFields_populatedApprover_Update
+  delete: AbsenceRequestsDocAccessFields_populatedApprover_Delete
+  fields: AbsenceRequestsDocAccessFields_populatedApprover_Fields
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_Fields {
+  id: AbsenceRequestsDocAccessFields_populatedApprover_id
+  name: AbsenceRequestsDocAccessFields_populatedApprover_name
+  email: AbsenceRequestsDocAccessFields_populatedApprover_email
+  department: AbsenceRequestsDocAccessFields_populatedApprover_department
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_id {
+  create: AbsenceRequestsDocAccessFields_populatedApprover_id_Create
+  read: AbsenceRequestsDocAccessFields_populatedApprover_id_Read
+  update: AbsenceRequestsDocAccessFields_populatedApprover_id_Update
+  delete: AbsenceRequestsDocAccessFields_populatedApprover_id_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_id_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_id_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_id_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_id_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_name {
+  create: AbsenceRequestsDocAccessFields_populatedApprover_name_Create
+  read: AbsenceRequestsDocAccessFields_populatedApprover_name_Read
+  update: AbsenceRequestsDocAccessFields_populatedApprover_name_Update
+  delete: AbsenceRequestsDocAccessFields_populatedApprover_name_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_name_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_name_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_name_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_name_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_email {
+  create: AbsenceRequestsDocAccessFields_populatedApprover_email_Create
+  read: AbsenceRequestsDocAccessFields_populatedApprover_email_Read
+  update: AbsenceRequestsDocAccessFields_populatedApprover_email_Update
+  delete: AbsenceRequestsDocAccessFields_populatedApprover_email_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_email_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_email_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_email_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_email_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_department {
+  create: AbsenceRequestsDocAccessFields_populatedApprover_department_Create
+  read: AbsenceRequestsDocAccessFields_populatedApprover_department_Read
+  update: AbsenceRequestsDocAccessFields_populatedApprover_department_Update
+  delete: AbsenceRequestsDocAccessFields_populatedApprover_department_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_department_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_department_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_department_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedApprover_department_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_decisionDate {
+  create: AbsenceRequestsDocAccessFields_decisionDate_Create
+  read: AbsenceRequestsDocAccessFields_decisionDate_Read
+  update: AbsenceRequestsDocAccessFields_decisionDate_Update
+  delete: AbsenceRequestsDocAccessFields_decisionDate_Delete
+}
+
+type AbsenceRequestsDocAccessFields_decisionDate_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_decisionDate_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_decisionDate_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_decisionDate_Delete {
   permission: Boolean!
 }
 
@@ -12394,6 +12794,105 @@ type AbsenceRequestsDocAccessFields_adminComments_Update {
 }
 
 type AbsenceRequestsDocAccessFields_adminComments_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment {
+  create: AbsenceRequestsDocAccessFields_populatedDepartment_Create
+  read: AbsenceRequestsDocAccessFields_populatedDepartment_Read
+  update: AbsenceRequestsDocAccessFields_populatedDepartment_Update
+  delete: AbsenceRequestsDocAccessFields_populatedDepartment_Delete
+  fields: AbsenceRequestsDocAccessFields_populatedDepartment_Fields
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_Fields {
+  id: AbsenceRequestsDocAccessFields_populatedDepartment_id
+  name: AbsenceRequestsDocAccessFields_populatedDepartment_name
+  email: AbsenceRequestsDocAccessFields_populatedDepartment_email
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_id {
+  create: AbsenceRequestsDocAccessFields_populatedDepartment_id_Create
+  read: AbsenceRequestsDocAccessFields_populatedDepartment_id_Read
+  update: AbsenceRequestsDocAccessFields_populatedDepartment_id_Update
+  delete: AbsenceRequestsDocAccessFields_populatedDepartment_id_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_id_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_id_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_id_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_id_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_name {
+  create: AbsenceRequestsDocAccessFields_populatedDepartment_name_Create
+  read: AbsenceRequestsDocAccessFields_populatedDepartment_name_Read
+  update: AbsenceRequestsDocAccessFields_populatedDepartment_name_Update
+  delete: AbsenceRequestsDocAccessFields_populatedDepartment_name_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_name_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_name_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_name_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_name_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_email {
+  create: AbsenceRequestsDocAccessFields_populatedDepartment_email_Create
+  read: AbsenceRequestsDocAccessFields_populatedDepartment_email_Read
+  update: AbsenceRequestsDocAccessFields_populatedDepartment_email_Update
+  delete: AbsenceRequestsDocAccessFields_populatedDepartment_email_Delete
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_email_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_email_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_email_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsDocAccessFields_populatedDepartment_email_Delete {
   permission: Boolean!
 }
 
@@ -12624,16 +13123,21 @@ type AbsenceRequestVersion {
 
 type AbsenceRequestVersion_Version {
   approved: AbsenceRequestVersion_Version_approved
+  department: Department
   title: String
+  type: AbsenceRequestVersion_Version_type
   categories: [Category!]
   publishedAt: DateTime
-  authors: [User!]
-  populatedAuthors: [AbsenceRequestVersion_Version_PopulatedAuthors!]
+  user: User
+  populatedUser: AbsenceRequestVersion_Version_PopulatedUser
   approver: User
+  populatedApprover: AbsenceRequestVersion_Version_PopulatedApprover
+  decisionDate: DateTime
   dateFrom: DateTime
   dateTo: DateTime
   userComments: String
   adminComments: String
+  populatedDepartment: AbsenceRequestVersion_Version_PopulatedDepartment
   slug: String
   meta: AbsenceRequestVersion_Version_Meta
   updatedAt: DateTime
@@ -12647,7 +13151,26 @@ enum AbsenceRequestVersion_Version_approved {
   denied
 }
 
-type AbsenceRequestVersion_Version_PopulatedAuthors {
+enum AbsenceRequestVersion_Version_type {
+  vacation
+  sick_leave
+}
+
+type AbsenceRequestVersion_Version_PopulatedUser {
+  id: String
+  name: String
+  email: String
+  department: String
+}
+
+type AbsenceRequestVersion_Version_PopulatedApprover {
+  id: String
+  name: String
+  email: String
+  department: String
+}
+
+type AbsenceRequestVersion_Version_PopulatedDepartment {
   id: String
   name: String
   email: String
@@ -12843,18 +13366,29 @@ type versionsAbsenceRequests {
 input versionsAbsenceRequest_where {
   parent: versionsAbsenceRequest_parent_operator
   version__approved: versionsAbsenceRequest_version__approved_operator
+  version__department: versionsAbsenceRequest_version__department_operator
   version__title: versionsAbsenceRequest_version__title_operator
+  version__type: versionsAbsenceRequest_version__type_operator
   version__categories: versionsAbsenceRequest_version__categories_operator
   version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
-  version__authors: versionsAbsenceRequest_version__authors_operator
-  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
-  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
-  version__populatedAuthors__email: versionsAbsenceRequest_version__populatedAuthors__email_operator
+  version__user: versionsAbsenceRequest_version__user_operator
+  version__populatedUser__id: versionsAbsenceRequest_version__populatedUser__id_operator
+  version__populatedUser__name: versionsAbsenceRequest_version__populatedUser__name_operator
+  version__populatedUser__email: versionsAbsenceRequest_version__populatedUser__email_operator
+  version__populatedUser__department: versionsAbsenceRequest_version__populatedUser__department_operator
   version__approver: versionsAbsenceRequest_version__approver_operator
+  version__populatedApprover__id: versionsAbsenceRequest_version__populatedApprover__id_operator
+  version__populatedApprover__name: versionsAbsenceRequest_version__populatedApprover__name_operator
+  version__populatedApprover__email: versionsAbsenceRequest_version__populatedApprover__email_operator
+  version__populatedApprover__department: versionsAbsenceRequest_version__populatedApprover__department_operator
+  version__decisionDate: versionsAbsenceRequest_version__decisionDate_operator
   version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
   version__dateTo: versionsAbsenceRequest_version__dateTo_operator
   version__userComments: versionsAbsenceRequest_version__userComments_operator
   version__adminComments: versionsAbsenceRequest_version__adminComments_operator
+  version__populatedDepartment__id: versionsAbsenceRequest_version__populatedDepartment__id_operator
+  version__populatedDepartment__name: versionsAbsenceRequest_version__populatedDepartment__name_operator
+  version__populatedDepartment__email: versionsAbsenceRequest_version__populatedDepartment__email_operator
   version__slug: versionsAbsenceRequest_version__slug_operator
   version__meta__title: versionsAbsenceRequest_version__meta__title_operator
   version__meta__description: versionsAbsenceRequest_version__meta__description_operator
@@ -12894,6 +13428,15 @@ enum versionsAbsenceRequest_version__approved_Input {
   denied
 }
 
+input versionsAbsenceRequest_version__department_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
 input versionsAbsenceRequest_version__title_operator {
   equals: String
   not_equals: String
@@ -12902,6 +13445,20 @@ input versionsAbsenceRequest_version__title_operator {
   in: [String]
   not_in: [String]
   all: [String]
+}
+
+input versionsAbsenceRequest_version__type_operator {
+  equals: versionsAbsenceRequest_version__type_Input
+  not_equals: versionsAbsenceRequest_version__type_Input
+  in: [versionsAbsenceRequest_version__type_Input]
+  not_in: [versionsAbsenceRequest_version__type_Input]
+  all: [versionsAbsenceRequest_version__type_Input]
+  exists: Boolean
+}
+
+enum versionsAbsenceRequest_version__type_Input {
+  vacation
+  sick_leave
 }
 
 input versionsAbsenceRequest_version__categories_operator {
@@ -12924,7 +13481,7 @@ input versionsAbsenceRequest_version__publishedAt_operator {
   exists: Boolean
 }
 
-input versionsAbsenceRequest_version__authors_operator {
+input versionsAbsenceRequest_version__user_operator {
   equals: JSON
   not_equals: JSON
   in: [JSON]
@@ -12933,7 +13490,7 @@ input versionsAbsenceRequest_version__authors_operator {
   exists: Boolean
 }
 
-input versionsAbsenceRequest_version__populatedAuthors__id_operator {
+input versionsAbsenceRequest_version__populatedUser__id_operator {
   equals: String
   not_equals: String
   like: String
@@ -12944,7 +13501,7 @@ input versionsAbsenceRequest_version__populatedAuthors__id_operator {
   exists: Boolean
 }
 
-input versionsAbsenceRequest_version__populatedAuthors__name_operator {
+input versionsAbsenceRequest_version__populatedUser__name_operator {
   equals: String
   not_equals: String
   like: String
@@ -12955,7 +13512,18 @@ input versionsAbsenceRequest_version__populatedAuthors__name_operator {
   exists: Boolean
 }
 
-input versionsAbsenceRequest_version__populatedAuthors__email_operator {
+input versionsAbsenceRequest_version__populatedUser__email_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedUser__department_operator {
   equals: String
   not_equals: String
   like: String
@@ -12972,6 +13540,61 @@ input versionsAbsenceRequest_version__approver_operator {
   in: [JSON]
   not_in: [JSON]
   all: [JSON]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedApprover__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedApprover__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedApprover__email_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedApprover__department_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__decisionDate_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
   exists: Boolean
 }
 
@@ -13008,6 +13631,39 @@ input versionsAbsenceRequest_version__adminComments_operator {
   not_equals: String
   like: String
   contains: String
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedDepartment__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedDepartment__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsAbsenceRequest_version__populatedDepartment__email_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
   exists: Boolean
 }
 
@@ -13124,18 +13780,29 @@ input versionsAbsenceRequest_id_operator {
 input versionsAbsenceRequest_where_and {
   parent: versionsAbsenceRequest_parent_operator
   version__approved: versionsAbsenceRequest_version__approved_operator
+  version__department: versionsAbsenceRequest_version__department_operator
   version__title: versionsAbsenceRequest_version__title_operator
+  version__type: versionsAbsenceRequest_version__type_operator
   version__categories: versionsAbsenceRequest_version__categories_operator
   version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
-  version__authors: versionsAbsenceRequest_version__authors_operator
-  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
-  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
-  version__populatedAuthors__email: versionsAbsenceRequest_version__populatedAuthors__email_operator
+  version__user: versionsAbsenceRequest_version__user_operator
+  version__populatedUser__id: versionsAbsenceRequest_version__populatedUser__id_operator
+  version__populatedUser__name: versionsAbsenceRequest_version__populatedUser__name_operator
+  version__populatedUser__email: versionsAbsenceRequest_version__populatedUser__email_operator
+  version__populatedUser__department: versionsAbsenceRequest_version__populatedUser__department_operator
   version__approver: versionsAbsenceRequest_version__approver_operator
+  version__populatedApprover__id: versionsAbsenceRequest_version__populatedApprover__id_operator
+  version__populatedApprover__name: versionsAbsenceRequest_version__populatedApprover__name_operator
+  version__populatedApprover__email: versionsAbsenceRequest_version__populatedApprover__email_operator
+  version__populatedApprover__department: versionsAbsenceRequest_version__populatedApprover__department_operator
+  version__decisionDate: versionsAbsenceRequest_version__decisionDate_operator
   version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
   version__dateTo: versionsAbsenceRequest_version__dateTo_operator
   version__userComments: versionsAbsenceRequest_version__userComments_operator
   version__adminComments: versionsAbsenceRequest_version__adminComments_operator
+  version__populatedDepartment__id: versionsAbsenceRequest_version__populatedDepartment__id_operator
+  version__populatedDepartment__name: versionsAbsenceRequest_version__populatedDepartment__name_operator
+  version__populatedDepartment__email: versionsAbsenceRequest_version__populatedDepartment__email_operator
   version__slug: versionsAbsenceRequest_version__slug_operator
   version__meta__title: versionsAbsenceRequest_version__meta__title_operator
   version__meta__description: versionsAbsenceRequest_version__meta__description_operator
@@ -13154,18 +13821,29 @@ input versionsAbsenceRequest_where_and {
 input versionsAbsenceRequest_where_or {
   parent: versionsAbsenceRequest_parent_operator
   version__approved: versionsAbsenceRequest_version__approved_operator
+  version__department: versionsAbsenceRequest_version__department_operator
   version__title: versionsAbsenceRequest_version__title_operator
+  version__type: versionsAbsenceRequest_version__type_operator
   version__categories: versionsAbsenceRequest_version__categories_operator
   version__publishedAt: versionsAbsenceRequest_version__publishedAt_operator
-  version__authors: versionsAbsenceRequest_version__authors_operator
-  version__populatedAuthors__id: versionsAbsenceRequest_version__populatedAuthors__id_operator
-  version__populatedAuthors__name: versionsAbsenceRequest_version__populatedAuthors__name_operator
-  version__populatedAuthors__email: versionsAbsenceRequest_version__populatedAuthors__email_operator
+  version__user: versionsAbsenceRequest_version__user_operator
+  version__populatedUser__id: versionsAbsenceRequest_version__populatedUser__id_operator
+  version__populatedUser__name: versionsAbsenceRequest_version__populatedUser__name_operator
+  version__populatedUser__email: versionsAbsenceRequest_version__populatedUser__email_operator
+  version__populatedUser__department: versionsAbsenceRequest_version__populatedUser__department_operator
   version__approver: versionsAbsenceRequest_version__approver_operator
+  version__populatedApprover__id: versionsAbsenceRequest_version__populatedApprover__id_operator
+  version__populatedApprover__name: versionsAbsenceRequest_version__populatedApprover__name_operator
+  version__populatedApprover__email: versionsAbsenceRequest_version__populatedApprover__email_operator
+  version__populatedApprover__department: versionsAbsenceRequest_version__populatedApprover__department_operator
+  version__decisionDate: versionsAbsenceRequest_version__decisionDate_operator
   version__dateFrom: versionsAbsenceRequest_version__dateFrom_operator
   version__dateTo: versionsAbsenceRequest_version__dateTo_operator
   version__userComments: versionsAbsenceRequest_version__userComments_operator
   version__adminComments: versionsAbsenceRequest_version__adminComments_operator
+  version__populatedDepartment__id: versionsAbsenceRequest_version__populatedDepartment__id_operator
+  version__populatedDepartment__name: versionsAbsenceRequest_version__populatedDepartment__name_operator
+  version__populatedDepartment__email: versionsAbsenceRequest_version__populatedDepartment__email_operator
   version__slug: versionsAbsenceRequest_version__slug_operator
   version__meta__title: versionsAbsenceRequest_version__meta__title_operator
   version__meta__description: versionsAbsenceRequest_version__meta__description_operator
@@ -13822,11 +14500,21 @@ type PayloadPreferencesDeleteDocAccess {
 
 type Settings {
   postsPage: Page
-  eventsPage: Page
-  absenceRequestsPage: Page
   projectsPage: Page
+  paidHolidays: [Settings_PaidHolidays!]
+  blackOutDays: [Settings_BlackOutDays!]
   updatedAt: DateTime
   createdAt: DateTime
+}
+
+type Settings_PaidHolidays {
+  date: DateTime
+  id: String
+}
+
+type Settings_BlackOutDays {
+  date: DateTime
+  id: String
 }
 
 type settingsDocAccess {
@@ -13837,9 +14525,9 @@ type settingsDocAccess {
 
 type SettingsDocAccessFields {
   postsPage: SettingsDocAccessFields_postsPage
-  eventsPage: SettingsDocAccessFields_eventsPage
-  absenceRequestsPage: SettingsDocAccessFields_absenceRequestsPage
   projectsPage: SettingsDocAccessFields_projectsPage
+  paidHolidays: SettingsDocAccessFields_paidHolidays
+  blackOutDays: SettingsDocAccessFields_blackOutDays
   updatedAt: SettingsDocAccessFields_updatedAt
   createdAt: SettingsDocAccessFields_createdAt
 }
@@ -13867,52 +14555,6 @@ type SettingsDocAccessFields_postsPage_Delete {
   permission: Boolean!
 }
 
-type SettingsDocAccessFields_eventsPage {
-  create: SettingsDocAccessFields_eventsPage_Create
-  read: SettingsDocAccessFields_eventsPage_Read
-  update: SettingsDocAccessFields_eventsPage_Update
-  delete: SettingsDocAccessFields_eventsPage_Delete
-}
-
-type SettingsDocAccessFields_eventsPage_Create {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_eventsPage_Read {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_eventsPage_Update {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_eventsPage_Delete {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_absenceRequestsPage {
-  create: SettingsDocAccessFields_absenceRequestsPage_Create
-  read: SettingsDocAccessFields_absenceRequestsPage_Read
-  update: SettingsDocAccessFields_absenceRequestsPage_Update
-  delete: SettingsDocAccessFields_absenceRequestsPage_Delete
-}
-
-type SettingsDocAccessFields_absenceRequestsPage_Create {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_absenceRequestsPage_Read {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_absenceRequestsPage_Update {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_absenceRequestsPage_Delete {
-  permission: Boolean!
-}
-
 type SettingsDocAccessFields_projectsPage {
   create: SettingsDocAccessFields_projectsPage_Create
   read: SettingsDocAccessFields_projectsPage_Read
@@ -13933,6 +14575,156 @@ type SettingsDocAccessFields_projectsPage_Update {
 }
 
 type SettingsDocAccessFields_projectsPage_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays {
+  create: SettingsDocAccessFields_paidHolidays_Create
+  read: SettingsDocAccessFields_paidHolidays_Read
+  update: SettingsDocAccessFields_paidHolidays_Update
+  delete: SettingsDocAccessFields_paidHolidays_Delete
+  fields: SettingsDocAccessFields_paidHolidays_Fields
+}
+
+type SettingsDocAccessFields_paidHolidays_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_Fields {
+  date: SettingsDocAccessFields_paidHolidays_date
+  id: SettingsDocAccessFields_paidHolidays_id
+}
+
+type SettingsDocAccessFields_paidHolidays_date {
+  create: SettingsDocAccessFields_paidHolidays_date_Create
+  read: SettingsDocAccessFields_paidHolidays_date_Read
+  update: SettingsDocAccessFields_paidHolidays_date_Update
+  delete: SettingsDocAccessFields_paidHolidays_date_Delete
+}
+
+type SettingsDocAccessFields_paidHolidays_date_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_date_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_date_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_date_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_id {
+  create: SettingsDocAccessFields_paidHolidays_id_Create
+  read: SettingsDocAccessFields_paidHolidays_id_Read
+  update: SettingsDocAccessFields_paidHolidays_id_Update
+  delete: SettingsDocAccessFields_paidHolidays_id_Delete
+}
+
+type SettingsDocAccessFields_paidHolidays_id_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_id_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_id_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_paidHolidays_id_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays {
+  create: SettingsDocAccessFields_blackOutDays_Create
+  read: SettingsDocAccessFields_blackOutDays_Read
+  update: SettingsDocAccessFields_blackOutDays_Update
+  delete: SettingsDocAccessFields_blackOutDays_Delete
+  fields: SettingsDocAccessFields_blackOutDays_Fields
+}
+
+type SettingsDocAccessFields_blackOutDays_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_Fields {
+  date: SettingsDocAccessFields_blackOutDays_date
+  id: SettingsDocAccessFields_blackOutDays_id
+}
+
+type SettingsDocAccessFields_blackOutDays_date {
+  create: SettingsDocAccessFields_blackOutDays_date_Create
+  read: SettingsDocAccessFields_blackOutDays_date_Read
+  update: SettingsDocAccessFields_blackOutDays_date_Update
+  delete: SettingsDocAccessFields_blackOutDays_date_Delete
+}
+
+type SettingsDocAccessFields_blackOutDays_date_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_date_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_date_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_date_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_id {
+  create: SettingsDocAccessFields_blackOutDays_id_Create
+  read: SettingsDocAccessFields_blackOutDays_id_Read
+  update: SettingsDocAccessFields_blackOutDays_id_Update
+  delete: SettingsDocAccessFields_blackOutDays_id_Delete
+}
+
+type SettingsDocAccessFields_blackOutDays_id_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_id_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_id_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_blackOutDays_id_Delete {
   permission: Boolean!
 }
 
@@ -18499,16 +19291,21 @@ type absence_requestsAccess {
 
 type AbsenceRequestsFields {
   approved: AbsenceRequestsFields_approved
+  department: AbsenceRequestsFields_department
   title: AbsenceRequestsFields_title
+  type: AbsenceRequestsFields_type
   categories: AbsenceRequestsFields_categories
   publishedAt: AbsenceRequestsFields_publishedAt
-  authors: AbsenceRequestsFields_authors
-  populatedAuthors: AbsenceRequestsFields_populatedAuthors
+  user: AbsenceRequestsFields_user
+  populatedUser: AbsenceRequestsFields_populatedUser
   approver: AbsenceRequestsFields_approver
+  populatedApprover: AbsenceRequestsFields_populatedApprover
+  decisionDate: AbsenceRequestsFields_decisionDate
   dateFrom: AbsenceRequestsFields_dateFrom
   dateTo: AbsenceRequestsFields_dateTo
   userComments: AbsenceRequestsFields_userComments
   adminComments: AbsenceRequestsFields_adminComments
+  populatedDepartment: AbsenceRequestsFields_populatedDepartment
   slug: AbsenceRequestsFields_slug
   meta: AbsenceRequestsFields_meta
   updatedAt: AbsenceRequestsFields_updatedAt
@@ -18539,6 +19336,29 @@ type AbsenceRequestsFields_approved_Delete {
   permission: Boolean!
 }
 
+type AbsenceRequestsFields_department {
+  create: AbsenceRequestsFields_department_Create
+  read: AbsenceRequestsFields_department_Read
+  update: AbsenceRequestsFields_department_Update
+  delete: AbsenceRequestsFields_department_Delete
+}
+
+type AbsenceRequestsFields_department_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_department_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_department_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_department_Delete {
+  permission: Boolean!
+}
+
 type AbsenceRequestsFields_title {
   create: AbsenceRequestsFields_title_Create
   read: AbsenceRequestsFields_title_Read
@@ -18559,6 +19379,29 @@ type AbsenceRequestsFields_title_Update {
 }
 
 type AbsenceRequestsFields_title_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_type {
+  create: AbsenceRequestsFields_type_Create
+  read: AbsenceRequestsFields_type_Read
+  update: AbsenceRequestsFields_type_Update
+  delete: AbsenceRequestsFields_type_Delete
+}
+
+type AbsenceRequestsFields_type_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_type_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_type_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_type_Delete {
   permission: Boolean!
 }
 
@@ -18608,125 +19451,149 @@ type AbsenceRequestsFields_publishedAt_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_authors {
-  create: AbsenceRequestsFields_authors_Create
-  read: AbsenceRequestsFields_authors_Read
-  update: AbsenceRequestsFields_authors_Update
-  delete: AbsenceRequestsFields_authors_Delete
+type AbsenceRequestsFields_user {
+  create: AbsenceRequestsFields_user_Create
+  read: AbsenceRequestsFields_user_Read
+  update: AbsenceRequestsFields_user_Update
+  delete: AbsenceRequestsFields_user_Delete
 }
 
-type AbsenceRequestsFields_authors_Create {
+type AbsenceRequestsFields_user_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_authors_Read {
+type AbsenceRequestsFields_user_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_authors_Update {
+type AbsenceRequestsFields_user_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_authors_Delete {
+type AbsenceRequestsFields_user_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors {
-  create: AbsenceRequestsFields_populatedAuthors_Create
-  read: AbsenceRequestsFields_populatedAuthors_Read
-  update: AbsenceRequestsFields_populatedAuthors_Update
-  delete: AbsenceRequestsFields_populatedAuthors_Delete
-  fields: AbsenceRequestsFields_populatedAuthors_Fields
+type AbsenceRequestsFields_populatedUser {
+  create: AbsenceRequestsFields_populatedUser_Create
+  read: AbsenceRequestsFields_populatedUser_Read
+  update: AbsenceRequestsFields_populatedUser_Update
+  delete: AbsenceRequestsFields_populatedUser_Delete
+  fields: AbsenceRequestsFields_populatedUser_Fields
 }
 
-type AbsenceRequestsFields_populatedAuthors_Create {
+type AbsenceRequestsFields_populatedUser_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_Read {
+type AbsenceRequestsFields_populatedUser_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_Update {
+type AbsenceRequestsFields_populatedUser_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_Delete {
+type AbsenceRequestsFields_populatedUser_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_Fields {
-  id: AbsenceRequestsFields_populatedAuthors_id
-  name: AbsenceRequestsFields_populatedAuthors_name
-  email: AbsenceRequestsFields_populatedAuthors_email
+type AbsenceRequestsFields_populatedUser_Fields {
+  id: AbsenceRequestsFields_populatedUser_id
+  name: AbsenceRequestsFields_populatedUser_name
+  email: AbsenceRequestsFields_populatedUser_email
+  department: AbsenceRequestsFields_populatedUser_department
 }
 
-type AbsenceRequestsFields_populatedAuthors_id {
-  create: AbsenceRequestsFields_populatedAuthors_id_Create
-  read: AbsenceRequestsFields_populatedAuthors_id_Read
-  update: AbsenceRequestsFields_populatedAuthors_id_Update
-  delete: AbsenceRequestsFields_populatedAuthors_id_Delete
+type AbsenceRequestsFields_populatedUser_id {
+  create: AbsenceRequestsFields_populatedUser_id_Create
+  read: AbsenceRequestsFields_populatedUser_id_Read
+  update: AbsenceRequestsFields_populatedUser_id_Update
+  delete: AbsenceRequestsFields_populatedUser_id_Delete
 }
 
-type AbsenceRequestsFields_populatedAuthors_id_Create {
+type AbsenceRequestsFields_populatedUser_id_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_id_Read {
+type AbsenceRequestsFields_populatedUser_id_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_id_Update {
+type AbsenceRequestsFields_populatedUser_id_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_id_Delete {
+type AbsenceRequestsFields_populatedUser_id_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_name {
-  create: AbsenceRequestsFields_populatedAuthors_name_Create
-  read: AbsenceRequestsFields_populatedAuthors_name_Read
-  update: AbsenceRequestsFields_populatedAuthors_name_Update
-  delete: AbsenceRequestsFields_populatedAuthors_name_Delete
+type AbsenceRequestsFields_populatedUser_name {
+  create: AbsenceRequestsFields_populatedUser_name_Create
+  read: AbsenceRequestsFields_populatedUser_name_Read
+  update: AbsenceRequestsFields_populatedUser_name_Update
+  delete: AbsenceRequestsFields_populatedUser_name_Delete
 }
 
-type AbsenceRequestsFields_populatedAuthors_name_Create {
+type AbsenceRequestsFields_populatedUser_name_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_name_Read {
+type AbsenceRequestsFields_populatedUser_name_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_name_Update {
+type AbsenceRequestsFields_populatedUser_name_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_name_Delete {
+type AbsenceRequestsFields_populatedUser_name_Delete {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_email {
-  create: AbsenceRequestsFields_populatedAuthors_email_Create
-  read: AbsenceRequestsFields_populatedAuthors_email_Read
-  update: AbsenceRequestsFields_populatedAuthors_email_Update
-  delete: AbsenceRequestsFields_populatedAuthors_email_Delete
+type AbsenceRequestsFields_populatedUser_email {
+  create: AbsenceRequestsFields_populatedUser_email_Create
+  read: AbsenceRequestsFields_populatedUser_email_Read
+  update: AbsenceRequestsFields_populatedUser_email_Update
+  delete: AbsenceRequestsFields_populatedUser_email_Delete
 }
 
-type AbsenceRequestsFields_populatedAuthors_email_Create {
+type AbsenceRequestsFields_populatedUser_email_Create {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_email_Read {
+type AbsenceRequestsFields_populatedUser_email_Read {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_email_Update {
+type AbsenceRequestsFields_populatedUser_email_Update {
   permission: Boolean!
 }
 
-type AbsenceRequestsFields_populatedAuthors_email_Delete {
+type AbsenceRequestsFields_populatedUser_email_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedUser_department {
+  create: AbsenceRequestsFields_populatedUser_department_Create
+  read: AbsenceRequestsFields_populatedUser_department_Read
+  update: AbsenceRequestsFields_populatedUser_department_Update
+  delete: AbsenceRequestsFields_populatedUser_department_Delete
+}
+
+type AbsenceRequestsFields_populatedUser_department_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedUser_department_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedUser_department_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedUser_department_Delete {
   permission: Boolean!
 }
 
@@ -18750,6 +19617,152 @@ type AbsenceRequestsFields_approver_Update {
 }
 
 type AbsenceRequestsFields_approver_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover {
+  create: AbsenceRequestsFields_populatedApprover_Create
+  read: AbsenceRequestsFields_populatedApprover_Read
+  update: AbsenceRequestsFields_populatedApprover_Update
+  delete: AbsenceRequestsFields_populatedApprover_Delete
+  fields: AbsenceRequestsFields_populatedApprover_Fields
+}
+
+type AbsenceRequestsFields_populatedApprover_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_Fields {
+  id: AbsenceRequestsFields_populatedApprover_id
+  name: AbsenceRequestsFields_populatedApprover_name
+  email: AbsenceRequestsFields_populatedApprover_email
+  department: AbsenceRequestsFields_populatedApprover_department
+}
+
+type AbsenceRequestsFields_populatedApprover_id {
+  create: AbsenceRequestsFields_populatedApprover_id_Create
+  read: AbsenceRequestsFields_populatedApprover_id_Read
+  update: AbsenceRequestsFields_populatedApprover_id_Update
+  delete: AbsenceRequestsFields_populatedApprover_id_Delete
+}
+
+type AbsenceRequestsFields_populatedApprover_id_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_id_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_id_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_id_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_name {
+  create: AbsenceRequestsFields_populatedApprover_name_Create
+  read: AbsenceRequestsFields_populatedApprover_name_Read
+  update: AbsenceRequestsFields_populatedApprover_name_Update
+  delete: AbsenceRequestsFields_populatedApprover_name_Delete
+}
+
+type AbsenceRequestsFields_populatedApprover_name_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_name_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_name_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_name_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_email {
+  create: AbsenceRequestsFields_populatedApprover_email_Create
+  read: AbsenceRequestsFields_populatedApprover_email_Read
+  update: AbsenceRequestsFields_populatedApprover_email_Update
+  delete: AbsenceRequestsFields_populatedApprover_email_Delete
+}
+
+type AbsenceRequestsFields_populatedApprover_email_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_email_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_email_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_email_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_department {
+  create: AbsenceRequestsFields_populatedApprover_department_Create
+  read: AbsenceRequestsFields_populatedApprover_department_Read
+  update: AbsenceRequestsFields_populatedApprover_department_Update
+  delete: AbsenceRequestsFields_populatedApprover_department_Delete
+}
+
+type AbsenceRequestsFields_populatedApprover_department_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_department_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_department_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedApprover_department_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_decisionDate {
+  create: AbsenceRequestsFields_decisionDate_Create
+  read: AbsenceRequestsFields_decisionDate_Read
+  update: AbsenceRequestsFields_decisionDate_Update
+  delete: AbsenceRequestsFields_decisionDate_Delete
+}
+
+type AbsenceRequestsFields_decisionDate_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_decisionDate_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_decisionDate_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_decisionDate_Delete {
   permission: Boolean!
 }
 
@@ -18842,6 +19855,105 @@ type AbsenceRequestsFields_adminComments_Update {
 }
 
 type AbsenceRequestsFields_adminComments_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment {
+  create: AbsenceRequestsFields_populatedDepartment_Create
+  read: AbsenceRequestsFields_populatedDepartment_Read
+  update: AbsenceRequestsFields_populatedDepartment_Update
+  delete: AbsenceRequestsFields_populatedDepartment_Delete
+  fields: AbsenceRequestsFields_populatedDepartment_Fields
+}
+
+type AbsenceRequestsFields_populatedDepartment_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_Fields {
+  id: AbsenceRequestsFields_populatedDepartment_id
+  name: AbsenceRequestsFields_populatedDepartment_name
+  email: AbsenceRequestsFields_populatedDepartment_email
+}
+
+type AbsenceRequestsFields_populatedDepartment_id {
+  create: AbsenceRequestsFields_populatedDepartment_id_Create
+  read: AbsenceRequestsFields_populatedDepartment_id_Read
+  update: AbsenceRequestsFields_populatedDepartment_id_Update
+  delete: AbsenceRequestsFields_populatedDepartment_id_Delete
+}
+
+type AbsenceRequestsFields_populatedDepartment_id_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_id_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_id_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_id_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_name {
+  create: AbsenceRequestsFields_populatedDepartment_name_Create
+  read: AbsenceRequestsFields_populatedDepartment_name_Read
+  update: AbsenceRequestsFields_populatedDepartment_name_Update
+  delete: AbsenceRequestsFields_populatedDepartment_name_Delete
+}
+
+type AbsenceRequestsFields_populatedDepartment_name_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_name_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_name_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_name_Delete {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_email {
+  create: AbsenceRequestsFields_populatedDepartment_email_Create
+  read: AbsenceRequestsFields_populatedDepartment_email_Read
+  update: AbsenceRequestsFields_populatedDepartment_email_Update
+  delete: AbsenceRequestsFields_populatedDepartment_email_Delete
+}
+
+type AbsenceRequestsFields_populatedDepartment_email_Create {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_email_Read {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_email_Update {
+  permission: Boolean!
+}
+
+type AbsenceRequestsFields_populatedDepartment_email_Delete {
   permission: Boolean!
 }
 
@@ -19423,9 +20535,9 @@ type settingsAccess {
 
 type SettingsFields {
   postsPage: SettingsFields_postsPage
-  eventsPage: SettingsFields_eventsPage
-  absenceRequestsPage: SettingsFields_absenceRequestsPage
   projectsPage: SettingsFields_projectsPage
+  paidHolidays: SettingsFields_paidHolidays
+  blackOutDays: SettingsFields_blackOutDays
   updatedAt: SettingsFields_updatedAt
   createdAt: SettingsFields_createdAt
 }
@@ -19453,52 +20565,6 @@ type SettingsFields_postsPage_Delete {
   permission: Boolean!
 }
 
-type SettingsFields_eventsPage {
-  create: SettingsFields_eventsPage_Create
-  read: SettingsFields_eventsPage_Read
-  update: SettingsFields_eventsPage_Update
-  delete: SettingsFields_eventsPage_Delete
-}
-
-type SettingsFields_eventsPage_Create {
-  permission: Boolean!
-}
-
-type SettingsFields_eventsPage_Read {
-  permission: Boolean!
-}
-
-type SettingsFields_eventsPage_Update {
-  permission: Boolean!
-}
-
-type SettingsFields_eventsPage_Delete {
-  permission: Boolean!
-}
-
-type SettingsFields_absenceRequestsPage {
-  create: SettingsFields_absenceRequestsPage_Create
-  read: SettingsFields_absenceRequestsPage_Read
-  update: SettingsFields_absenceRequestsPage_Update
-  delete: SettingsFields_absenceRequestsPage_Delete
-}
-
-type SettingsFields_absenceRequestsPage_Create {
-  permission: Boolean!
-}
-
-type SettingsFields_absenceRequestsPage_Read {
-  permission: Boolean!
-}
-
-type SettingsFields_absenceRequestsPage_Update {
-  permission: Boolean!
-}
-
-type SettingsFields_absenceRequestsPage_Delete {
-  permission: Boolean!
-}
-
 type SettingsFields_projectsPage {
   create: SettingsFields_projectsPage_Create
   read: SettingsFields_projectsPage_Read
@@ -19519,6 +20585,156 @@ type SettingsFields_projectsPage_Update {
 }
 
 type SettingsFields_projectsPage_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays {
+  create: SettingsFields_paidHolidays_Create
+  read: SettingsFields_paidHolidays_Read
+  update: SettingsFields_paidHolidays_Update
+  delete: SettingsFields_paidHolidays_Delete
+  fields: SettingsFields_paidHolidays_Fields
+}
+
+type SettingsFields_paidHolidays_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_Fields {
+  date: SettingsFields_paidHolidays_date
+  id: SettingsFields_paidHolidays_id
+}
+
+type SettingsFields_paidHolidays_date {
+  create: SettingsFields_paidHolidays_date_Create
+  read: SettingsFields_paidHolidays_date_Read
+  update: SettingsFields_paidHolidays_date_Update
+  delete: SettingsFields_paidHolidays_date_Delete
+}
+
+type SettingsFields_paidHolidays_date_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_date_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_date_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_date_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_id {
+  create: SettingsFields_paidHolidays_id_Create
+  read: SettingsFields_paidHolidays_id_Read
+  update: SettingsFields_paidHolidays_id_Update
+  delete: SettingsFields_paidHolidays_id_Delete
+}
+
+type SettingsFields_paidHolidays_id_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_id_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_id_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_paidHolidays_id_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays {
+  create: SettingsFields_blackOutDays_Create
+  read: SettingsFields_blackOutDays_Read
+  update: SettingsFields_blackOutDays_Update
+  delete: SettingsFields_blackOutDays_Delete
+  fields: SettingsFields_blackOutDays_Fields
+}
+
+type SettingsFields_blackOutDays_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_Fields {
+  date: SettingsFields_blackOutDays_date
+  id: SettingsFields_blackOutDays_id
+}
+
+type SettingsFields_blackOutDays_date {
+  create: SettingsFields_blackOutDays_date_Create
+  read: SettingsFields_blackOutDays_date_Read
+  update: SettingsFields_blackOutDays_date_Update
+  delete: SettingsFields_blackOutDays_date_Delete
+}
+
+type SettingsFields_blackOutDays_date_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_date_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_date_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_date_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_id {
+  create: SettingsFields_blackOutDays_id_Create
+  read: SettingsFields_blackOutDays_id_Read
+  update: SettingsFields_blackOutDays_id_Update
+  delete: SettingsFields_blackOutDays_id_Delete
+}
+
+type SettingsFields_blackOutDays_id_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_id_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_id_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_blackOutDays_id_Delete {
   permission: Boolean!
 }
 
@@ -20860,16 +22076,21 @@ enum EventUpdate__status_MutationInput {
 
 input mutationAbsenceRequestInput {
   approved: AbsenceRequest_approved_MutationInput
+  department: Int
   title: String!
+  type: AbsenceRequest_type_MutationInput
   categories: [Int]
   publishedAt: String
-  authors: [Int]
-  populatedAuthors: [mutationAbsenceRequest_PopulatedAuthorsInput]
+  user: Int
+  populatedUser: mutationAbsenceRequest_PopulatedUserInput
   approver: Int
+  populatedApprover: mutationAbsenceRequest_PopulatedApproverInput
+  decisionDate: String
   dateFrom: String!
   dateTo: String!
   userComments: String
   adminComments: String
+  populatedDepartment: mutationAbsenceRequest_PopulatedDepartmentInput
   slug: String
   meta: mutationAbsenceRequest_MetaInput
   updatedAt: String
@@ -20883,7 +22104,26 @@ enum AbsenceRequest_approved_MutationInput {
   denied
 }
 
-input mutationAbsenceRequest_PopulatedAuthorsInput {
+enum AbsenceRequest_type_MutationInput {
+  vacation
+  sick_leave
+}
+
+input mutationAbsenceRequest_PopulatedUserInput {
+  id: String
+  name: String
+  email: String
+  department: String
+}
+
+input mutationAbsenceRequest_PopulatedApproverInput {
+  id: String
+  name: String
+  email: String
+  department: String
+}
+
+input mutationAbsenceRequest_PopulatedDepartmentInput {
   id: String
   name: String
   email: String
@@ -20902,16 +22142,21 @@ enum AbsenceRequest__status_MutationInput {
 
 input mutationAbsenceRequestUpdateInput {
   approved: AbsenceRequestUpdate_approved_MutationInput
+  department: Int
   title: String
+  type: AbsenceRequestUpdate_type_MutationInput
   categories: [Int]
   publishedAt: String
-  authors: [Int]
-  populatedAuthors: [mutationAbsenceRequestUpdate_PopulatedAuthorsInput]
+  user: Int
+  populatedUser: mutationAbsenceRequestUpdate_PopulatedUserInput
   approver: Int
+  populatedApprover: mutationAbsenceRequestUpdate_PopulatedApproverInput
+  decisionDate: String
   dateFrom: String
   dateTo: String
   userComments: String
   adminComments: String
+  populatedDepartment: mutationAbsenceRequestUpdate_PopulatedDepartmentInput
   slug: String
   meta: mutationAbsenceRequestUpdate_MetaInput
   updatedAt: String
@@ -20925,7 +22170,26 @@ enum AbsenceRequestUpdate_approved_MutationInput {
   denied
 }
 
-input mutationAbsenceRequestUpdate_PopulatedAuthorsInput {
+enum AbsenceRequestUpdate_type_MutationInput {
+  vacation
+  sick_leave
+}
+
+input mutationAbsenceRequestUpdate_PopulatedUserInput {
+  id: String
+  name: String
+  email: String
+  department: String
+}
+
+input mutationAbsenceRequestUpdate_PopulatedApproverInput {
+  id: String
+  name: String
+  email: String
+  department: String
+}
+
+input mutationAbsenceRequestUpdate_PopulatedDepartmentInput {
   id: String
   name: String
   email: String
@@ -21024,11 +22288,21 @@ enum PayloadPreferenceUpdate_UserRelationshipInputRelationTo {
 
 input mutationSettingsInput {
   postsPage: Int
-  eventsPage: Int
-  absenceRequestsPage: Int
   projectsPage: Int
+  paidHolidays: [mutationSettings_PaidHolidaysInput]
+  blackOutDays: [mutationSettings_BlackOutDaysInput]
   updatedAt: String
   createdAt: String
+}
+
+input mutationSettings_PaidHolidaysInput {
+  date: String
+  id: String
+}
+
+input mutationSettings_BlackOutDaysInput {
+  date: String
+  id: String
 }
 
 input mutationHeaderInput {
