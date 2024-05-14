@@ -10,6 +10,8 @@ import { mergeOpenGraph } from './_utilities/mergeOpenGraph';
 
 import './_css/app.scss';
 
+export const dynamic = 'force-dynamic';
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>

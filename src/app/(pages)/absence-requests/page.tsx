@@ -4,7 +4,7 @@ import { draftMode } from 'next/headers';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
-import { AbsenceRequest, Department, Page, User } from '../../../payload/payload-types';
+import type { AbsenceRequest, Department, Page, User } from '../../../payload/payload-types';
 import { fetchAbsenceRequests } from '../../_api/fetchAbsenceRequests';
 import { fetchDepartments } from '../../_api/fetchDepartments';
 import { fetchDoc } from '../../_api/fetchDoc';
