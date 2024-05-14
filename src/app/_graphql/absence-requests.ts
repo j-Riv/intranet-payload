@@ -1,7 +1,7 @@
-import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks'
-import { LINK_FIELDS } from './link'
-import { MEDIA } from './media'
-import { META } from './meta'
+import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks';
+import { LINK_FIELDS } from './link';
+import { MEDIA } from './media';
+import { META } from './meta';
 
 // export const ABSENCE_REQUESTS = `#graphql
 //   query AbsenceRequests {
@@ -54,7 +54,7 @@ export const ABSENCE_REQUEST = `#graphql
       }
     }
   }
-`
+`;
 
 export const ABSENCE_REQUESTS = `#graphql
   query AbsenceRequests($status: AbsenceRequest_approved_Input) {
@@ -78,4 +78,4 @@ export const ABSENCE_REQUESTS = `#graphql
       }
     }
   }
-`
+`;

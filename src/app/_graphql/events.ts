@@ -1,7 +1,7 @@
-import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks'
-import { LINK_FIELDS } from './link'
-import { MEDIA } from './media'
-import { META } from './meta'
+import { ARCHIVE_BLOCK, CALL_TO_ACTION, CONTENT, MEDIA_BLOCK } from './blocks';
+import { LINK_FIELDS } from './link';
+import { MEDIA } from './media';
+import { META } from './meta';
 
 export const EVENTS = `#graphql
   query Events {
@@ -18,7 +18,7 @@ export const EVENTS = `#graphql
       }
     }
   }
-`
+`;
 
 export const EVENT = `#graphql
   query Event($slug: String, $draft: Boolean) {
@@ -60,4 +60,4 @@ export const EVENT = `#graphql
       }
     }
   }
-`
+`;
