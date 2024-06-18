@@ -88,8 +88,10 @@ export default buildConfig({
   graphQL: {
     schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
   },
-  cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
-  csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  // cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  // csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  cors: ['http://localhost:3000'],
+  csrf: ['http://localhost:3000'],
   endpoints: [
     // The seed endpoint is used to populate the database with some example data
     // You should delete this endpoint before deploying your site to production
@@ -113,4 +115,14 @@ export default buildConfig({
     }),
     payloadCloud(),
   ],
+  // Custom Access-Control-Allow-Headers middleware
+  express: {
+    postMiddleware: [
+      (_req, res, next) => {
+        const existingHeaders = res.getHeader('Access-Control-Allow-Headers');
+        res.header('Access-Control-Allow-Headers', existingHeaders + ', x-custom-header');
+        next();
+      },
+    ],
+  },
 });
