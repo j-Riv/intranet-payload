@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
-import { AbsenceRequest, Event, Page } from '../../../payload/payload-types';
+import type { AbsenceRequest, Event, Page } from '../../../payload/payload-types';
 import { fetchDoc } from '../../_api/fetchDoc';
 import { fetchDocs } from '../../_api/fetchDocs';
 import { EventsCalander } from '../../_components/EventsCalendar';
@@ -41,7 +41,9 @@ export default async function Page({ params: { slug = 'events' } }) {
 
     events = await fetchDocs<Event>('events');
 
-    absenceRequests = await fetchDocs<AbsenceRequest>('absence-requests');
+    absenceRequests = await fetchDocs<AbsenceRequest>('absence-requests', false, {
+      status: 'approved',
+    });
   } catch (error) {
     // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
     // so swallow the error here and simply render the page with fallback data where necessary
